@@ -6,5 +6,5 @@ export interface Blog {
   description: string;
   status?: boolean;
   created_at?: string | null;
-  image?: string | null;
+  media?: string | null;
 }

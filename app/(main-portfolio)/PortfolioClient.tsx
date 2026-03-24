@@ -10,6 +10,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import {About, Contact, Home, Portfolio, Section} from "@/app/(main-portfolio)/type/type";
 import {MessageCircle, X} from "lucide-react";
 import ChatWidget from "@/Widget/ChatWidget";
+import BlogSection from "@/app/(main-portfolio)/components/BlogSection";
+import {Blog} from "@/app/(dashboard)/dashboard/blog/interface/Blog";
 
 // Create a small utility to get or create a Guest ID
 export const getChatSessionId = () => {
@@ -21,11 +23,12 @@ export const getChatSessionId = () => {
     return sessionId;
 };
 
-export default function PortfolioClient({ home, about, portfolio, contact }: {
+export default function PortfolioClient({ home, about, portfolio, contact, blog }: {
     home: Home,
     about: About,
     portfolio: Portfolio[],
-    contact: Contact
+    contact: Contact,
+    blog: Blog[]
 }) {
     const [activeSection, setActiveSection] = useState<Section>("home");
 
@@ -69,6 +72,7 @@ export default function PortfolioClient({ home, about, portfolio, contact }: {
                     {activeSection === "about" && <AboutSection data={about} key="about" />}
                     {activeSection === "portfolio" && <PortfolioSection data={portfolio} key="portfolio" />}
                     {activeSection === "contact" && <ContactSection data={contact} key="contact" />}
+                    {activeSection === "blog" && <BlogSection data={blog} key="blog" />}
                 </AnimatePresence>
             </main>
 

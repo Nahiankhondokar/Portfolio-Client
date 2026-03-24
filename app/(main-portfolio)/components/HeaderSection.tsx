@@ -3,14 +3,12 @@
 import React, {useEffect, useState} from "react";
 import {
     Home, User, Briefcase, Mail, FileText,
-   LogInIcon
+    LogInIcon, BookIcon
 } from "lucide-react";
 import Link from "next/link";
 import { Dispatch, SetStateAction } from "react";
 import MobileHeader from "@/app/(main-portfolio)/components/MobileHeader";
-
-// --- Type ---
-type Section = "home" | "about" | "portfolio" | "contact";
+import {Section} from "@/app/(main-portfolio)/type/type";
 
 type HeaderProps = {
     activeSection: Section;
@@ -28,6 +26,7 @@ const HeaderSection = (
         { id: "about", icon: <User size={20} />, label: "About" },
         { id: "portfolio", icon: <Briefcase size={20} />, label: "Portfolio" },
         { id: "contact", icon: <Mail size={20} />, label: "Contact" },
+        { id: "blog", icon: <BookIcon size={20} />, label: "Blog" },
     ];
 
 

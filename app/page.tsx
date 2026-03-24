@@ -3,6 +3,7 @@ import React  from "react";
 import Me from "@/public/assets/me/me.jpg";
 import PortfolioClient from "@/app/(main-portfolio)/PortfolioClient";
 import {About, Contact, Home, Portfolio} from "@/app/(main-portfolio)/type/type";
+import {Blog} from "@/app/(dashboard)/dashboard/blog/interface/Blog";
 
 // ---- APIs calls ----
 async function getHome(): Promise<Home> {
@@ -56,6 +57,22 @@ async function getPortfolio(): Promise<Portfolio[]> {
     const data = await res.json();
     return data.data.portfolios;
 }
+
+async function getBlog(): Promise<Blog> {
+    const url = "v1/public/user-info";
+
+    const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}${url}`,
+        {
+            cache: "no-store", // forces SSR (no caching)
+        }
+    );
+
+    const data = await res.json();
+
+    return data.data.blogs;
+}
+
 async function getAbout(): Promise<About> {
     const url = "v1/public/user-info";
 
@@ -88,8 +105,8 @@ async function getAbout(): Promise<About> {
 
 export default async function page  () {
     // parallel fetch
-    const [home, about, portfolio, contact] = await Promise.all([
-        getHome(), getAbout(), getPortfolio(), getContact()
+    const [home, about, portfolio, contact, blog] = await Promise.all([
+        getHome(), getAbout(), getPortfolio(), getContact(), getBlog()
     ]);
 
     return (
@@ -100,6 +117,7 @@ export default async function page  () {
                about={about}
                portfolio={portfolio}
                contact={contact}
+               blog={blog}
            />
        </div>
     );

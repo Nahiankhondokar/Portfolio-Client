@@ -1,5 +1,5 @@
 // --- Types ---
-export type Section = "home" | "about" | "portfolio" | "contact";
+export type Section = "home" | "about" | "portfolio" | "contact" | "blog";
 export type Home = Pick<UserInfo, "name" | "subtitle" | "image" | "bio">
 export type About = Pick<UserInfo,
     "name" | "location" | "nationality" | "bio" |
