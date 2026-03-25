@@ -21,9 +21,9 @@ const BlogSection = ({ data }: Props) => {
                 className="py-20"
             >
                 <h2 className="text-center text-4xl lg:text-5xl font-black uppercase mb-16">
-                    My <span className="text-yellow-500">Portfolio</span>
+                    My <span className="text-yellow-500">Blog</span>
                 </h2>
-                <p className="text-center text-muted-foreground">No portfolio items to show.</p>
+                <p className="text-center text-muted-foreground">No blog items to show.</p>
             </motion.section>
         );
     }
@@ -36,7 +36,7 @@ const BlogSection = ({ data }: Props) => {
             className="py-20"
         >
             <h2 className="text-center text-4xl lg:text-5xl font-black uppercase mb-16">
-                My <span className="text-yellow-500">Portfolio</span>
+                My <span className="text-yellow-500">Blog</span>
             </h2>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
