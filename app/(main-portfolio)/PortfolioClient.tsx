@@ -10,7 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {About, Contact, Home, Portfolio, Section} from "@/app/(main-portfolio)/type/type";
 import {MessageCircle, X} from "lucide-react";
 import ChatWidget from "@/Widget/ChatWidget";
-import BlogSection from "@/app/(main-portfolio)/components/BlogSection";
+import BlogSection from "@/app/(main-portfolio)/components/Blog/BlogSection";
 import {Blog} from "@/app/(dashboard)/dashboard/blog/interface/Blog";
 
 // Create a small utility to get or create a Guest ID
