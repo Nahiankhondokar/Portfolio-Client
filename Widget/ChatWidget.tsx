@@ -151,5 +151,3 @@ export default function ChatWidget({ guestId }: { guestId: string }) {
         </div>
     );
 }
-
-this is my chatbot weidget. make this responsive for all the device.
