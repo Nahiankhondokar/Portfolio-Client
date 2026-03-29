@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { Portfolio } from "@/app/(main-portfolio)/type/type";
 import {Blog} from "@/app/(dashboard)/dashboard/blog/interface/Blog";
+import Link from "next/link";
 
 type Props = {
     data: Blog[]; // array of portfolio items
@@ -40,12 +41,10 @@ const BlogSection = ({ data }: Props) => {
             </h2>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {blogs.map((blog) => (
-                    <a
+                {blogs.map((blog: Blog) => (
+                    <Link
                         key={blog.id}
-                        href={blog.title}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        href={`/blog/${blog.slug}`} // Point to the dynamic route
                         className="group relative overflow-hidden rounded-xl cursor-pointer"
                         aria-label={blog.title}
                     >
@@ -70,7 +69,7 @@ const BlogSection = ({ data }: Props) => {
                                 {blog.title}
                             </h4>
                         </div>
-                    </a>
+                    </Link>
                 ))}
             </div>
         </motion.section>

@@ -20,6 +20,7 @@ import Pagination from "@/type/pagination/Pagination";
 import {useBlogStore} from "@/stores/useBlogStore";
 import MediaPreview from "@/components/common/MediaPreview";
 import StatusUpdateToggle from "@/components/common/StatusUpdateToggle";
+import Link from "next/link";
 
 export default function BlogTable() {
     const {
@@ -75,7 +76,13 @@ export default function BlogTable() {
                             <TableRow key={index}>
                                 <TableCell>{index+1}</TableCell>
                                 <TableCell className="font-medium">
-                                    {blog.title}
+                                    <Link
+                                        href={`/dashboard/blog/${blog.slug}`} // Point to the dynamic route
+                                        className="group relative overflow-hidden rounded-xl cursor-pointer"
+                                        aria-label={blog.title}
+                                    >
+                                        {blog.title}
+                                    </Link>
                                 </TableCell>
                                 <TableCell>{blog.subtitle ?? "-"}</TableCell>
                                 <TableCell>{blog.description ?? "-"}</TableCell>
@@ -88,7 +95,7 @@ export default function BlogTable() {
                                 </TableCell>
                                 <TableCell>
                                     <MediaPreview
-                                        src={blog.image}
+                                        src={blog?.media}
                                         alt={blog.title}
                                         className="h-12 w-12 shadow-sm"
                                     />

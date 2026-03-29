@@ -108,7 +108,7 @@ export default function ChatWidget({ guestId }: { guestId: string }) {
                             <p className="text-[10px] text-green-400 font-medium">Online</p>
                         </div>
                     </div>
-
+                    
                     <div className="flex items-center gap-1">
                         <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-white sm:flex hidden">
                             <Minus size={20} />
@@ -131,9 +131,9 @@ export default function ChatWidget({ guestId }: { guestId: string }) {
                                     className={`
                                         max-w-[85%] sm:max-w-[75%] p-3.5 rounded-2xl text-[14px] leading-relaxed
                                         ${msg.sender === "guest"
-                                        ? "bg-yellow-500 text-black rounded-tr-none shadow-md"
-                                        : "bg-slate-800 text-slate-100 rounded-tl-none border border-slate-700 shadow-sm"
-                                    }
+                                            ? "bg-yellow-500 text-black rounded-tr-none shadow-md"
+                                            : "bg-slate-800 text-slate-100 rounded-tl-none border border-slate-700 shadow-sm"
+                                        }
                                     `}
                                 >
                                     {msg.body}
