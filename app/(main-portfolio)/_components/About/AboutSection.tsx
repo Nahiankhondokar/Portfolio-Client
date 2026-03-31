@@ -1,12 +1,12 @@
 "use client";
 
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-import {Briefcase, Download, Eye, GraduationCapIcon, Info} from "lucide-react";
+import { Briefcase, Download, Eye, GraduationCapIcon, Info } from "lucide-react";
 import { About, Metrics } from "@/app/(main-portfolio)/type/type";
-import ExAndEduSection from "@/app/(main-portfolio)/components/About/ExAndEduSection";
-import EmptyStateSection from "@/app/(main-portfolio)/components/About/EmptyStateSection";
-import SkillSection from "@/app/(main-portfolio)/components/About/SkillSection";
+import ExAndEduSection from "@/app/(main-portfolio)/_components/About/ExAndEduSection";
+import EmptyStateSection from "@/app/(main-portfolio)/_components/About/EmptyStateSection";
+import SkillSection from "@/app/(main-portfolio)/_components/About/SkillSection";
 
 const AboutSection = ({ data }: { data: About }) => {
 
@@ -64,7 +64,7 @@ const AboutSection = ({ data }: { data: About }) => {
             window.open(url, "_blank");
         }
     };
-    
+
     return (
         <motion.section
             initial={{ opacity: 0, y: 20 }}
@@ -74,9 +74,9 @@ const AboutSection = ({ data }: { data: About }) => {
         >
             {/* Background Text Accent */}
             <div className="absolute top-10 left-0 w-full text-center pointer-events-none select-none">
-        <span className="text-7xl lg:text-9xl font-black uppercase opacity-[0.03] text-white">
-          Resume
-        </span>
+                <span className="text-7xl lg:text-9xl font-black uppercase opacity-[0.03] text-white">
+                    Resume
+                </span>
             </div>
 
             <h2 className="text-center text-4xl lg:text-5xl font-black uppercase mb-20 relative z-10">

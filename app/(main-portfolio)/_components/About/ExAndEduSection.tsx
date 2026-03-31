@@ -1,15 +1,15 @@
 "use client"
 
 
-import TimeLineItemSection from "@/app/(main-portfolio)/components/About/TiemLineItemSection";
-import {Briefcase, GraduationCapIcon} from "lucide-react";
-import {Education, Experience} from "@/app/(main-portfolio)/type/type";
+import TimeLineItemSection from "@/app/(main-portfolio)/_components/About/TiemLineItemSection";
+import { Briefcase, GraduationCapIcon } from "lucide-react";
+import { Education, Experience } from "@/app/(main-portfolio)/type/type";
 
 function EmptyState(props: { message: string }) {
     return null;
 }
 
-const ExAndEduSection = ({experiences, educations}: {experiences: Experience[], educations: Education[]}) => {
+const ExAndEduSection = ({ experiences, educations }: { experiences: Experience[], educations: Education[] }) => {
 
     return (
         <>

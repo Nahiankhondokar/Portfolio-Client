@@ -1,9 +1,9 @@
 import React from "react";
-import {Expertise} from "@/app/(main-portfolio)/type/type";
-import EmptyStateSection from "@/app/(main-portfolio)/components/About/EmptyStateSection";
+import { Expertise } from "@/app/(main-portfolio)/type/type";
+import EmptyStateSection from "@/app/(main-portfolio)/_components/About/EmptyStateSection";
 
 
-const SkillSection = ({skills} : {skills: Expertise[]}) => {
+const SkillSection = ({ skills }: { skills: Expertise[] }) => {
 
 
     return (

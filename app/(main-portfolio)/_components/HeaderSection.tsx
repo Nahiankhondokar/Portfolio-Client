@@ -1,14 +1,14 @@
 "use client";
 
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
     Home, User, Briefcase, Mail, FileText,
     LogInIcon, BookIcon
 } from "lucide-react";
 import Link from "next/link";
 import { Dispatch, SetStateAction } from "react";
-import MobileHeader from "@/app/(main-portfolio)/components/MobileHeader";
-import {Section} from "@/app/(main-portfolio)/type/type";
+import MobileHeader from "@/app/(main-portfolio)/_components/MobileHeader";
+import { Section } from "@/app/(main-portfolio)/type/type";
 
 type HeaderProps = {
     activeSection: Section;
@@ -17,7 +17,7 @@ type HeaderProps = {
 
 
 const HeaderSection = (
-    {activeSection, setActiveSection} : HeaderProps
+    { activeSection, setActiveSection }: HeaderProps
 ) => {
 
     // --- Navigation Items ---
@@ -47,15 +47,14 @@ const HeaderSection = (
                     <button
                         key={item.id}
                         onClick={() => setActiveSection(item.id as Section)}
-                        className={`group relative flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300 ${
-                            activeSection === item.id ? "bg-yellow-500 text-white" : "bg-[#2b2b2b] hover:bg-yellow-500"
-                        }`}
+                        className={`group relative flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300 ${activeSection === item.id ? "bg-yellow-500 text-white" : "bg-[#2b2b2b] hover:bg-yellow-500"
+                            }`}
                     >
                         <span className={activeSection === item.id ? "text-white" : "group-hover:text-white"}>
-                          {item.icon}
+                            {item.icon}
                         </span>
                         <span className="absolute right-14 px-4 py-2 bg-yellow-500 text-black font-bold opacity-0 group-hover:opacity-100 transition-all rounded-l-full uppercase text-xs tracking-widest pointer-events-none">
-                          {item.label}
+                            {item.label}
                         </span>
                     </button>
                 ))}
