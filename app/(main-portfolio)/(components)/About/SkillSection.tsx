@@ -1,6 +1,6 @@
 import React from "react";
 import { Expertise } from "@/app/(main-portfolio)/type/type";
-import EmptyStateSection from "@/app/(main-portfolio)/_components/About/EmptyStateSection";
+import EmptyStateSection from "@/app/(main-portfolio)/(components)/About/EmptyStateSection";
 
 
 const SkillSection = ({ skills }: { skills: Expertise[] }) => {

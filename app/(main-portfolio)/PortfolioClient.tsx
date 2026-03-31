@@ -1,16 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import HomeSection from "@/app/(main-portfolio)/_components/HomeSection";
-import AboutSection from "@/app/(main-portfolio)/_components/About/AboutSection";
-import PortfolioSection from "@/app/(main-portfolio)/_components/PortfolioSection";
-import ContactSection from "@/app/(main-portfolio)/_components/ContactSection";
-import HeaderSection from "@/app/(main-portfolio)/_components/HeaderSection";
+import HomeSection from "@/app/(main-portfolio)/(components)/HomeSection";
+import AboutSection from "@/app/(main-portfolio)/(components)/About/AboutSection";
+import PortfolioSection from "@/app/(main-portfolio)/(components)/PortfolioSection";
+import ContactSection from "@/app/(main-portfolio)/(components)/ContactSection";
+import HeaderSection from "@/app/(main-portfolio)/(components)/HeaderSection";
 import { motion, AnimatePresence } from "framer-motion";
 import { About, Contact, Home, Portfolio, Section } from "@/app/(main-portfolio)/type/type";
 import { MessageCircle, X } from "lucide-react";
 import ChatWidget from "@/Widget/ChatWidget";
-import BlogSection from "@/app/(main-portfolio)/blog/BlogSection";
+import BlogSection from "@/app/(main-portfolio)/(components)/blog/BlogSection";
 import { Blog } from "@/app/(dashboard)/dashboard/blog/interface/Blog";
 
 // Create a small utility to get or create a Guest ID

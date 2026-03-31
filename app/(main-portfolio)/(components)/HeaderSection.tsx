@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Dispatch, SetStateAction } from "react";
-import MobileHeader from "@/app/(main-portfolio)/_components/MobileHeader";
+import MobileHeader from "@/app/(main-portfolio)/(components)/MobileHeader";
 import { Section } from "@/app/(main-portfolio)/type/type";
 
 type HeaderProps = {

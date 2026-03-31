@@ -19,7 +19,7 @@ export default async function BlogDetails({ params }: Props) {
 
     let blog: Blog | null = null;
     try {
-        const response = await apiFetch<BlogResponse>(`blog-details/${slug}`);
+        const response = await apiFetch<BlogResponse>(`v1/public/blog-details/${slug}`);
         blog = response?.data;
     } catch (error) {
         console.error("Failed to fetch blog", error);

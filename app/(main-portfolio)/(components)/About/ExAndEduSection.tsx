@@ -1,7 +1,7 @@
 "use client"
 
 
-import TimeLineItemSection from "@/app/(main-portfolio)/_components/About/TiemLineItemSection";
+import TimeLineItemSection from "@/app/(main-portfolio)/(components)/About/TiemLineItemSection";
 import { Briefcase, GraduationCapIcon } from "lucide-react";
 import { Education, Experience } from "@/app/(main-portfolio)/type/type";
 

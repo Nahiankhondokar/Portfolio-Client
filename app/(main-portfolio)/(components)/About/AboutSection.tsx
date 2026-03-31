@@ -4,9 +4,9 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Briefcase, Download, Eye, GraduationCapIcon, Info } from "lucide-react";
 import { About, Metrics } from "@/app/(main-portfolio)/type/type";
-import ExAndEduSection from "@/app/(main-portfolio)/_components/About/ExAndEduSection";
-import EmptyStateSection from "@/app/(main-portfolio)/_components/About/EmptyStateSection";
-import SkillSection from "@/app/(main-portfolio)/_components/About/SkillSection";
+import ExAndEduSection from "@/app/(main-portfolio)/(components)/About/ExAndEduSection";
+import EmptyStateSection from "@/app/(main-portfolio)/(components)/About/EmptyStateSection";
+import SkillSection from "@/app/(main-portfolio)/(components)/About/SkillSection";
 
 const AboutSection = ({ data }: { data: About }) => {
 
