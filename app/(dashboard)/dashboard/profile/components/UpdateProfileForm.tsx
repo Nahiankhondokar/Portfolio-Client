@@ -1,17 +1,17 @@
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
-import {Input} from "@/components/ui/input";
-import {Button} from "@/components/ui/button";
-import {useEffect, useState} from "react";
-import {useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {toast} from "sonner";
-import {toFormData} from "@/lib/toFormData";
-import {z} from "zod";
-import {useProfileStore} from "@/stores/useProfileStore";
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
-import {Separator} from "@radix-ui/react-separator";
-import {Profile} from "@/app/(dashboard)/dashboard/profile/interface/Profile";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import { toFormData } from "@/lib/toFormData";
+import { z } from "zod";
+import { useProfileStore } from "@/stores/useProfileStore";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Separator } from "@radix-ui/react-separator";
+import { Profile } from "@/app/(dashboard)/dashboard/profile/interface/Profile";
 import errorMessage from "@/lib/errorMessage";
 
 /* ===============================
@@ -20,7 +20,7 @@ import errorMessage from "@/lib/errorMessage";
 const schema = z.object({
     name: z.string().min(1, "Name is required"),
     email: z.string().email("Invalid email"),
-    username:z.string().optional(),
+    username: z.string().optional(),
     bio: z.string().optional(),
     location: z.string().optional(),
     website: z.string().url().optional(),
@@ -76,25 +76,19 @@ const UpdateProfileForm = () => {
     })
 
     const handleProfileSubmit = async (values: ProfileFormValues) => {
-        // ensure socials is array (if your default is [] this is fine)
-        // ensure image is File | null (your file input set profileForm.setValue("image", file))
         const fd = toFormData(values, { arrayFormat: "brackets", booleanFormat: "1/0" });
 
-        // Inspect FormData entries in console (useful)
-        for (const [k, v] of fd.entries()) {
-            console.log(k, v);
-        }
-
-        // call your api helper (apiFetch) - don't set Content-Type header for FormData
         try {
-            await updateProfile(fd)
+            await updateProfile(fd);
             toast.success("Profile updated successfully");
+
+            // Clear the file input from the form state so it doesn't re-upload on next save
+            profileForm.setValue("image", null);
         } catch (e: unknown) {
             const msg = errorMessage(e);
             toast.error(msg);
         }
     };
-
 
     /* ---------- IMAGE CHANGE ---------- */
     const handleImageChange = (file: File | null) => {
@@ -105,16 +99,19 @@ const UpdateProfileForm = () => {
     }
 
     /*------ FETCH PROFILE ----- */
-    const handleFetchProfile = async () => {
-        await fetchProfile();
-        if(profile != null){
+    useEffect(() => {
+        if (profile) {
             profileForm.reset(mapProfileToForm(profile));
+            // Also set the image preview to the existing avatar URL if available
+            if (profile.image) {
+                setImagePreview(profile.image);
+            }
         }
-    }
+    }, [profile, profileForm.reset]);
 
-    useEffect(()=> {
-        handleFetchProfile();
-    }, [handleFetchProfile]);
+    useEffect(() => {
+        fetchProfile();
+    }, [fetchProfile]);
 
     return (
         <>

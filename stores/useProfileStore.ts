@@ -1,8 +1,8 @@
 
 import { create } from "zustand";
-import {apiFetch} from "@/lib/api";
-import {ApiResponse} from "@/type/api-response";
-import {Profile} from "@/app/(dashboard)/dashboard/profile/interface/Profile";
+import { apiFetch } from "@/lib/api";
+import { ApiResponse } from "@/type/api-response";
+import { Profile } from "@/app/(dashboard)/dashboard/profile/interface/Profile";
 
 
 interface ProfileState {
@@ -25,7 +25,7 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
     error: null,
 
     fetchProfile: async () => {
-        set({loading: true, error: null});
+        set({ loading: true, error: null });
         try {
             const res = await apiFetch<ApiResponse<Profile>>(
                 `profile`
@@ -35,7 +35,7 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
                 profile: res.data,
                 loading: false,
             });
-        }catch (err: unknown){
+        } catch (err: unknown) {
             if (err instanceof Error) {
                 set({ loading: false, error: err.message ?? "Fetching failed" });
             } else {
@@ -45,20 +45,22 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
         }
     },
     updateProfile: async (data: FormData) => {
-        set({loading: true, error: null});
+        set({ loading: true, error: null });
         try {
             const res = await apiFetch<ApiResponse<Profile>>(
                 `profile/update`, {
-                    method : "PUT",
-                    body: data
-                }
+                method: "POST",
+                body: data
+            }
             );
 
             set({
                 profile: res.data,
                 loading: false,
             });
-        }catch (err: unknown){
+
+            get().fetchProfile();
+        } catch (err: unknown) {
             if (err instanceof Error) {
                 set({ loading: false, error: err.message ?? "Fetching failed" });
             } else {
@@ -68,16 +70,16 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
         }
     },
     updatePassword: async (data: FormData) => {
-        set({loading: true, error: null});
+        set({ loading: true, error: null });
         try {
             await apiFetch<ApiResponse<Profile>>(
                 `password/update`, {
-                    method : "PATCH",
-                    body: data
-                }
+                method: "PATCH",
+                body: data
+            }
             );
 
-        }catch (err: unknown){
+        } catch (err: unknown) {
             if (err instanceof Error) {
                 set({ loading: false, error: err.message ?? "Fetching failed" });
             } else {
