@@ -59,76 +59,81 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
         }
         setIsChatOpen(!isChatOpen);
     };
-
     return (
-        <>
-            <div className="bg-black text-white min-h-screen font-sans selection:bg-yellow-500 selection:text-black relative">
-                {/* Headers */}
+        <div className="bg-black text-white min-h-screen font-sans selection:bg-yellow-500 selection:text-black relative">
+
+            {/* 1. HEADER SECTION FIX: 
+                Ensure HeaderSection has a higher Z-index than the Chatbot if it's a mobile menu. 
+                We use z-[70] here. */}
+            <div className="relative z-[70]">
                 <HeaderSection activeSection={activeSection} setActiveSection={setActiveSection} />
+            </div>
 
-                <main className="container mx-auto px-4 lg:px-20">
+            <main className="container mx-auto px-4 lg:px-20 pb-24"> {/* Added pb-24 for mobile scrolling clearance */}
+                <AnimatePresence mode="wait">
+                    {activeSection === "home" && (
+                        <HomeSection
+                            data={home}
+                            onNavigate={(section) => {
+                                // 2. "MORE ABOUT ME" FIX: 
+                                // Ensure onNavigate scrolls to top or handles visibility
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                                setActiveSection(section);
+                            }}
+                            key="home"
+                        />
+                    )}
+                    {activeSection === "about" && <AboutSection data={about} key="about" />}
+                    {activeSection === "portfolio" && <PortfolioSection data={portfolio} key="portfolio" />}
+                    {activeSection === "contact" && <ContactSection data={contact} key="contact" />}
+                    {activeSection === "blog" && <BlogSection data={blog} key="blog" />}
+                </AnimatePresence>
+            </main>
+
+            {/* --- Chatbot System FIX --- */}
+            {/* 3. POSITIONING: 
+                On mobile (sm:), we lift it higher (bottom-24) to clear the mobile menu. 
+                On desktop (lg:), we keep it at bottom-6. */}
+            <div className="fixed bottom-24 right-6 lg:bottom-8 lg:right-8 z-[60] flex flex-col items-end">
+
+                {/* Chat Window */}
+                <AnimatePresence>
+                    {isChatOpen && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20, scale: 0.9, transformOrigin: "bottom right" }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 20, scale: 0.9 }}
+                            className="mb-4 w-[calc(100vw-3rem)] sm:w-96 h-[500px] bg-zinc-950 border border-zinc-800 rounded-[2rem] shadow-2xl overflow-hidden flex flex-col"
+                        >
+                            <ChatWidget guestId={guestId} />
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                {/* Floating Toggle Button */}
+                <button
+                    onClick={toggleChat}
+                    className="relative p-4 lg:p-5 bg-yellow-500 rounded-2xl shadow-[0_10px_40px_rgba(234,179,8,0.3)] hover:scale-110 active:scale-95 transition-all text-black group"
+                >
                     <AnimatePresence mode="wait">
-                        {activeSection === "home" && <HomeSection data={home} onNavigate={setActiveSection} key="home" />}
-                        {activeSection === "about" && <AboutSection data={about} key="about" />}
-                        {activeSection === "portfolio" && <PortfolioSection data={portfolio} key="portfolio" />}
-                        {activeSection === "contact" && <ContactSection data={contact} key="contact" />}
-                        {activeSection === "blog" && <BlogSection data={blog} key="blog" />}
-                    </AnimatePresence>
-                </main>
-
-                {/* --- chatbot System --- */}
-                <div className="fixed bottom-6 right-6 z-[60] flex flex-col items-end">
-                    {/* Chat Window */}
-                    <AnimatePresence>
-                        {isChatOpen && (
-                            <motion.div
-                                initial={{ opacity: 0, y: 20, scale: 0.9, transformOrigin: "bottom right" }}
-                                animate={{ opacity: 1, y: 0, scale: 1 }}
-                                exit={{ opacity: 0, y: 20, scale: 0.9 }}
-                                className="mb-4 w-80 sm:w-96 h-[500px] bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
-                            >
-                                {/* Chart Widget*/}
-                                <ChatWidget guestId={guestId} />
+                        {isChatOpen ? (
+                            <motion.div key="close" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                                <X size={24} strokeWidth={3} />
+                            </motion.div>
+                        ) : (
+                            <motion.div key="chat" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                                <MessageCircle size={24} strokeWidth={3} />
                             </motion.div>
                         )}
                     </AnimatePresence>
 
-                    {/* Floating Toggle Button */}
-                    <button
-                        onClick={toggleChat}
-                        className="relative p-4 bg-yellow-500 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all text-black group"
-                    >
-                        <AnimatePresence mode="wait">
-                            {isChatOpen ? (
-                                <motion.div
-                                    key="close"
-                                    initial={{ rotate: -90, opacity: 0 }}
-                                    animate={{ rotate: 0, opacity: 1 }}
-                                    exit={{ rotate: 90, opacity: 0 }}
-                                >
-                                    <X size={28} />
-                                </motion.div>
-                            ) : (
-                                <motion.div
-                                    key="chat"
-                                    initial={{ rotate: 90, opacity: 0 }}
-                                    animate={{ rotate: 0, opacity: 1 }}
-                                    exit={{ rotate: -90, opacity: 0 }}
-                                >
-                                    <MessageCircle size={28} />
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-
-                        {/* Unread Badge */}
-                        {totalUnread > 0 && !isChatOpen && (
-                            <span className="absolute -top-1 -right-1 w-6 h-6 bg-red-600 text-white text-[11px] font-bold rounded-full flex items-center justify-center border-2 border-[#0f172a] animate-bounce">
-                                {totalUnread}
-                            </span>
-                        )}
-                    </button>
-                </div>
+                    {totalUnread > 0 && !isChatOpen && (
+                        <span className="absolute -top-2 -right-2 w-6 h-6 bg-white text-black text-[10px] font-black rounded-full flex items-center justify-center border-2 border-yellow-500 animate-bounce">
+                            {totalUnread}
+                        </span>
+                    )}
+                </button>
             </div>
-        </>
+        </div>
     );
 }
