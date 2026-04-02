@@ -1,9 +1,9 @@
 
-import React  from "react";
+import React from "react";
 import Me from "@/public/assets/me/me.jpg";
 import PortfolioClient from "@/app/(main-portfolio)/PortfolioClient";
-import {About, Contact, Home, Portfolio} from "@/app/(main-portfolio)/type/type";
-import {Blog} from "@/app/(dashboard)/dashboard/blog/interface/Blog";
+import { About, Contact, Home, Portfolio } from "@/app/(main-portfolio)/type/type";
+import { Blog } from "@/app/(dashboard)/dashboard/blog/interface/Blog";
 
 // ---- APIs calls ----
 async function getHome(): Promise<Home> {
@@ -103,7 +103,7 @@ async function getAbout(): Promise<About> {
 
 
 
-export default async function page  () {
+export default async function page() {
     // parallel fetch
     const [home, about, portfolio, contact, blog] = await Promise.all([
         getHome(), getAbout(), getPortfolio(), getContact(), getBlog()
@@ -111,14 +111,14 @@ export default async function page  () {
 
     return (
         // pass server-fetched data as props to the client
-       <div className="">
-           <PortfolioClient
-               home={home}
-               about={about}
-               portfolio={portfolio}
-               contact={contact}
-               blog={blog}
-           />
-       </div>
+        <div className="">
+            <PortfolioClient
+                home={home}
+                about={about}
+                portfolio={portfolio}
+                contact={contact}
+                blog={blog}
+            />
+        </div>
     );
 }

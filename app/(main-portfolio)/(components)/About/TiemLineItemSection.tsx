@@ -1,33 +1,55 @@
-"use client"
+"use client";
 
 import React from "react";
-import {Experience} from "@/app/(main-portfolio)/type/type";
+import { motion } from "framer-motion";
+import { Experience } from "@/app/(main-portfolio)/type/type";
 
 const TimeLineItemSection = ({ data, icon }: { data: Experience; icon: React.ReactNode }) => {
-
     return (
-        <>
-            <li className="relative pl-16 mb-12 last:mb-0 before:content-[''] before:absolute before:left-[19px] before:top-0 before:bottom-0 before:w-[1px] before:bg-[#333]">
-                <div className="absolute left-0 top-0 w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center text-white z-10 shadow-[0_0_20px_rgba(255,180,0,0.2)]">
+        <motion.div
+            initial={{ opacity: 0, x: -10 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="relative pl-12 pb-12 last:pb-0 group"
+        >
+            {/* The Node Dot/Icon */}
+            <div className="absolute left-[-20px] top-0 z-20 transition-transform duration-500 group-hover:scale-110">
+                <div className="w-10 h-10 bg-zinc-900 border border-zinc-800 rounded-2xl flex items-center justify-center text-yellow-500 shadow-xl group-hover:border-yellow-500/50 group-hover:shadow-yellow-500/10 transition-all">
                     {icon}
                 </div>
-                <span className="inline-block px-3 py-1 mb-3 text-[12px] font-semibold uppercase tracking-wide bg-[#252525] text-gray-300 rounded-full">
-                  {data.year || "Year N/A"}
+            </div>
+
+            {/* Date Tag */}
+            <div className="inline-flex items-center">
+                <span className="px-4 py-1.5 text-[10px] font-black uppercase tracking-[2px] bg-zinc-900/50 border border-zinc-800 text-zinc-400 rounded-lg backdrop-blur-sm group-hover:text-yellow-500 group-hover:border-yellow-500/30 transition-colors">
+                    {data.year || "Present"}
                 </span>
-                <h5 className="text-lg font-bold uppercase text-white mt-2">
+            </div>
+
+            {/* Content Card */}
+            <div className="mt-5">
+                <h5 className="text-xl font-black uppercase tracking-tight text-white group-hover:translate-x-1 transition-transform duration-300">
                     {data.title || "Untitled Role"}
-                    <span className="block text-sm font-medium text-gray-400 mt-1 opacity-80 before:content-['—'] before:mr-2">
-                        {data.institute || "N/A"}
-                      </span>
                 </h5>
+
+                <div className="flex items-center gap-2 mt-1">
+                    <div className="w-4 h-px bg-yellow-500/50" />
+                    <span className="text-sm font-bold uppercase tracking-widest text-zinc-500">
+                        {data.institute || "Freelance"}
+                    </span>
+                </div>
+
                 {data.description && (
-                    <p className="mt-3 text-gray-400 text-sm leading-relaxed">
+                    <p className="mt-4 text-zinc-400 text-sm leading-relaxed max-w-xl font-medium opacity-80 group-hover:opacity-100 transition-opacity">
                         {data.description}
                     </p>
                 )}
-            </li>
-        </>
+            </div>
+
+            {/* Subtle Hover Glow Backdrop */}
+            <div className="absolute -inset-y-2 -inset-x-4 bg-yellow-500/[0.02] rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity -z-10" />
+        </motion.div>
     );
-}
+};
 
 export default TimeLineItemSection;

@@ -62,7 +62,7 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
 
     return (
         <>
-            <div className=" bg-[#0f172a] text-white min-h-screen font-sans selection:bg-yellow-500 selection:text-black relative">
+            <div className="bg-black text-white min-h-screen font-sans selection:bg-yellow-500 selection:text-black relative">
                 {/* Headers */}
                 <HeaderSection activeSection={activeSection} setActiveSection={setActiveSection} />
 

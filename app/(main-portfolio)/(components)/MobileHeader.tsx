@@ -1,38 +1,63 @@
-"use client"
+"use client";
 
 import React, { Dispatch, SetStateAction } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Section } from "@/app/(main-portfolio)/type/type";
-import Link from "next/link"; // FIX: Import from next/link, not lucide
+import Link from "next/link";
 
 type propsType = {
     navItems: {
         id: string;
-        icon: React.ReactNode; // FIX: Use React.ReactNode
+        icon: React.ReactNode;
         label: string;
     }[];
-    activeSection: Section; // FIX: Add the current state value
-    setActiveSection: Dispatch<SetStateAction<Section>>; // FIX: Keep the setter separate
+    activeSection: Section;
+    setActiveSection: Dispatch<SetStateAction<Section>>;
 }
 
 const MobileHeader = ({ navItems, activeSection, setActiveSection }: propsType) => {
     return (
-        <nav className="fixed bottom-0 left-0 right-0 z-50 flex lg:hidden justify-center pb-6 pt-3 px-4 bg-[#111]/80 backdrop-blur-lg border-t border-white/10">
-            <div className="flex flex-row gap-4 sm:gap-8 items-center justify-center w-full max-w-md">
+        <nav className="fixed bottom-6 left-0 right-0 z-50 flex lg:hidden justify-center px-4 pointer-events-none">
+            {/* The "Dock" Container */}
+            <div className="flex items-center gap-2 p-2 bg-zinc-900/90 backdrop-blur-xl border border-zinc-800 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.5)] pointer-events-auto">
                 {navItems.map((item) => {
                     const isSignin = item.id === "signin";
-                    const isActive = activeSection === item.id; // Now this comparison works
+                    const isActive = activeSection === item.id;
 
-                    const buttonStyles = `group relative flex flex-col items-center justify-center transition-all duration-300 ${
-                        isActive ? "text-yellow-500 scale-110" : "text-gray-400 hover:text-yellow-500"
-                    }`;
+                    const Content = (
+                        <div className="relative flex flex-col items-center justify-center px-4 py-2 transition-colors duration-300">
+                            {/* Animated Background Pill */}
+                            {isActive && (
+                                <motion.div
+                                    layoutId="activePill"
+                                    className="absolute inset-0 bg-yellow-500 rounded-full -z-10"
+                                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                />
+                            )}
+
+                            <div className={`transition-transform duration-300 ${isActive ? "scale-110 text-black" : "text-zinc-500"}`}>
+                                {item.icon}
+                            </div>
+
+                            {/* Hidden label that only appears when active (Optional for ultra-clean look) */}
+                            <AnimatePresence>
+                                {isActive && (
+                                    <motion.span
+                                        initial={{ opacity: 0, y: 5 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        className="text-[9px] uppercase font-black tracking-widest text-black mt-0.5 absolute -bottom-5 whitespace-nowrap"
+                                    >
+                                        {item.label}
+                                    </motion.span>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    );
 
                     if (isSignin) {
                         return (
-                            <Link key={item.id} href="/login" className={buttonStyles}>
-                                <div className={`p-3 rounded-full ${isActive ? "bg-yellow-500 text-black" : "bg-[#2b2b2b]"}`}>
-                                    {item.icon}
-                                </div>
-                                <span className="text-[10px] uppercase mt-1 font-bold tracking-tighter">{item.label}</span>
+                            <Link key={item.id} href="/login" className="relative group">
+                                {Content}
                             </Link>
                         );
                     }
@@ -41,18 +66,9 @@ const MobileHeader = ({ navItems, activeSection, setActiveSection }: propsType) 
                         <button
                             key={item.id}
                             onClick={() => setActiveSection(item.id as Section)}
-                            className={buttonStyles}
+                            className="relative group outline-none"
                         >
-                            <div className={`p-3 rounded-full transition-colors ${
-                                isActive ? "bg-yellow-500 text-black shadow-[0_0_15px_rgba(255,180,0,0.3)]" : "bg-[#2b2b2b]"
-                            }`}>
-                                {item.icon}
-                            </div>
-                            <span className={`text-[10px] uppercase mt-1 font-bold tracking-tighter ${
-                                isActive ? "text-yellow-500" : "text-gray-400"
-                            }`}>
-                                {item.label}
-                            </span>
+                            {Content}
                         </button>
                     );
                 })}
