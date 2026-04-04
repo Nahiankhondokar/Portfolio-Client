@@ -41,7 +41,7 @@ const HeaderSection = ({ activeSection, setActiveSection }: HeaderProps) => {
             </div>
 
             {/* Right: Vertical Dock Navigation */}
-            <nav className="fixed right-8 top-1/2 -translate-y-1/2 z-50 hidden lg:flex flex-col items-center p-3 bg-zinc-900/50 backdrop-blur-xl border border-zinc-800/50 rounded-full shadow-2xl">
+            <nav className="fixed right-8 top-1/2 -translate-y-1/2 z-0 hidden lg:flex flex-col items-center p-3 bg-zinc-900/50 backdrop-blur-xl border border-zinc-800/50 rounded-full shadow-2xl">
                 <div className="flex flex-col gap-4">
                     {navItems.map((item) => {
                         const isActive = activeSection === item.id;
