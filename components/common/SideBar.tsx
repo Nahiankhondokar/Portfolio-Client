@@ -1,6 +1,6 @@
 "use client"
 
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -25,7 +25,8 @@ import {
   NewspaperIcon,
   User2,
   User2Icon,
-  BookOpenCheck, MessageCircle
+  BookOpenCheck, MessageCircle,
+  BookOpen
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -39,7 +40,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {useProfileStore} from "@/stores/useProfileStore";
+import { useProfileStore } from "@/stores/useProfileStore";
 
 // Menu items.
 const items = [
@@ -51,11 +52,12 @@ const items = [
   { title: "Experience", url: "/dashboard/experience", icon: LayersIcon },
   { title: "Expertise", url: "/dashboard/expertise", icon: LibraryBig },
   { title: "Portfolio", url: "/dashboard/portfolio", icon: BookOpenCheck },
-  { title: "chatbot", url: "/dashboard/chatbot", icon: MessageCircle },
+  { title: "Education", url: "/dashboard/education", icon: BookOpen },
+  { title: "Chatbot", url: "/dashboard/chatbot", icon: MessageCircle },
 ];
 
 const SideBar = () => {
-  const {fetchProfile, profile} = useProfileStore();
+  const { fetchProfile, profile } = useProfileStore();
 
   useEffect(() => {
     fetchProfile();
