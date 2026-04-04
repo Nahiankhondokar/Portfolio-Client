@@ -15,11 +15,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea";
-import {toast} from "sonner";
-import {formSchema} from "@/app/(dashboard)/dashboard/blog/schema/formSchema";
-import {Blog} from "@/app/(dashboard)/dashboard/blog/interface/Blog";
-import {useBlogStore} from "@/stores/useBlogStore";
+import { toast } from "sonner";
+import { formSchema } from "@/app/(dashboard)/dashboard/blog/schema/formSchema";
+import { Blog } from "@/app/(dashboard)/dashboard/blog/interface/Blog";
+import { useBlogStore } from "@/stores/useBlogStore";
 import ImageUpload from "@/components/common/ImageUpload";
+import TextEditor from "@/components/common/TextEditor";
 
 type formSchemaType = z.infer<typeof formSchema>;
 
@@ -28,7 +29,7 @@ const mapBlogToForm = (blog: Blog): formSchemaType => ({
     subtitle: blog.subtitle ?? "",
     status: blog.status ?? true,
     description: blog.description ?? "",
-    image: blog.image ?? ""
+    image: blog?.image ?? ""
 });
 
 const AddNewBlog = () => {
@@ -62,9 +63,9 @@ const AddNewBlog = () => {
 
             if (k === "image" && v instanceof File) {
                 fd.append("image", v);
-            }else if(k === "image" && v as string){
+            } else if (k === "image" && v as string) {
                 fd.append("image", "");
-            }else if (typeof v === "boolean") {
+            } else if (typeof v === "boolean") {
                 fd.append(k, v ? "1" : "0");
             } else {
                 fd.append(k, v as string);
@@ -96,106 +97,91 @@ const AddNewBlog = () => {
     }, [form, mode, selectedBlog, modalOpen]);
 
     return (
-        <div>
+        /* 1. Use a flex container with a fixed max-height */
+        <div className="flex flex-col h-full max-h-[85vh]">
             <Form {...form}>
                 <form
                     id="user-form"
-                    onSubmit={form.handleSubmit(
-                        onSubmit,
-                        (errors) => {
-                            console.log("❌ FORM ERRORS:", errors);
-                        }
-                    )}
-                    className="space-y-6"
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="flex flex-col h-[85vh]" // Ensure form takes full available height
                 >
+                    {/* 2. SCROLLABLE AREA: This holds all your inputs */}
+                    <div className="flex-1 overflow-y-auto px-1 pr-4 space-y-6 custom-scrollbar">
+                        {/* Title */}
+                        <FormField
+                            control={form.control}
+                            name="title"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Title</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Enter title" {...field} className="bg-zinc-950 border-zinc-800" />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                    {/* Title */}
-                    <FormField
-                        control={form.control}
-                        name="title"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Title</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="title" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                        {/* Sub Title */}
+                        <FormField
+                            control={form.control}
+                            name="subtitle"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Sub Title</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Enter subtitle" {...field} className="bg-zinc-950 border-zinc-800" />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                    {/* Sub Title */}
-                    <FormField
-                        control={form.control}
-                        name="subtitle"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Sub Title</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="sub title" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                        {/* Description (Tiptap) */}
+                        <FormField
+                            control={form.control}
+                            name="description"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Blog Content</FormLabel>
+                                    <FormControl>
+                                        <TextEditor value={field.value} onChange={field.onChange} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                    {/* Description */}
-                    <FormField
-                        control={form.control}
-                        name="description"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Description</FormLabel>
-                                <FormControl>
-                                    <Textarea placeholder="description" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                        {/* Image Upload */}
+                        <FormField
+                            control={form.control}
+                            name="image"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Feature Image</FormLabel>
+                                    <FormControl>
+                                        <ImageUpload
+                                            value={field.value}
+                                            onChange={(file) => field.onChange(file)}
+                                            onRemove={() => field.onChange(null)}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
 
-                    {/*Image upload*/}
-                    <FormField
-                        control={form.control}
-                        name="image"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel className="text-base font-semibold text-foreground/80">Profile Image</FormLabel>
-                                <FormControl>
-                                    <ImageUpload
-                                        value={field.value}
-                                        onChange={(file) => field.onChange(file)}
-                                        onRemove={() => field.onChange(null)}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-
-                    {/* Status */}
-                    {/* <FormField
-            control={form.control}
-            name="status"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
-                <FormLabel>Status</FormLabel>
-                <FormControl>
-                  <Switch
-                    checked={field.value === true} // Convert number to boolean for UI
-                    onCheckedChange={(checked) =>
-                      field.onChange(checked ? true : false)
-                    }
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          /> */}
-
-                    {/* Submit */}
-                    <Button type="submit" disabled={false} className="w-full">
-                        {mode === "create" ? "Create" : "Update"}
-                    </Button>
+                    {/* 3. FIXED BOTTOM BUTTON: Always visible */}
+                    <div className="mt-auto pt-6 border-t border-zinc-800 bg-black/90 backdrop-blur-md">
+                        <Button
+                            type="submit"
+                            disabled={form.formState.isSubmitting}
+                            className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-black uppercase tracking-widest py-6 rounded-xl shadow-[0_-10px_30px_rgba(0,0,0,0.5)] transition-all active:scale-[0.98]"
+                        >
+                            {form.formState.isSubmitting ? "Saving..." : mode === "create" ? "Create Post" : "Update Post"}
+                        </Button>
+                    </div>
                 </form>
             </Form>
         </div>

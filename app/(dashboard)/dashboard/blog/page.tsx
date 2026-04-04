@@ -9,42 +9,42 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import {useBlogStore} from "@/stores/useBlogStore";
+import { useBlogStore } from "@/stores/useBlogStore";
 import AddNewBlog from "@/app/(dashboard)/dashboard/blog/components/AddNewBlog";
 import BlogTable from "@/app/(dashboard)/dashboard/blog/components/BlogTable";
 
 const Blog = () => {
   const pathname = usePathname();
   const { modalOpen, openCreateModal, closeModal, mode } =
-      useBlogStore();
+    useBlogStore();
 
   return (
+    <div>
+      <BreadcrumbComponent pathname={pathname} />
       <div>
-        <BreadcrumbComponent pathname={pathname} />
-        <div>
-          <>
-            <div className="flex justify-between items-center">
-              <h1 className="text-2xl font-bold">Blogs</h1>
-              <Button  variant={"outline"} onClick={openCreateModal}>Add New</Button>
-            </div>
+        <>
+          <div className="flex justify-between items-center">
+            <h1 className="text-2xl font-bold">Blogs</h1>
+            <Button variant={"outline"} onClick={openCreateModal}>Add New</Button>
+          </div>
 
-            <BlogTable />
+          <BlogTable />
 
-            <Dialog open={modalOpen} onOpenChange={(v) => !v && closeModal()}>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>
-                    {mode === "create" ? "Add Blog" : "Edit Blog"}
-                  </DialogTitle>
-                </DialogHeader>
+          <Dialog open={modalOpen} onOpenChange={(v) => !v && closeModal()}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>
+                  {mode === "create" ? "Add Blog" : "Edit Blog"}
+                </DialogTitle>
+              </DialogHeader>
 
-                <AddNewBlog />
-              </DialogContent>
-            </Dialog>
-          </>
+              <AddNewBlog />
+            </DialogContent>
+          </Dialog>
+        </>
 
-        </div>
       </div>
+    </div>
   );
 };
 
