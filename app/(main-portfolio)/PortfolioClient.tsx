@@ -94,7 +94,7 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
             {/* 3. POSITIONING: 
                 On mobile (sm:), we lift it higher (bottom-24) to clear the mobile menu. 
                 On desktop (lg:), we keep it at bottom-6. */}
-            <div className="fixed bottom-24 right-6 lg:bottom-8 lg:right-8 z-[60] flex flex-col items-end">
+            <div className="fixed bottom-24 right-6 z-[999] lg:bottom-8 lg:right-8 flex flex-col items-end">
 
                 {/* Chat Window */}
                 <AnimatePresence>

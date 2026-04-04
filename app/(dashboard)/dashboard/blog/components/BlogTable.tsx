@@ -13,11 +13,11 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash } from "lucide-react";
-import {Separator} from "@/components/ui/separator";
+import { Separator } from "@/components/ui/separator";
 import ConfirmationAlert from "@/components/common/ConfirmationAlert";
-import {toast} from "sonner";
+import { toast } from "sonner";
 import Pagination from "@/type/pagination/Pagination";
-import {useBlogStore} from "@/stores/useBlogStore";
+import { useBlogStore } from "@/stores/useBlogStore";
 import MediaPreview from "@/components/common/MediaPreview";
 import StatusUpdateToggle from "@/components/common/StatusUpdateToggle";
 import Link from "next/link";
@@ -41,7 +41,7 @@ export default function BlogTable() {
         <>
             <Table>
                 <TableCaption>
-                    <Separator/>
+                    <Separator />
                     A list of <b>Blogs</b>
                 </TableCaption>
 
@@ -74,7 +74,7 @@ export default function BlogTable() {
                     ) : (
                         blogs.map((blog, index) => (
                             <TableRow key={index}>
-                                <TableCell>{index+1}</TableCell>
+                                <TableCell>{index + 1}</TableCell>
                                 <TableCell className="font-medium">
                                     <Link
                                         href={`/dashboard/blog/${blog.slug}`} // Point to the dynamic route
@@ -95,7 +95,7 @@ export default function BlogTable() {
                                 </TableCell>
                                 <TableCell>
                                     <MediaPreview
-                                        src={blog?.media}
+                                        src={blog?.image}
                                         alt={blog.title}
                                         className="h-12 w-12 shadow-sm"
                                     />
