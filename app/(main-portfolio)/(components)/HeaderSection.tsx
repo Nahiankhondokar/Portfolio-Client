@@ -27,7 +27,7 @@ const HeaderSection = ({ activeSection, setActiveSection }: HeaderProps) => {
     return (
         <>
             {/* Top Right: Utility Navigation */}
-            <div className="fixed top-8 right-8 z-[60] hidden lg:block">
+            {/* <div className="fixed top-8 right-8 z-[60] hidden lg:block">
                 <Link href="/login">
                     <motion.button
                         whileHover={{ scale: 1.05 }}
@@ -38,7 +38,7 @@ const HeaderSection = ({ activeSection, setActiveSection }: HeaderProps) => {
                         Sign In
                     </motion.button>
                 </Link>
-            </div>
+            </div> */}
 
             {/* Right: Vertical Dock Navigation */}
             <nav className="fixed right-8 top-1/2 -translate-y-1/2 z-0 hidden lg:flex flex-col items-center p-3 bg-zinc-900/50 backdrop-blur-xl border border-zinc-800/50 rounded-full shadow-2xl">
