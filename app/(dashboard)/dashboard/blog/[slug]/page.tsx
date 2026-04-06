@@ -71,7 +71,7 @@ export default function BlogDetails({ params }: Props) {
             {/* Changed from blog.media to blog.image to match your API */}
             <div className="relative h-[250px] md:h-[450px] w-full mb-12 rounded-2xl overflow-hidden shadow-2xl border border-white/10">
                 <MediaPreview
-                    src={blog?.media}
+                    src={blog?.image}
                     alt={blog.title}
                     className="relative h-[250px] md:h-[450px] w-full mb-12 rounded-2xl overflow-hidden shadow-2xl border border-white/10"
                 />

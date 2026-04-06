@@ -57,10 +57,12 @@ const items = [
 ];
 
 const SideBar = () => {
-  const { fetchProfile, profile } = useProfileStore();
+  const profile = useProfileStore((state) => state.profile);
+  const fetchProfile = useProfileStore((state) => state.fetchProfile);
 
   useEffect(() => {
     fetchProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <Sidebar collapsible="icon">
@@ -75,7 +77,9 @@ const SideBar = () => {
                   alt="User"
                   width={24}
                   height={24}
+                  priority
                   className="rounded-full"
+                  unoptimized={process.env.NODE_ENV === 'development'}
                 />
                 <span className="ml-2 font-medium">{profile?.name || "Logged-in User"}</span>
               </Link>
@@ -174,7 +178,7 @@ const SideBar = () => {
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton>
                   <User2 className="h-4 w-4" />
-                  <span>John Doe</span>
+                  <span>{profile?.name || profile?.username || "My Account"}</span>
                   <ChevronUp className="ml-auto h-4 w-4 opacity-70" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>

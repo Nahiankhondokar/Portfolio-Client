@@ -18,7 +18,7 @@ interface ProfileState {
     uploadResume: (file: FormData) => Promise<void>;
 }
 
-export const useProfileStore = create<ProfileState>((set, get) => ({
+export const useProfileStore = create<ProfileState>()((set, get) => ({
     profile: null,
     setProfile: (items) => set({ profile: items }),
     loading: false,
@@ -31,8 +31,11 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
                 `profile`
             );
 
+            // Support both { data: {...} } and direct { id, name, ... } shapes
+            const profileData: Profile = (res.data ?? res) as Profile;
+
             set({
-                profile: res.data,
+                profile: profileData,
                 loading: false,
             });
         } catch (err: unknown) {
@@ -41,7 +44,6 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
             } else {
                 set({ loading: false, error: "An unknown error occurred" });
             }
-            throw err;
         }
     },
     updateProfile: async (data: FormData) => {
@@ -55,7 +57,7 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
             );
 
             set({
-                profile: res.data,
+                profile: res.data || (res as unknown as Profile),
                 loading: false,
             });
 

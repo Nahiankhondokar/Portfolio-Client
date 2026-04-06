@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+    /* config options here */
     images: {
         remotePatterns: [
             {
@@ -13,11 +13,15 @@ const nextConfig: NextConfig = {
         ],
     },
     reactStrictMode: false,
-    eslint: {
-        // Warning: This allows production builds to successfully complete
-        // even if your project has ESLint errors.
-        // This will allow the build to succeed even with the 'any' errors
-        // ignoreDuringBuilds: true,
+    images: {
+        remotePatterns: [
+            {
+                protocol: process.env.NODE_ENV != 'production' ? 'http' : 'https',
+                hostname: process.env.NEXT_PUBLIC_API_DOMAIN || 'localhost',
+                port: process.env.NODE_ENV != 'production' ? '8000' : '',
+                pathname: '/storage/**',
+            },
+        ],
     },
     typescript: {
         // This will ignore TypeScript errors during the build

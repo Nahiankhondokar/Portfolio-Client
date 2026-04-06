@@ -54,12 +54,13 @@ const BlogSection = ({ data }: Props) => {
                         >
                             {/* Image Header */}
                             <div className="h-60 relative overflow-hidden">
-                                {blog?.media ? (
+                                {blog?.image ? (
                                     <Image
-                                        src={blog.media}
+                                        src={blog.image}
                                         alt={blog.title}
                                         fill
                                         className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                        unoptimized={process.env.NODE_ENV === 'development'}
                                     />
                                 ) : (
                                     <div className="flex items-center justify-center h-full bg-zinc-800 text-zinc-600">No Preview</div>
