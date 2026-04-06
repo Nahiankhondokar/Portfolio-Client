@@ -73,7 +73,7 @@ const BlogDetailsContent = ({ blog }: { blog: Blog }) => {
                         transition={{ delay: 0.1 }}
                         className="text-4xl md:text-7xl font-black text-white leading-[0.95] tracking-tighter mb-8"
                     >
-                        {blog.title}
+                        {blog.title} {blog.image}
                     </motion.h1>
 
                     {blog.subtitle && (
@@ -89,7 +89,7 @@ const BlogDetailsContent = ({ blog }: { blog: Blog }) => {
                 </header>
 
                 {/* Featured Image with Perspective Effect */}
-                {blog.media && (
+                {blog.image && (
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -97,11 +97,12 @@ const BlogDetailsContent = ({ blog }: { blog: Blog }) => {
                         className="relative h-[350px] md:h-[600px] w-full mb-20 rounded-[2.5rem] overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.8)] border border-zinc-800"
                     >
                         <Image
-                            src={blog.media}
+                            src={blog.image}
                             alt={blog.title}
                             fill
                             priority
                             className="object-cover"
+                            unoptimized={process.env.NODE_ENV === 'development'}
                         />
                     </motion.div>
                 )}
