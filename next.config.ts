@@ -20,7 +20,7 @@ const nextConfig: NextConfig = {
                 hostname: process.env.NEXT_PUBLIC_API_DOMAIN || 'localhost',
                 port: process.env.NODE_ENV != 'production' ? '8000' : '',
                 pathname: '/storage/**',
-            },
+            }
         ],
     },
     typescript: {
