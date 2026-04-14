@@ -29,7 +29,7 @@ const AboutSection = ({ data }: { data: About }) => {
         { icon: <MapPin size={14} />, label: "Address", value: location },
         { icon: <Phone size={14} />, label: "Phone", value: phone || "Not Shared" },
         { icon: <Mail size={14} />, label: "Email", value: email },
-        { icon: <Briefcase size={14} />, label: "Freelance", value: job_type },
+        { icon: <Briefcase size={14} />, label: "Work Type", value: job_type },
         { icon: <Globe size={14} />, label: "Nationality", value: nationality },
     ];
 
