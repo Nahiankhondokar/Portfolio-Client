@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import HomeSection from "@/app/(main-portfolio)/(components)/HomeSection";
 import AboutSection from "@/app/(main-portfolio)/(components)/About/AboutSection";
 import PortfolioSection from "@/app/(main-portfolio)/(components)/PortfolioSection";
@@ -17,11 +17,14 @@ import { Blog } from "@/app/(dashboard)/dashboard/blog/interface/Blog";
 export const getChatSessionId = () => {
     let sessionId = localStorage.getItem("chat_session_id");
     if (!sessionId) {
-        sessionId = crypto.randomUUID(); // Generates "550e8400-e29b-41d4-a716-446655440000"
+        sessionId = crypto.randomUUID();
         localStorage.setItem("chat_session_id", sessionId);
     }
     return sessionId;
 };
+
+// Sections in render order
+const SECTIONS: Section[] = ["home", "about", "portfolio", "blog", "contact"];
 
 export default function PortfolioClient({ home, about, portfolio, contact, blog }: {
     home: Home,
@@ -37,63 +40,113 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
     const [totalUnread, setTotalUnread] = useState(0);
     const [guestId, setGuestId] = useState<string>("");
 
+    // Ref to track if scroll was triggered by a nav click (to avoid fighting IntersectionObserver)
+    const isScrollingRef = useRef(false);
+    const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
     // Initialize the guest session on mount
     useEffect(() => {
         const id = getChatSessionId();
         setGuestId(id);
+    }, []);
 
-        // Real-time Listener logic (Example if using Laravel Echo)
-        /*
-        window.Echo.private(`chat.${id}`)
-            .listen('MessageSent', (e: any) => {
-                if (!isChatOpen) {
-                    setTotalUnread((prev) => prev + 1);
+    // --- Scroll-Spy via IntersectionObserver ---
+    useEffect(() => {
+        const observers: IntersectionObserver[] = [];
+
+        SECTIONS.forEach((sectionId) => {
+            const el = document.getElementById(sectionId);
+            if (!el) return;
+
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        // Only update if not in the middle of a programmatic scroll
+                        if (entry.isIntersecting && !isScrollingRef.current) {
+                            setActiveSection(sectionId);
+                        }
+                    });
+                },
+                {
+                    // Trigger when the section occupies at least 40% of the viewport
+                    threshold: 0.4,
                 }
-            });
-        */
-    }, [isChatOpen]);
+            );
+
+            observer.observe(el);
+            observers.push(observer);
+        });
+
+        return () => {
+            observers.forEach((obs) => obs.disconnect());
+        };
+    }, []);
+
+    // --- Smooth Scroll Helper ---
+    const scrollToSection = (sectionId: Section) => {
+        const el = document.getElementById(sectionId);
+        if (!el) return;
+
+        // Temporarily pause the IntersectionObserver from overriding our state
+        isScrollingRef.current = true;
+        setActiveSection(sectionId);
+
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+
+        // Re-enable observer after the scroll animation completes (~800ms)
+        if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current);
+        scrollTimerRef.current = setTimeout(() => {
+            isScrollingRef.current = false;
+        }, 900);
+    };
 
     const toggleChat = () => {
         if (!isChatOpen) {
-            setTotalUnread(0); // Clear unread when opening
+            setTotalUnread(0);
         }
         setIsChatOpen(!isChatOpen);
     };
+
     return (
         <div className="bg-black text-white min-h-screen font-sans selection:bg-yellow-500 selection:text-black relative">
 
-            {/* 1. HEADER SECTION FIX: 
-                Ensure HeaderSection has a higher Z-index than the Chatbot if it's a mobile menu. 
-                We use z-[70] here. */}
+            {/* Header with higher z-index than the Chatbot mobile menu */}
             <div className="relative z-[70]">
-                <HeaderSection activeSection={activeSection} setActiveSection={setActiveSection} />
+                <HeaderSection
+                    activeSection={activeSection}
+                    scrollToSection={scrollToSection}
+                />
             </div>
 
-            <main className="container mx-auto px-4 lg:px-20 pb-24"> {/* Added pb-24 for mobile scrolling clearance */}
-                <AnimatePresence mode="wait">
-                    {activeSection === "home" && (
-                        <HomeSection
-                            data={home}
-                            onNavigate={(section) => {
-                                // 2. "MORE ABOUT ME" FIX: 
-                                // Ensure onNavigate scrolls to top or handles visibility
-                                window.scrollTo({ top: 0, behavior: 'smooth' });
-                                setActiveSection(section);
-                            }}
-                            key="home"
-                        />
-                    )}
-                    {activeSection === "about" && <AboutSection data={about} key="about" />}
-                    {activeSection === "portfolio" && <PortfolioSection data={portfolio} key="portfolio" />}
-                    {activeSection === "contact" && <ContactSection data={contact} key="contact" />}
-                    {activeSection === "blog" && <BlogSection data={blog} key="blog" />}
-                </AnimatePresence>
+            <main className="container mx-auto px-4 lg:px-20 pb-24">
+
+                {/* All sections rendered simultaneously — scroll-spy controls the active indicator */}
+                <section id="home">
+                    <HomeSection
+                        data={home}
+                        onNavigate={scrollToSection}
+                    />
+                </section>
+
+                <section id="about">
+                    <AboutSection data={about} />
+                </section>
+
+                <section id="portfolio">
+                    <PortfolioSection data={portfolio} />
+                </section>
+
+                <section id="blog">
+                    <BlogSection data={blog} />
+                </section>
+
+                <section id="contact">
+                    <ContactSection data={contact} />
+                </section>
+
             </main>
 
-            {/* --- Chatbot System FIX --- */}
-            {/* 3. POSITIONING: 
-                On mobile (sm:), we lift it higher (bottom-24) to clear the mobile menu. 
-                On desktop (lg:), we keep it at bottom-6. */}
+            {/* --- Chatbot System --- */}
             <div className="fixed bottom-24 right-6 z-[999] lg:bottom-8 lg:right-8 flex flex-col items-end">
 
                 {/* Chat Window */}

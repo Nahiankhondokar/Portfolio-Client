@@ -11,7 +11,6 @@ const HomeSection = ({ onNavigate, data }: { onNavigate: (s: Section) => void, d
         <motion.section
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
             className="relative flex flex-col lg:flex-row items-center min-h-[90vh] py-12 lg:py-20 overflow-hidden"
         >
             {/* Subtle Decorative Background Element */}

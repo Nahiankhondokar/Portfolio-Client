@@ -1,21 +1,19 @@
 "use client";
 
 import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
-    Home, User, Briefcase, Mail, LogInIcon, BookIcon
+    Home, User, Briefcase, Mail, BookIcon
 } from "lucide-react";
-import Link from "next/link";
-import { Dispatch, SetStateAction } from "react";
-import MobileHeader from "@/app/(main-portfolio)/(components)/MobileHeader";
 import { Section } from "@/app/(main-portfolio)/type/type";
+import MobileHeader from "@/app/(main-portfolio)/(components)/MobileHeader";
 
 type HeaderProps = {
     activeSection: Section;
-    setActiveSection: Dispatch<SetStateAction<Section>>;
+    scrollToSection: (section: Section) => void;
 };
 
-const HeaderSection = ({ activeSection, setActiveSection }: HeaderProps) => {
+const HeaderSection = ({ activeSection, scrollToSection }: HeaderProps) => {
     const navItems = [
         { id: "home", icon: <Home size={20} />, label: "Home" },
         { id: "about", icon: <User size={20} />, label: "About" },
@@ -26,20 +24,6 @@ const HeaderSection = ({ activeSection, setActiveSection }: HeaderProps) => {
 
     return (
         <>
-            {/* Top Right: Utility Navigation */}
-            {/* <div className="fixed top-8 right-8 z-[60] hidden lg:block">
-                <Link href="/login">
-                    <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="flex items-center gap-3 bg-zinc-900/80 backdrop-blur-md border border-zinc-800 px-6 py-2.5 rounded-2xl text-zinc-400 hover:text-yellow-500 hover:border-yellow-500/50 transition-all font-bold uppercase text-[10px] tracking-[2px]"
-                    >
-                        <LogInIcon size={14} />
-                        Sign In
-                    </motion.button>
-                </Link>
-            </div> */}
-
             {/* Right: Vertical Dock Navigation */}
             <nav className="fixed right-8 top-1/2 -translate-y-1/2 z-0 hidden lg:flex flex-col items-center p-3 bg-zinc-900/50 backdrop-blur-xl border border-zinc-800/50 rounded-full shadow-2xl">
                 <div className="flex flex-col gap-4">
@@ -49,7 +33,7 @@ const HeaderSection = ({ activeSection, setActiveSection }: HeaderProps) => {
                         return (
                             <button
                                 key={item.id}
-                                onClick={() => setActiveSection(item.id as Section)}
+                                onClick={() => scrollToSection(item.id as Section)}
                                 className="group relative flex items-center justify-center w-12 h-12 rounded-full outline-none"
                             >
                                 {/* Active Indicator Background */}
@@ -89,7 +73,7 @@ const HeaderSection = ({ activeSection, setActiveSection }: HeaderProps) => {
             <MobileHeader
                 navItems={navItems}
                 activeSection={activeSection}
-                setActiveSection={setActiveSection}
+                scrollToSection={scrollToSection}
             />
         </>
     );

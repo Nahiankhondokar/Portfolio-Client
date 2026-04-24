@@ -73,7 +73,7 @@ const BlogDetailsContent = ({ blog }: { blog: Blog }) => {
                         transition={{ delay: 0.1 }}
                         className="text-4xl md:text-7xl font-black text-white leading-[0.95] tracking-tighter mb-8"
                     >
-                        {blog.title} {blog.image}
+                        {blog.title}
                     </motion.h1>
 
                     {blog.subtitle && (
