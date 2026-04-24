@@ -20,6 +20,7 @@ import {toast} from "sonner";
 import {useProjectStore} from "@/stores/useProjectStore";
 import {Project} from "@/app/(dashboard)/dashboard/project/interface/Project";
 import MediaPreview from "@/components/common/MediaPreview";
+import { usePermission } from "@/hooks/usePermission";
 
 export default function ProjectTable() {
     const {
@@ -30,6 +31,8 @@ export default function ProjectTable() {
         openEditModal,
         deleteProject
     } = useProjectStore();
+
+    const { canEdit, canDelete } = usePermission();
 
     useEffect(() => {
         fetchProject();
@@ -88,29 +91,36 @@ export default function ProjectTable() {
 
                                 <TableCell className="text-right">
                                     <div className="flex justify-end gap-2">
-                                        <Button size="icon" variant="outline" onClick={() => openEditModal(project)}>
-                                            <Pencil size={16} />
-                                        </Button>
+                                        {canEdit && (
+                                            <Button size="icon" variant="outline" onClick={() => openEditModal(project)}>
+                                                <Pencil size={16} />
+                                            </Button>
+                                        )}
 
-                                        {/*Delete*/}
-                                        <ConfirmationAlert
-                                            title="Delete Project?"
-                                            description="This project will be permanently removed."
-                                            confirmText="Delete"
-                                            onConfirm={async () => {
-                                                try {
-                                                    await deleteProject(project.id);
-                                                    toast.success("Project deleted");
-                                                } catch {
-                                                    toast.error("Delete failed");
+                                        {canDelete && (
+                                            <ConfirmationAlert
+                                                title="Delete Project?"
+                                                description="This project will be permanently removed."
+                                                confirmText="Delete"
+                                                onConfirm={async () => {
+                                                    try {
+                                                        await deleteProject(project.id);
+                                                        toast.success("Project deleted");
+                                                    } catch {
+                                                        toast.error("Delete failed");
+                                                    }
+                                                }}
+                                                trigger={
+                                                    <Button size="icon" variant="destructive">
+                                                        <Trash size={16} />
+                                                    </Button>
                                                 }
-                                            }}
-                                            trigger={
-                                                <Button size="icon" variant="destructive">
-                                                    <Trash size={16} />
-                                                </Button>
-                                            }
-                                        />
+                                            />
+                                        )}
+
+                                        {!canEdit && !canDelete && (
+                                            <span className="text-xs text-muted-foreground italic">View only</span>
+                                        )}
                                     </div>
                                 </TableCell>
                             </TableRow>

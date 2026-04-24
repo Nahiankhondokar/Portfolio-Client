@@ -111,27 +111,24 @@ export const useExperienceStore = create<ExperienceState>((set, get) => ({
     set({ loading: true });
 
     try {
-      const res = await apiFetch<{ data: Experience }>(
+      await apiFetch<{ data: Experience }>(
           `experiences/${id}`,
           {
-            method: "PUT", // or PUT with _method
+            method: "POST", // _method: PUT is appended in the form via FormData
             body: data,
           }
       );
-    } catch (err: unknown) {
-      set({
+
+      await get().fetchExperiences();
+      set(() => ({
         loading: false,
-        error: "Update failed",
-      });
+        modalOpen: false,
+        selectedExperience: null,
+      }));
+    } catch (err: unknown) {
+      set({ loading: false, error: "Update failed" });
       throw err;
     }
-
-    await get().fetchExperiences();
-    set((state) => ({
-      loading: false,
-      modalOpen: false,          // 🔥 close modal
-      selectedExperience: null,  // 🔥 reset
-    }));
   },
   deleteExperience: async (id: number) => {
     set({ loading: true, error: null });

@@ -20,6 +20,7 @@ import {toast} from "sonner";
 import NoImage from "@/public/assets/img/placeholder.webp";
 import Image from "next/image";
 import MediaPreview from "@/components/common/MediaPreview";
+import { usePermission } from "@/hooks/usePermission";
 
 export default function UserTable() {
     const {
@@ -30,6 +31,8 @@ export default function UserTable() {
         openEditModal,
         deleteUser
     } = useUserStore();
+
+    const { canEdit, canDelete } = usePermission();
 
     useEffect(() => {
         fetchUsers();
@@ -88,29 +91,36 @@ export default function UserTable() {
 
                                 <TableCell className="text-right">
                                     <div className="flex justify-end gap-2">
-                                        <Button size="icon" variant="outline" onClick={() => openEditModal(user)}>
-                                            <Pencil size={16} />
-                                        </Button>
+                                        {canEdit && (
+                                            <Button size="icon" variant="outline" onClick={() => openEditModal(user)}>
+                                                <Pencil size={16} />
+                                            </Button>
+                                        )}
 
-                                        {/*Delete*/}
-                                        <ConfirmationAlert
-                                            title="Delete Profile?"
-                                            description="This expertise will be permanently removed."
-                                            confirmText="Delete"
-                                            onConfirm={async () => {
-                                                try {
-                                                    await deleteUser(user.id);
-                                                    toast.success("Profile deleted");
-                                                } catch {
-                                                    toast.error("Delete failed");
+                                        {canDelete && (
+                                            <ConfirmationAlert
+                                                title="Delete User?"
+                                                description="This user will be permanently removed."
+                                                confirmText="Delete"
+                                                onConfirm={async () => {
+                                                    try {
+                                                        await deleteUser(user.id);
+                                                        toast.success("User deleted");
+                                                    } catch {
+                                                        toast.error("Delete failed");
+                                                    }
+                                                }}
+                                                trigger={
+                                                    <Button size="icon" variant="destructive">
+                                                        <Trash size={16} />
+                                                    </Button>
                                                 }
-                                            }}
-                                            trigger={
-                                                <Button size="icon" variant="destructive">
-                                                    <Trash size={16} />
-                                                </Button>
-                                            }
-                                        />
+                                            />
+                                        )}
+
+                                        {!canEdit && !canDelete && (
+                                            <span className="text-xs text-muted-foreground italic">View only</span>
+                                        )}
                                     </div>
                                 </TableCell>
                             </TableRow>

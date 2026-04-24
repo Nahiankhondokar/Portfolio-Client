@@ -41,24 +41,29 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useProfileStore } from "@/stores/useProfileStore";
+import { usePermission } from "@/hooks/usePermission";
 
-// Menu items.
-const items = [
-  { title: "Home", url: "/dashboard", icon: Home },
-  { title: "User", url: "/dashboard/user", icon: User2Icon },
-  { title: "Blog", url: "/dashboard/blog", icon: NewspaperIcon },
-  { title: "Services", url: "/dashboard/service", icon: MonitorCogIcon },
-  { title: "Projects", url: "/dashboard/project", icon: AppWindowIcon },
-  { title: "Experience", url: "/dashboard/experience", icon: LayersIcon },
-  { title: "Expertise", url: "/dashboard/expertise", icon: LibraryBig },
-  { title: "Portfolio", url: "/dashboard/portfolio", icon: BookOpenCheck },
-  { title: "Education", url: "/dashboard/education", icon: BookOpen },
-  { title: "Chatbot", url: "/dashboard/chatbot", icon: MessageCircle },
+// All navigation items
+const ALL_ITEMS = [
+  { title: "Home",       url: "/dashboard",            icon: Home,           adminOnly: false },
+  { title: "User",       url: "/dashboard/user",        icon: User2Icon,       adminOnly: true  }, // Super Admin only
+  { title: "Blog",       url: "/dashboard/blog",        icon: NewspaperIcon,   adminOnly: false },
+  { title: "Services",   url: "/dashboard/service",     icon: MonitorCogIcon,  adminOnly: false },
+  { title: "Projects",   url: "/dashboard/project",     icon: AppWindowIcon,   adminOnly: false },
+  { title: "Experience", url: "/dashboard/experience",  icon: LayersIcon,      adminOnly: false },
+  { title: "Expertise",  url: "/dashboard/expertise",   icon: LibraryBig,      adminOnly: false },
+  { title: "Portfolio",  url: "/dashboard/portfolio",   icon: BookOpenCheck,   adminOnly: false },
+  { title: "Education",  url: "/dashboard/education",   icon: BookOpen,        adminOnly: false },
+  { title: "Chatbot",    url: "/dashboard/chatbot",     icon: MessageCircle,   adminOnly: false },
 ];
 
 const SideBar = () => {
   const profile = useProfileStore((state) => state.profile);
   const fetchProfile = useProfileStore((state) => state.fetchProfile);
+  const { isSuperAdmin } = usePermission();
+
+  // Filter nav items based on role
+  const items = ALL_ITEMS.filter((item) => !item.adminOnly || isSuperAdmin);
 
   useEffect(() => {
     fetchProfile();

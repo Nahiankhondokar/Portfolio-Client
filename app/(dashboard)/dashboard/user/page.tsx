@@ -14,20 +14,12 @@ import { Button } from "@/components/ui/button";
 import { useUserStore } from "@/stores/useUserStore";
 import UserTable from "@/app/(dashboard)/dashboard/user/components/UserTable";
 import AddNewUser from "@/app/(dashboard)/dashboard/user/components/AddNewUser";
+import { usePermission } from "@/hooks/usePermission";
 
 const User = () => {
   const pathname = usePathname();
-
-  // Destructure the necessary states from your store
-  const {
-    fetchUsers,
-    loading,
-    error,
-    openCreateModal,
-    modalOpen,
-    closeModal,
-    mode
-  } = useUserStore();
+  const { fetchUsers, loading, error, openCreateModal, modalOpen, closeModal, mode } = useUserStore();
+  const { canCreate } = usePermission();
 
   useEffect(() => {
     fetchUsers();
@@ -42,9 +34,11 @@ const User = () => {
 
           {/* The Sheet Container */}
           <Sheet open={modalOpen} onOpenChange={closeModal}>
+          {canCreate && (
             <Button variant="default" onClick={openCreateModal}>
               Add User
             </Button>
+          )}
 
             <SheetContent side="right" className="sm:max-w-[540px] overflow-y-auto">
               <SheetHeader className="mb-6">

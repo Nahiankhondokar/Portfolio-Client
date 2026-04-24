@@ -105,20 +105,25 @@ export const useUserStore = create<UserState>((set, get) => ({
   updateUser: async (id: number, data: FormData) => {
     set({ loading: true });
 
-    const res = await apiFetch<{ data: User }>(
-        `users/${id}`,
-        {
-          method: "PUT",
-          body: data,
-        }
-    );
+    try {
+      await apiFetch<{ data: User }>(
+          `users/${id}`,
+          {
+            method: "POST", // _method: PUT is appended in the form via FormData
+            body: data,
+          }
+      );
 
-    await get().fetchUsers();
-    set((state) => ({
-      loading: false,
-      modalOpen: false,
-      selectedUser: null,
-    }));
+      await get().fetchUsers();
+      set(() => ({
+        loading: false,
+        modalOpen: false,
+        selectedUser: null,
+      }));
+    } catch (err: unknown) {
+      set({ loading: false, error: "Update failed" });
+      throw err;
+    }
   },
 
   // Delete user

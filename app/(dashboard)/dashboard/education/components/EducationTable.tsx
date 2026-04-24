@@ -20,6 +20,7 @@ import { Separator } from "@/components/ui/separator";
 import ConfirmationAlert from "@/components/common/ConfirmationAlert";
 import { toast } from "sonner";
 import Pagination from "@/type/pagination/Pagination";
+import { usePermission } from "@/hooks/usePermission";
 
 export default function EducationTable() {
     const {
@@ -30,6 +31,8 @@ export default function EducationTable() {
         openEditModal,
         deleteEducation
     } = useEducationStore();
+
+    const { canEdit, canDelete } = usePermission();
 
     useEffect(() => {
         fetchEducations();
@@ -84,29 +87,36 @@ export default function EducationTable() {
 
                                 <TableCell className="text-right">
                                     <div className="flex justify-end gap-2">
-                                        <Button size="icon" variant="outline" onClick={() => openEditModal(edu)}>
-                                            <Pencil size={16} />
-                                        </Button>
+                                        {canEdit && (
+                                            <Button size="icon" variant="outline" onClick={() => openEditModal(edu)}>
+                                                <Pencil size={16} />
+                                            </Button>
+                                        )}
 
-                                        {/*Delete*/}
-                                        <ConfirmationAlert
-                                            title="Delete education?"
-                                            description="This education will be permanently removed."
-                                            confirmText="Delete"
-                                            onConfirm={async () => {
-                                                try {
-                                                    await deleteEducation(edu.id);
-                                                    toast.success("Education deleted");
-                                                } catch {
-                                                    toast.error("Delete failed");
+                                        {canDelete && (
+                                            <ConfirmationAlert
+                                                title="Delete education?"
+                                                description="This education will be permanently removed."
+                                                confirmText="Delete"
+                                                onConfirm={async () => {
+                                                    try {
+                                                        await deleteEducation(edu.id);
+                                                        toast.success("Education deleted");
+                                                    } catch {
+                                                        toast.error("Delete failed");
+                                                    }
+                                                }}
+                                                trigger={
+                                                    <Button size="icon" variant="destructive">
+                                                        <Trash size={16} />
+                                                    </Button>
                                                 }
-                                            }}
-                                            trigger={
-                                                <Button size="icon" variant="destructive">
-                                                    <Trash size={16} />
-                                                </Button>
-                                            }
-                                        />
+                                            />
+                                        )}
+
+                                        {!canEdit && !canDelete && (
+                                            <span className="text-xs text-muted-foreground italic">View only</span>
+                                        )}
                                     </div>
                                 </TableCell>
                             </TableRow>

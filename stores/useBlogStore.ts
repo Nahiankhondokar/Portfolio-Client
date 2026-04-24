@@ -113,22 +113,26 @@ export const useBlogStore = create<BlogState>((set, get) => ({
   },
   updateBlog: async (id: number, data: FormData) => {
     set({ loading: true });
-    console.log("blog store")
 
-    const res = await apiFetch<{ data: Blog }>(
-        `blogs/${id}`,
-        {
-          method: "PUT",
-          body: data,
-        }
-    );
+    try {
+      await apiFetch<{ data: Blog }>(
+          `blogs/${id}`,
+          {
+            method: "POST", // _method: PUT is appended in the form via FormData
+            body: data,
+          }
+      );
 
-    await get().fetchBlog();
-    set((state) => ({
-      loading: false,
-      modalOpen: false,
-      selectedBlog: null,
-    }));
+      await get().fetchBlog();
+      set((state) => ({
+        loading: false,
+        modalOpen: false,
+        selectedBlog: null,
+      }));
+    } catch (err: unknown) {
+      set({ loading: false, error: "Update failed" });
+      throw err;
+    }
   },
   deleteBlog: async (id: number) => {
     set({ loading: true, error: null });
