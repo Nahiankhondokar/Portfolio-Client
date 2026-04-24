@@ -95,6 +95,10 @@ const AddNewUser = () => {
         }
 
         const fd = new FormData();
+
+        // Laravel requires _method:PUT for file uploads (form method spoofing)
+        if (mode === "edit") fd.append("_method", "PUT");
+
         Object.entries(values).forEach(([k, v]) => {
             if (v === null || v === undefined) return;
 

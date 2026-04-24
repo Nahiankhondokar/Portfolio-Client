@@ -113,20 +113,25 @@ export const useProjectStore = create<projectState>((set, get) => ({
   updateProject: async (id: number, data: FormData) => {
     set({ loading: true });
 
-    const res = await apiFetch<{ data: Project }>(
-        `projects/${id}`,
-        {
-          method: "PUT",
-          body: data,
-        }
-    );
+    try {
+      await apiFetch<{ data: Project }>(
+          `projects/${id}`,
+          {
+            method: "POST", // _method: PUT is appended in the form via FormData
+            body: data,
+          }
+      );
 
-    await get().fetchProject();
-    set((state) => ({
-      loading: false,
-      modalOpen: false,
-      selectedProject: null,
-    }));
+      await get().fetchProject();
+      set(() => ({
+        loading: false,
+        modalOpen: false,
+        selectedProject: null,
+      }));
+    } catch (err: unknown) {
+      set({ loading: false, error: "Update failed" });
+      throw err;
+    }
   },
   deleteProject: async (id: number) => {
     set({ loading: true, error: null });

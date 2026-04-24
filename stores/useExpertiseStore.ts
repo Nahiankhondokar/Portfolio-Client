@@ -106,19 +106,16 @@ export const useExpertiseStore = create<ExpertiseState>((set, get) => ({
     set({ loading: true, error: null });
 
     try {
-      const res = await apiFetch<ApiResponse<Expertise>>(
+      await apiFetch<ApiResponse<Expertise>>(
           `expertise/${id}`,
           {
-            method: "PUT",
+            method: "POST", // _method: PUT is appended in the form via FormData
             body: data,
           }
       );
 
       await get().fetchExpertise();
-      set((state) => ({
-        // expertises: state.expertises.map((item) =>
-        //     item.id === id ? res.data : item
-        // ),
+      set(() => ({
         loading: false,
         modalOpen: false,
         selectedExpertise: null,

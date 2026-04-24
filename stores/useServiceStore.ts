@@ -114,20 +114,25 @@ export const useServiceStore = create<serviceState>((set, get) => ({
   updateService: async (id: number, data: FormData) => {
     set({ loading: true });
 
-    const res = await apiFetch<{ data: Service }>(
-        `services/${id}`,
-        {
-          method: "PUT",
-          body: data,
-        }
-    );
+    try {
+      await apiFetch<{ data: Service }>(
+          `services/${id}`,
+          {
+            method: "POST", // _method: PUT is appended in the form via FormData
+            body: data,
+          }
+      );
 
-    await get().fetchService();
-    set((state) => ({
-      loading: false,
-      modalOpen: false,
-      selectedService: null,
-    }));
+      await get().fetchService();
+      set(() => ({
+        loading: false,
+        modalOpen: false,
+        selectedService: null,
+      }));
+    } catch (err: unknown) {
+      set({ loading: false, error: "Update failed" });
+      throw err;
+    }
   },
   deleteService: async (id: number) => {
     set({ loading: true, error: null });

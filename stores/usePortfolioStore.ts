@@ -113,20 +113,25 @@ export const usePortfolioStore = create<portfolioState>((set, get) => ({
   updatePortfolio: async (id: number, data: FormData) => {
     set({ loading: true });
 
-    const res = await apiFetch<{ data: Portfolio }>(
-        `portfolios/${id}`,
-        {
-          method: "PUT",
-          body: data,
-        }
-    );
+    try {
+      await apiFetch<{ data: Portfolio }>(
+          `portfolios/${id}`,
+          {
+            method: "POST", // _method: PUT is appended in the form via FormData
+            body: data,
+          }
+      );
 
-    await get().fetchPortfolio();
-    set((state) => ({
-      loading: false,
-      modalOpen: false,
-      selectedPortfolio: null,
-    }));
+      await get().fetchPortfolio();
+      set(() => ({
+        loading: false,
+        modalOpen: false,
+        selectedPortfolio: null,
+      }));
+    } catch (err: unknown) {
+      set({ loading: false, error: "Update failed" });
+      throw err;
+    }
   },
   deletePortfolio: async (id: number) => {
     set({ loading: true, error: null });
