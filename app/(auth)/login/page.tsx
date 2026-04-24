@@ -119,10 +119,16 @@ export default function LoginPage() {
                             {loading ? "Logging in..." : "Login"}
                         </Button>
 
-                        <div className="flex items-center justify-center mt-2">
-                            <span className="mr-2">or</span>
-                            <GoogleLoginBtn />
+                        {/* Divider */}
+                        <div className="relative flex items-center my-1">
+                            <div className="flex-grow border-t border-zinc-200 dark:border-zinc-700" />
+                            <span className="mx-3 text-xs text-zinc-400 uppercase tracking-widest font-semibold">
+                                or
+                            </span>
+                            <div className="flex-grow border-t border-zinc-200 dark:border-zinc-700" />
                         </div>
+
+                        <GoogleLoginBtn />
 
                         <Link href="/" className="flex justify-center items-center gap-2 text-yellow-500">
                             <StepBackIcon size="16" />
