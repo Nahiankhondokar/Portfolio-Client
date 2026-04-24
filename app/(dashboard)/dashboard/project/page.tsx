@@ -12,22 +12,14 @@ import {
 } from "@/components/ui/dialog";
 import AddNewProject from "./components/AddNewProject";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@radix-ui/react-separator";
-import AddNewService from "@/app/(dashboard)/dashboard/service/components/AddNewService";
 import {useProjectStore} from "@/stores/useProjectStore";
 import ProjectTable from "@/app/(dashboard)/dashboard/project/components/ProjectTable";
+import { usePermission } from "@/hooks/usePermission";
 
 const Project = () => {
   const pathname = usePathname();
-  const {
-    fetchProject,
-    loading,
-    error,
-    openCreateModal,
-    modalOpen,
-    closeModal,
-    mode
-  } = useProjectStore();
+  const { fetchProject, loading, error, openCreateModal, modalOpen, closeModal, mode } = useProjectStore();
+  const { canCreate } = usePermission();
 
   return (
       <div>
@@ -35,7 +27,9 @@ const Project = () => {
         <>
           <div className="flex justify-between items-center">
             <h1 className="text-2xl font-bold">Project</h1>
-            <Button  variant={"outline"} onClick={openCreateModal}>Add New</Button>
+            {canCreate && (
+              <Button variant={"outline"} onClick={openCreateModal}>Add New</Button>
+            )}
           </div>
 
           <ProjectTable />

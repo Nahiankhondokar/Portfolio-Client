@@ -19,6 +19,7 @@ import {useServiceStore} from "@/stores/useServiceStore";
 import ConfirmationAlert from "@/components/common/ConfirmationAlert";
 import {toast} from "sonner";
 import MediaPreview from "@/components/common/MediaPreview";
+import { usePermission } from "@/hooks/usePermission";
 
 export default function ServiceTable() {
     const {
@@ -29,6 +30,8 @@ export default function ServiceTable() {
         openEditModal,
         deleteService
     } = useServiceStore();
+
+    const { canEdit, canDelete } = usePermission();
 
     useEffect(() => {
         fetchService();
@@ -89,29 +92,36 @@ export default function ServiceTable() {
 
                                 <TableCell className="text-right">
                                     <div className="flex justify-end gap-2">
-                                        <Button size="icon" variant="outline" onClick={() => openEditModal(service)}>
-                                            <Pencil size={16} />
-                                        </Button>
+                                        {canEdit && (
+                                            <Button size="icon" variant="outline" onClick={() => openEditModal(service)}>
+                                                <Pencil size={16} />
+                                            </Button>
+                                        )}
 
-                                        {/*Delete*/}
-                                        <ConfirmationAlert
-                                            title="Delete experience?"
-                                            description="This experience will be permanently removed."
-                                            confirmText="Delete"
-                                            onConfirm={async () => {
-                                                try {
-                                                    await deleteService(service.id);
-                                                    toast.success("Service deleted");
-                                                } catch {
-                                                    toast.error("Delete failed");
+                                        {canDelete && (
+                                            <ConfirmationAlert
+                                                title="Delete service?"
+                                                description="This service will be permanently removed."
+                                                confirmText="Delete"
+                                                onConfirm={async () => {
+                                                    try {
+                                                        await deleteService(service.id);
+                                                        toast.success("Service deleted");
+                                                    } catch {
+                                                        toast.error("Delete failed");
+                                                    }
+                                                }}
+                                                trigger={
+                                                    <Button size="icon" variant="destructive">
+                                                        <Trash size={16} />
+                                                    </Button>
                                                 }
-                                            }}
-                                            trigger={
-                                                <Button size="icon" variant="destructive">
-                                                    <Trash size={16} />
-                                                </Button>
-                                            }
-                                        />
+                                            />
+                                        )}
+
+                                        {!canEdit && !canDelete && (
+                                            <span className="text-xs text-muted-foreground italic">View only</span>
+                                        )}
                                     </div>
                                 </TableCell>
                             </TableRow>

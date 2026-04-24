@@ -12,11 +12,12 @@ import { Button } from "@/components/ui/button";
 import {useExpertiseStore} from "@/stores/useExpertiseStore";
 import AddNewExpertise from "@/app/(dashboard)/dashboard/expertise/components/AddNewExpertise";
 import ExpertiseTable from "@/app/(dashboard)/dashboard/expertise/components/ExpertiseTable";
+import { usePermission } from "@/hooks/usePermission";
 
 const Experitse = () => {
   const pathname = usePathname();
-  const { modalOpen, openCreateModal, closeModal, mode } =
-      useExpertiseStore();
+  const { modalOpen, openCreateModal, closeModal, mode } = useExpertiseStore();
+  const { canCreate } = usePermission();
 
   return (
       <div>
@@ -25,7 +26,9 @@ const Experitse = () => {
           <>
             <div className="flex justify-between items-center">
               <h1 className="text-2xl font-bold">Expertise</h1>
-              <Button  variant={"outline"} onClick={openCreateModal}>Add New</Button>
+              {canCreate && (
+                <Button variant={"outline"} onClick={openCreateModal}>Add New</Button>
+              )}
             </div>
 
             <ExpertiseTable />

@@ -12,11 +12,12 @@ import AddNewExperience from "./components/AddNewExperience";
 import { Button } from "@/components/ui/button";
 import ExperienceTable  from "./components/ExperienceTable";
 import {useExperienceStore} from "@/stores/useExperienceStore";
+import { usePermission } from "@/hooks/usePermission";
 
 const Experience = () => {
   const pathname = usePathname();
-  const { modalOpen, openCreateModal, closeModal, mode } =
-      useExperienceStore();
+  const { modalOpen, openCreateModal, closeModal, mode } = useExperienceStore();
+  const { canCreate } = usePermission();
 
   return (
     <div>
@@ -25,7 +26,9 @@ const Experience = () => {
         <>
           <div className="flex justify-between items-center">
             <h1 className="text-2xl font-bold">Experience</h1>
-            <Button  variant={"outline"} onClick={openCreateModal}>Add New</Button>
+            {canCreate && (
+              <Button variant={"outline"} onClick={openCreateModal}>Add New</Button>
+            )}
           </div>
 
           <ExperienceTable />

@@ -12,11 +12,12 @@ import { Button } from "@/components/ui/button";
 import { useBlogStore } from "@/stores/useBlogStore";
 import AddNewBlog from "@/app/(dashboard)/dashboard/blog/components/AddNewBlog";
 import BlogTable from "@/app/(dashboard)/dashboard/blog/components/BlogTable";
+import { usePermission } from "@/hooks/usePermission";
 
 const Blog = () => {
   const pathname = usePathname();
-  const { modalOpen, openCreateModal, closeModal, mode } =
-    useBlogStore();
+  const { modalOpen, openCreateModal, closeModal, mode } = useBlogStore();
+  const { canCreate } = usePermission();
 
   return (
     <div>
@@ -25,7 +26,9 @@ const Blog = () => {
         <>
           <div className="flex justify-between items-center">
             <h1 className="text-2xl font-bold">Blogs</h1>
-            <Button variant={"outline"} onClick={openCreateModal}>Add New</Button>
+            {canCreate && (
+              <Button variant={"outline"} onClick={openCreateModal}>Add New</Button>
+            )}
           </div>
 
           <BlogTable />

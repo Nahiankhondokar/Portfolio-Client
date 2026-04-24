@@ -20,6 +20,7 @@ import {toast} from "sonner";
 import {usePortfolioStore} from "@/stores/usePortfolioStore";
 import {Portfolio} from "@/app/(dashboard)/dashboard/portfolio/interface/Portfolio";
 import MediaPreview from "@/components/common/MediaPreview";
+import { usePermission } from "@/hooks/usePermission";
 
 export default function PortfolioTable() {
     const {
@@ -30,6 +31,8 @@ export default function PortfolioTable() {
         openEditModal,
         deletePortfolio
     } = usePortfolioStore();
+
+    const { canEdit, canDelete } = usePermission();
 
     useEffect(() => {
         fetchPortfolio();
@@ -90,29 +93,36 @@ export default function PortfolioTable() {
 
                                 <TableCell className="text-right">
                                     <div className="flex justify-end gap-2">
-                                        <Button size="icon" variant="outline" onClick={() => openEditModal(portfolio)}>
-                                            <Pencil size={16} />
-                                        </Button>
+                                        {canEdit && (
+                                            <Button size="icon" variant="outline" onClick={() => openEditModal(portfolio)}>
+                                                <Pencil size={16} />
+                                            </Button>
+                                        )}
 
-                                        {/*Delete*/}
-                                        <ConfirmationAlert
-                                            title="Delete portfolio?"
-                                            description="This portfolio will be permanently removed."
-                                            confirmText="Delete"
-                                            onConfirm={async () => {
-                                                try {
-                                                    await deletePortfolio(portfolio.id);
-                                                    toast.success("Portfolio deleted");
-                                                } catch {
-                                                    toast.error("Delete failed");
+                                        {canDelete && (
+                                            <ConfirmationAlert
+                                                title="Delete portfolio?"
+                                                description="This portfolio will be permanently removed."
+                                                confirmText="Delete"
+                                                onConfirm={async () => {
+                                                    try {
+                                                        await deletePortfolio(portfolio.id);
+                                                        toast.success("Portfolio deleted");
+                                                    } catch {
+                                                        toast.error("Delete failed");
+                                                    }
+                                                }}
+                                                trigger={
+                                                    <Button size="icon" variant="destructive">
+                                                        <Trash size={16} />
+                                                    </Button>
                                                 }
-                                            }}
-                                            trigger={
-                                                <Button size="icon" variant="destructive">
-                                                    <Trash size={16} />
-                                                </Button>
-                                            }
-                                        />
+                                            />
+                                        )}
+
+                                        {!canEdit && !canDelete && (
+                                            <span className="text-xs text-muted-foreground italic">View only</span>
+                                        )}
                                     </div>
                                 </TableCell>
                             </TableRow>

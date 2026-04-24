@@ -12,11 +12,12 @@ import { Button } from "@/components/ui/button";
 import { useEducationStore } from "@/stores/useEducationStore";
 import AddNewEducation from "./components/AddNewEducation";
 import EducationTable from "./components/EducationTable";
+import { usePermission } from "@/hooks/usePermission";
 
 const Education = () => {
   const pathname = usePathname();
-  const { modalOpen, openCreateModal, closeModal, mode } =
-    useEducationStore();
+  const { modalOpen, openCreateModal, closeModal, mode } = useEducationStore();
+  const { canCreate } = usePermission();
 
   return (
     <div>
@@ -25,7 +26,9 @@ const Education = () => {
         <>
           <div className="flex justify-between items-center">
             <h1 className="text-2xl font-bold">Educations</h1>
-            <Button variant={"outline"} onClick={openCreateModal}>Add New</Button>
+            {canCreate && (
+              <Button variant={"outline"} onClick={openCreateModal}>Add New</Button>
+            )}
           </div>
 
           <EducationTable />

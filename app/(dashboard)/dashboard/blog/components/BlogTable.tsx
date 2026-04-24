@@ -21,6 +21,7 @@ import { useBlogStore } from "@/stores/useBlogStore";
 import MediaPreview from "@/components/common/MediaPreview";
 import StatusUpdateToggle from "@/components/common/StatusUpdateToggle";
 import Link from "next/link";
+import { usePermission } from "@/hooks/usePermission";
 
 export default function BlogTable() {
     const {
@@ -32,6 +33,8 @@ export default function BlogTable() {
         deleteBlog,
         toggleStatus
     } = useBlogStore();
+
+    const { canEdit, canDelete } = usePermission();
 
     useEffect(() => {
         fetchBlog();
@@ -104,29 +107,36 @@ export default function BlogTable() {
 
                                 <TableCell className="text-right">
                                     <div className="flex justify-end gap-2">
-                                        <Button size="icon" variant="outline" onClick={() => openEditModal(blog)}>
-                                            <Pencil size={16} />
-                                        </Button>
+                                        {canEdit && (
+                                            <Button size="icon" variant="outline" onClick={() => openEditModal(blog)}>
+                                                <Pencil size={16} />
+                                            </Button>
+                                        )}
 
-                                        {/*Delete*/}
-                                        <ConfirmationAlert
-                                            title="Blog experience?"
-                                            description="This blog will be permanently removed."
-                                            confirmText="Delete"
-                                            onConfirm={async () => {
-                                                try {
-                                                    await deleteBlog(blog.id);
-                                                    toast.success("Blog deleted");
-                                                } catch {
-                                                    toast.error("Delete failed");
+                                        {canDelete && (
+                                            <ConfirmationAlert
+                                                title="Blog experience?"
+                                                description="This blog will be permanently removed."
+                                                confirmText="Delete"
+                                                onConfirm={async () => {
+                                                    try {
+                                                        await deleteBlog(blog.id);
+                                                        toast.success("Blog deleted");
+                                                    } catch {
+                                                        toast.error("Delete failed");
+                                                    }
+                                                }}
+                                                trigger={
+                                                    <Button size="icon" variant="destructive">
+                                                        <Trash size={16} />
+                                                    </Button>
                                                 }
-                                            }}
-                                            trigger={
-                                                <Button size="icon" variant="destructive">
-                                                    <Trash size={16} />
-                                                </Button>
-                                            }
-                                        />
+                                            />
+                                        )}
+
+                                        {!canEdit && !canDelete && (
+                                            <span className="text-xs text-muted-foreground italic">View only</span>
+                                        )}
                                     </div>
                                 </TableCell>
                             </TableRow>

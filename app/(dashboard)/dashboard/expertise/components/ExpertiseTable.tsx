@@ -18,6 +18,7 @@ import Pagination from "@/type/pagination/Pagination";
 import ConfirmationAlert from "@/components/common/ConfirmationAlert";
 import {toast} from "sonner";
 import {useExpertiseStore} from "@/stores/useExpertiseStore";
+import { usePermission } from "@/hooks/usePermission";
 
 export default function ExpertiseTable() {
     const {
@@ -28,6 +29,8 @@ export default function ExpertiseTable() {
         openEditModal,
         deleteExpertise
     } = useExpertiseStore();
+
+    const { canEdit, canDelete } = usePermission();
 
     useEffect(() => {
         fetchExpertise();
@@ -76,29 +79,36 @@ export default function ExpertiseTable() {
 
                                 <TableCell className="text-right">
                                     <div className="flex justify-end gap-2">
-                                        <Button size="icon" variant="outline" onClick={() => openEditModal(expertise)}>
-                                            <Pencil size={16} />
-                                        </Button>
+                                        {canEdit && (
+                                            <Button size="icon" variant="outline" onClick={() => openEditModal(expertise)}>
+                                                <Pencil size={16} />
+                                            </Button>
+                                        )}
 
-                                        {/*Delete*/}
-                                        <ConfirmationAlert
-                                            title="Delete Profile?"
-                                            description="This expertise will be permanently removed."
-                                            confirmText="Delete"
-                                            onConfirm={async () => {
-                                                try {
-                                                    await deleteExpertise(expertise.id);
-                                                    toast.success("Profile deleted");
-                                                } catch {
-                                                    toast.error("Delete failed");
+                                        {canDelete && (
+                                            <ConfirmationAlert
+                                                title="Delete expertise?"
+                                                description="This expertise will be permanently removed."
+                                                confirmText="Delete"
+                                                onConfirm={async () => {
+                                                    try {
+                                                        await deleteExpertise(expertise.id);
+                                                        toast.success("Expertise deleted");
+                                                    } catch {
+                                                        toast.error("Delete failed");
+                                                    }
+                                                }}
+                                                trigger={
+                                                    <Button size="icon" variant="destructive">
+                                                        <Trash size={16} />
+                                                    </Button>
                                                 }
-                                            }}
-                                            trigger={
-                                                <Button size="icon" variant="destructive">
-                                                    <Trash size={16} />
-                                                </Button>
-                                            }
-                                        />
+                                            />
+                                        )}
+
+                                        {!canEdit && !canDelete && (
+                                            <span className="text-xs text-muted-foreground italic">View only</span>
+                                        )}
                                     </div>
                                 </TableCell>
                             </TableRow>

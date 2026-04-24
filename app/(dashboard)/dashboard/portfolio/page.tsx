@@ -13,16 +13,12 @@ import {useEffect} from "react";
 import AddNewPortfolio from "./components/AddNewPortfolio";
 import PortfolioTable from "@/app/(dashboard)/dashboard/portfolio/components/PortfolioTable";
 import {usePortfolioStore} from "@/stores/usePortfolioStore";
+import { usePermission } from "@/hooks/usePermission";
 
 const Service = () => {
   const pathname = usePathname();
-  const {
-      fetchPortfolio,
-      openCreateModal,
-      modalOpen,
-      closeModal,
-      mode
-  } = usePortfolioStore();
+  const { fetchPortfolio, openCreateModal, modalOpen, closeModal, mode } = usePortfolioStore();
+  const { canCreate } = usePermission();
 
   useEffect(() => {
     fetchPortfolio();
@@ -34,7 +30,9 @@ const Service = () => {
       <>
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Portfolio</h1>
-          <Button  variant={"outline"} onClick={openCreateModal}>Add New</Button>
+          {canCreate && (
+            <Button variant={"outline"} onClick={openCreateModal}>Add New</Button>
+          )}
         </div>
 
         {/*Portfolio Table*/}
