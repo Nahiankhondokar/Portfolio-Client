@@ -28,8 +28,9 @@ export async function apiFetch<T>(
         // clear auth locally
         if (typeof window !== "undefined") {
             localStorage.removeItem("auth_token");
+            document.cookie = "auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
             // redirect only on client
-            window.location.href = "/login";
+            window.location.href = "/login?session=expired";
         }
         throw new ApiError(res.status, "Unauthorized");
     }

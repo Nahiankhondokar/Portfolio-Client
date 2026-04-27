@@ -78,8 +78,8 @@ const UpdateProfileForm = () => {
     const handleProfileSubmit = async (values: ProfileFormValues) => {
         const fd = toFormData(values, { arrayFormat: "brackets", booleanFormat: "1/0" });
 
-        // Laravel requires _method:PUT for file uploads (form method spoofing)
-        fd.append("_method", "PUT");
+        // // Laravel requires _method:PUT for file uploads (form method spoofing)
+        // fd.append("_method", "PUT");
 
         try {
             await updateProfile(fd);
