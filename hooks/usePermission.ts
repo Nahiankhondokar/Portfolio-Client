@@ -34,14 +34,14 @@ export function usePermission() {
     /** Role 1 or 2 (Admin+) */
     const isAdmin = role <= ROLES.ADMIN;
 
-    /** Can create new records: role 1 only */
-    const canCreate = role === ROLES.SUPER_ADMIN;
+    /** Can create new records: roles 1, 2, 3 */
+    const canCreate = role <= ROLES.USER;
 
-    /** Can edit existing records: role 1 only */
-    const canEdit = role === ROLES.SUPER_ADMIN;
+    /** Can edit existing records: roles 1, 2, 3 */
+    const canEdit = role <= ROLES.USER;
 
-    /** Can delete records: role 1 only */
-    const canDelete = role === ROLES.SUPER_ADMIN;
+    /** Can delete records: roles 1, 2 (Super Admin & Admin) */
+    const canDelete = role <= ROLES.ADMIN;
 
     /** Can manage users: role 1 only */
     const canManageUsers = role === ROLES.SUPER_ADMIN;

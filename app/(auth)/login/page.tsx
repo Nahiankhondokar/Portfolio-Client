@@ -16,9 +16,9 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
-import {User} from "@/type/user";
-import {LogInIcon, StepBackIcon} from "lucide-react";
+import { useEffect, useState } from "react";
+import { User } from "@/type/user";
+import { LogInIcon, StepBackIcon } from "lucide-react";
 import Link from "next/link";
 import GoogleLoginBtn from "@/app/(auth)/login/components/GoogleLoginBtn";
 import errorMessage from "@/lib/errorMessage";
@@ -36,6 +36,17 @@ export default function LoginPage() {
     const form = useForm<LoginInput>({
         resolver: zodResolver(loginSchema),
     });
+
+    useEffect(() => {
+        const searchParams = new URLSearchParams(window.location.search);
+        if (searchParams.get("session") === "expired") {
+            localStorage.removeItem("auth_token");
+            document.cookie = "auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+            form.setError("root", {
+                message: "Session expired. Please login again.",
+            });
+        }
+    }, [form]);
 
     const onSubmit = async (data: LoginInput) => {
         try {
