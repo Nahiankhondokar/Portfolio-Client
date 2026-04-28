@@ -42,12 +42,8 @@ export default function ChatWidget({ guestId }: { guestId: string }) {
         return () => clearTimeout(timer);
     }, [messages]);
 
-    const handleSendMessage = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!input.trim()) return;
-
-        const messageBody = input;
-        setInput(""); // Clear immediately for snappy feel
+    const sendMessage = async (messageBody: string) => {
+        if (!messageBody.trim()) return;
 
         try {
             // Optimistic Update
@@ -75,8 +71,14 @@ export default function ChatWidget({ guestId }: { guestId: string }) {
             if (!res.ok) throw new Error("Failed to send");
         } catch (error) {
             console.error("Failed to send", error);
-            // Optional: You could add logic here to mark the message as "Failed" in the UI
         }
+    };
+
+    const handleSendMessage = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const messageBody = input;
+        setInput(""); // Clear immediately
+        await sendMessage(messageBody);
     };
 
     return (
@@ -144,9 +146,25 @@ export default function ChatWidget({ guestId }: { guestId: string }) {
                 </div>
             </ScrollArea>
 
+            {/* Quick Replies */}
+            <div className="px-4 pb-2 bg-zinc-900/30">
+                <div className="flex gap-2 overflow-x-auto custom-scrollbar pb-2 pt-1 no-scrollbar">
+                    {["Hi! 👋", "Project inquiry 🚀", "Availability? 📅", "Just browsing! 😊"].map((msg) => (
+                        <button
+                            key={msg}
+                            onClick={() => sendMessage(msg)}
+                            className="shrink-0 px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-xl text-[11px] font-bold text-zinc-300 transition-colors whitespace-nowrap"
+                        >
+                            {msg}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
             {/* Message Form */}
             <div className="p-4 bg-zinc-900/30 border-t border-zinc-800">
                 <form
+                    id="chat-form"
                     onSubmit={handleSendMessage}
                     className="relative flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-2xl p-1.5 focus-within:border-yellow-500/50 transition-all"
                 >
