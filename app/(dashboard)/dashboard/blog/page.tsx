@@ -34,7 +34,7 @@ const Blog = () => {
           <BlogTable />
 
           <Dialog open={modalOpen} onOpenChange={(v) => !v && closeModal()}>
-            <DialogContent>
+            <DialogContent className="sm:max-w-4xl">
               <DialogHeader>
                 <DialogTitle>
                   {mode === "create" ? "Add Blog" : "Edit Blog"}
