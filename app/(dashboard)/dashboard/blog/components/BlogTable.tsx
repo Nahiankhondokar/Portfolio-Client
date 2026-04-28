@@ -87,8 +87,12 @@ export default function BlogTable() {
                                         {blog.title}
                                     </Link>
                                 </TableCell>
-                                <TableCell>{blog.subtitle ?? "-"}</TableCell>
-                                <TableCell>{blog.description ?? "-"}</TableCell>
+                                <TableCell className="max-w-[150px] truncate" title={blog.subtitle ?? ""}>
+                                    {blog.subtitle ?? "-"}
+                                </TableCell>
+                                <TableCell className="max-w-[200px] truncate" title={blog.description?.replace(/<[^>]*>?/gm, '') ?? ""}>
+                                    {blog.description ? blog.description.replace(/<[^>]*>?/gm, '').substring(0, 50) + "..." : "-"}
+                                </TableCell>
                                 <TableCell>
                                     <StatusUpdateToggle
                                         id={blog.id}
