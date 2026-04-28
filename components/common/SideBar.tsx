@@ -60,10 +60,10 @@ const ALL_ITEMS = [
 const SideBar = () => {
   const profile = useProfileStore((state) => state.profile);
   const fetchProfile = useProfileStore((state) => state.fetchProfile);
-  const { isSuperAdmin } = usePermission();
+  const { isSuperAdmin, canManageUsers } = usePermission();
 
   // Filter nav items based on role
-  const items = ALL_ITEMS.filter((item) => !item.adminOnly || isSuperAdmin);
+  const items = ALL_ITEMS.filter((item) => !item.adminOnly || canManageUsers);
 
   useEffect(() => {
     fetchProfile();

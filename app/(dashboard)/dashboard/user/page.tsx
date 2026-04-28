@@ -18,8 +18,18 @@ import { usePermission } from "@/hooks/usePermission";
 
 const User = () => {
   const pathname = usePathname();
-  const { fetchUsers, loading, error, openCreateModal, modalOpen, closeModal, mode } = useUserStore();
-  const { canCreate } = usePermission();
+  const { fetchUsers, modalOpen, closeModal, openCreateModal, mode } = useUserStore();
+  const { canCreate, canManageUsers } = usePermission();
+
+  if (!canManageUsers) {
+    return (
+      <div className="flex items-center justify-center h-[50vh]">
+        <h1 className="text-xl font-semibold text-muted-foreground">
+          You do not have permission to access this page.
+        </h1>
+      </div>
+    );
+  }
 
   useEffect(() => {
     fetchUsers();
