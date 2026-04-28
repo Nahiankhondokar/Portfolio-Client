@@ -39,6 +39,7 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [totalUnread, setTotalUnread] = useState(0);
     const [guestId, setGuestId] = useState<string>("");
+    const [showTooltip, setShowTooltip] = useState(false);
 
     // Ref to track if scroll was triggered by a nav click (to avoid fighting IntersectionObserver)
     const isScrollingRef = useRef(false);
@@ -48,6 +49,11 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
     useEffect(() => {
         const id = getChatSessionId();
         setGuestId(id);
+
+        const timer = setTimeout(() => {
+            setShowTooltip(true);
+        }, 3000);
+        return () => clearTimeout(timer);
     }, []);
 
     // --- Scroll-Spy via IntersectionObserver ---
@@ -163,11 +169,28 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
                     )}
                 </AnimatePresence>
 
-                {/* Floating Toggle Button */}
-                <button
-                    onClick={toggleChat}
-                    className="relative p-4 lg:p-5 bg-yellow-500 rounded-2xl shadow-[0_10px_40px_rgba(234,179,8,0.3)] hover:scale-110 active:scale-95 transition-all text-black group"
-                >
+                <div className="relative group">
+                    <AnimatePresence>
+                        {showTooltip && !isChatOpen && (
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.8, y: 10, x: 20 }}
+                                animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
+                                exit={{ opacity: 0, scale: 0.8, y: 10 }}
+                                className="absolute bottom-full right-0 mb-4 whitespace-nowrap bg-white text-black px-4 py-2 rounded-2xl rounded-br-sm shadow-xl text-xs font-black uppercase tracking-wider"
+                            >
+                                <span className="relative z-10">Hi! Any questions? 👋</span>
+                                <div className="absolute -bottom-1.5 right-4 w-3 h-3 bg-white rotate-45" />
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    <button
+                        onClick={() => {
+                            toggleChat();
+                            setShowTooltip(false);
+                        }}
+                        className="relative p-4 lg:p-5 bg-yellow-500 rounded-2xl shadow-[0_10px_40px_rgba(234,179,8,0.3)] hover:scale-110 active:scale-95 transition-all text-black"
+                    >
                     <AnimatePresence mode="wait">
                         {isChatOpen ? (
                             <motion.div key="close" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
@@ -188,5 +211,6 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
                 </button>
             </div>
         </div>
-    );
+    </div>
+  );
 }
