@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/table";
 
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash } from "lucide-react";
+import { MessageSquare, Pencil, Trash } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import ConfirmationAlert from "@/components/common/ConfirmationAlert";
 import { toast } from "sonner";
@@ -56,6 +56,7 @@ export default function BlogTable() {
                         <TableHead>Description</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Image</TableHead>
+                        <TableHead>Comments</TableHead>
                         <TableHead>Created At</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
@@ -106,6 +107,14 @@ export default function BlogTable() {
                                         alt={blog.title}
                                         className="h-12 w-12 shadow-sm"
                                     />
+                                </TableCell>
+                                <TableCell className="text-center">
+                                    <div className="flex items-center justify-center gap-1.5 text-zinc-400 group-hover:text-yellow-500 transition-colors">
+                                        <MessageSquare size={14} />
+                                        <span className="text-xs font-bold tabular-nums">
+                                            {blog.comments_count ?? 0}
+                                        </span>
+                                    </div>
                                 </TableCell>
                                 <TableCell>{blog.created_at ?? "-"}</TableCell>
 
