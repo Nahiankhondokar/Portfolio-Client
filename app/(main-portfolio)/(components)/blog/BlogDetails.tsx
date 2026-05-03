@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Calendar, Clock, Share2, Tag } from "lucide-react";
 import { Blog } from "@/app/(dashboard)/dashboard/blog/interface/Blog";
+import ReactionSection from "./ReactionSection";
+import CommentSection from "./CommentSection";
 
 // Note: Since this uses Framer Motion hooks, it must be a 'use client' component.
 // If you want to keep the data fetching on the server, keep the parent as 'async' 
@@ -108,17 +110,23 @@ const BlogDetailsContent = ({ blog }: { blog: Blog }) => {
                 )}
 
                 {/* Content Area */}
-                <div className="prose prose-invert lg:prose-xl max-w-none 
-                    prose-headings:text-white prose-headings:font-black prose-headings:tracking-tight
-                    prose-p:text-zinc-400 prose-p:leading-[1.8] prose-p:mb-8
-                    prose-strong:text-yellow-500 prose-strong:font-bold
-                    prose-a:text-yellow-500 prose-a:no-underline hover:prose-a:underline
-                    prose-code:text-yellow-200 prose-code:bg-zinc-900 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:before:content-none prose-code:after:content-none
-                    prose-pre:bg-zinc-950 prose-pre:border prose-pre:border-zinc-800 prose-pre:rounded-3xl
-                    prose-blockquote:border-l-yellow-500 prose-blockquote:bg-zinc-900/30 prose-blockquote:py-2 prose-blockquote:rounded-r-2xl
-                    prose-img:rounded-[2rem] prose-img:shadow-2xl">
+                <div className="prose prose-invert lg:prose-xl max-w-none 
+                    prose-headings:text-white prose-headings:font-black prose-headings:tracking-tight
+                    prose-p:text-zinc-400 prose-p:leading-[1.8] prose-p:mb-8
+                    prose-strong:text-yellow-500 prose-strong:font-bold
+                    prose-a:text-yellow-500 prose-a:no-underline hover:prose-a:underline
+                    prose-code:text-yellow-200 prose-code:bg-zinc-900 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:before:content-none prose-code:after:content-none
+                    prose-pre:bg-zinc-950 prose-pre:border prose-pre:border-zinc-800 prose-pre:rounded-3xl
+                    prose-blockquote:border-l-yellow-500 prose-blockquote:bg-zinc-900/30 prose-blockquote:py-2 prose-blockquote:rounded-r-2xl
+                    prose-img:rounded-[2rem] prose-img:shadow-2xl">
                     <div dangerouslySetInnerHTML={{ __html: blog.description || "" }} />
                 </div>
+
+                {/* Reactions Section */}
+                <ReactionSection blogId={blog.id} initialCount={blog.reactions_count || 0} />
+
+                {/* Comments Section */}
+                <CommentSection blogId={blog.id} />
 
                 {/* Author Section / Signoff */}
                 <footer className="mt-32 pt-16 border-t border-zinc-900">

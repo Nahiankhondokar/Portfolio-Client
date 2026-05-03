@@ -8,52 +8,62 @@ import { type ChartConfig } from "@/components/ui/chart"
  
 const chartConfig = {
   desktop: {
-    label: "Desktop",
-    color: "#2563eb",
+    label: "Success",
+    color: "#eab308", // yellow-500
   },
   mobile: {
-    label: "Mobile",
-    color: "#60a5fa",
+    label: "Pending",
+    color: "#3f3f46", // zinc-700
   },
 } satisfies ChartConfig;
 
 const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
+  { month: "Jan", desktop: 186, mobile: 80 },
+  { month: "Feb", desktop: 305, mobile: 200 },
+  { month: "Mar", desktop: 237, mobile: 120 },
+  { month: "Apr", desktop: 73, mobile: 190 },
   { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
+  { month: "Jun", desktop: 214, mobile: 140 },
 ]
 
 
 const AppChartBar = () => {
   return (
-    <div>
-        <h1 className='text-lg font-medium mb-6'>Total Revenue</h1>
-    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-      <BarChart accessibilityLayer data={chartData}>
-         <CartesianGrid vertical={false} />
-         <ChartLegend content={<ChartLegendContent />} />
+    <div className="w-full h-full min-h-[300px]">
+    <ChartContainer config={chartConfig} className="h-full w-full">
+      <BarChart accessibilityLayer data={chartData} margin={{ top: 20, right: 0, left: -20, bottom: 0 }}>
+         <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#27272a" />
          <XAxis
             dataKey="month"
             tickLine={false}
             tickMargin={10}
             axisLine={false}
-            tickFormatter={(value) => value.slice(0, 3)}
+            tick={{ fill: '#71717a', fontSize: 12, fontWeight: 600 }}
             />
          <YAxis
             tickLine={false}
-            tickMargin={10}
             axisLine={false}
+            tick={{ fill: '#71717a', fontSize: 12, fontWeight: 600 }}
             />
-     <ChartTooltip content={<ChartTooltipContent />} />
-        <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-        <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+         <ChartTooltip cursor={{ fill: '#27272a', opacity: 0.4 }} content={<ChartTooltipContent hideLabel />} />
+         <ChartLegend content={<ChartLegendContent />} className="mt-4" />
+         <Bar 
+            dataKey="desktop" 
+            fill="var(--color-desktop)" 
+            radius={[4, 4, 0, 0]} 
+            barSize={30}
+        />
+         <Bar 
+            dataKey="mobile" 
+            fill="var(--color-mobile)" 
+            radius={[4, 4, 0, 0]} 
+            barSize={30}
+        />
       </BarChart>
     </ChartContainer>
     </div>
   )
+
 }
 
 export default AppChartBar

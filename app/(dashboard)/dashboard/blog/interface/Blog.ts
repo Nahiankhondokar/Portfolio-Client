@@ -8,4 +8,6 @@ export interface Blog {
   status?: boolean;
   created_at?: string | null;
   image?: string | null;
+  reactions_count?: number;
+  comments_count?: number;
 }

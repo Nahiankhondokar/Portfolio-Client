@@ -93,7 +93,7 @@ export default function BlogDetails({ params }: Props) {
             </article>
 
             {/* Professional Footer */}
-            <div className="mt-20 pt-10 border-t border-white/10 flex justify-between items-center">
+            <div className="mt-20 pt-10 border-t border-white/10 flex justify-between items-center mb-12">
                 <button
                     onClick={() => window.history.back()}
                     className="group flex items-center gap-2 text-gray-400 hover:text-white transition-all"
@@ -101,11 +101,99 @@ export default function BlogDetails({ params }: Props) {
                     <span className="transition-transform group-hover:-translate-x-1">←</span>
                     Back to Blogs
                 </button>
-
-                <div className="flex gap-4">
-                    {/* Placeholder for social sharing or related links */}
-                </div>
             </div>
+
+            {/* Comment Management for Admin */}
+            <AdminCommentSection blogId={blog.id} />
         </main>
     );
 }
+
+// Separate component for admin comment management
+function AdminCommentSection({ blogId }: { blogId: number }) {
+    const [comments, setComments] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    const fetchComments = useCallback(async () => {
+        try {
+            setLoading(true);
+            const response = await apiFetch<any>(`v1/public/blogs/${blogId}/comments`);
+            setComments(response.data);
+        } catch (error) {
+            console.error("Failed to fetch comments", error);
+        } finally {
+            setLoading(false);
+        }
+    }, [blogId]);
+
+    useEffect(() => {
+        fetchComments();
+    }, [fetchComments]);
+
+    const handleDelete = async (commentId: number) => {
+        try {
+            await apiFetch(`comments/${commentId}`, { method: "DELETE" });
+            toast.success("Comment deleted");
+            fetchComments();
+        } catch (error: any) {
+            toast.error(error.message || "Failed to delete comment");
+        }
+    };
+
+    return (
+        <section className="mt-12 bg-zinc-900/20 rounded-3xl p-8 border border-white/5">
+            <h3 className="text-2xl font-bold text-white mb-8">Manage Comments</h3>
+            {loading ? (
+                <p className="text-gray-500">Loading comments...</p>
+            ) : comments.length === 0 ? (
+                <p className="text-gray-500 italic">No comments found for this blog.</p>
+            ) : (
+                <div className="space-y-6">
+                    {comments.map((comment) => (
+                        <div key={comment.id} className="border-b border-white/5 pb-4 last:border-0">
+                            <div className="flex justify-between items-start mb-2">
+                                <div>
+                                    <span className="font-bold text-white">{comment.user.name}</span>
+                                    <span className="text-xs text-gray-500 ml-2">{comment.created_at}</span>
+                                </div>
+                                <button
+                                    onClick={() => handleDelete(comment.id)}
+                                    className="text-red-500 hover:text-red-400 text-xs font-bold uppercase tracking-widest"
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                            <p className="text-gray-400 text-sm">{comment.content}</p>
+                            
+                            {/* Replies */}
+                            {comment.replies && comment.replies.length > 0 && (
+                                <div className="ml-8 mt-4 space-y-4 border-l border-white/5 pl-4">
+                                    {comment.replies.map((reply: any) => (
+                                        <div key={reply.id}>
+                                            <div className="flex justify-between items-start mb-1">
+                                                <div>
+                                                    <span className="font-bold text-white text-xs">{reply.user.name}</span>
+                                                    <span className="text-[10px] text-gray-500 ml-2">{reply.created_at}</span>
+                                                </div>
+                                                <button
+                                                    onClick={() => handleDelete(reply.id)}
+                                                    className="text-red-500 hover:text-red-400 text-[10px] font-bold uppercase tracking-widest"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </div>
+                                            <p className="text-gray-400 text-xs">{reply.content}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            )}
+        </section>
+    );
+}
+
+import { useCallback } from "react";
+import { toast } from "sonner";
