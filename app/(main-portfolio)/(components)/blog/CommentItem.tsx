@@ -14,6 +14,8 @@ interface CommentItemProps {
     onReplySuccess: (newReply: Comment) => void;
 }
 
+import { getGuestId } from "@/lib/guest";
+
 export default function CommentItem({ comment, blogId, onReplySuccess }: CommentItemProps) {
     const [isReplying, setIsReplying] = useState(false);
     const [replyContent, setReplyContent] = useState("");
@@ -26,11 +28,12 @@ export default function CommentItem({ comment, blogId, onReplySuccess }: Comment
 
         try {
             setIsSubmitting(true);
-            const response = await apiFetch<Comment>(`blogs/${blogId}/comments`, {
+            const response = await apiFetch<Comment>(`v1/public/blogs/${blogId}/comments`, {
                 method: "POST",
                 body: JSON.stringify({
                     content: replyContent,
-                    parent_id: comment.id
+                    parent_id: comment.id,
+                    guest_id: getGuestId()
                 }),
             });
             

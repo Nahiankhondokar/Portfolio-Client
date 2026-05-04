@@ -5,6 +5,7 @@ import { Comment } from "@/app/(dashboard)/dashboard/blog/interface/Comment";
 import { apiFetch } from "@/lib/api";
 import { MessageSquare } from "lucide-react";
 import CommentItem from "./CommentItem";
+import { getGuestId } from "@/lib/guest";
 import { toast } from "sonner";
 
 interface CommentSectionProps {
@@ -47,15 +48,18 @@ export default function CommentSection({ blogId }: CommentSectionProps) {
 
         try {
             setIsSubmitting(true);
-            await apiFetch<Comment>(`blogs/${blogId}/comments`, {
+            await apiFetch<Comment>(`v1/public/blogs/${blogId}/comments`, {
                 method: "POST",
-                body: JSON.stringify({ content }),
+                body: JSON.stringify({ 
+                    content,
+                    guest_id: getGuestId()
+                }),
             });
             setContent("");
             toast.success("Comment posted!");
             fetchComments(); // Refresh list
         } catch (error: any) {
-            toast.error(error.message || "Failed to post comment. Make sure you are logged in.");
+            toast.error(error.message || "Failed to post comment.");
         } finally {
             setIsSubmitting(false);
         }

@@ -20,6 +20,8 @@ const reactions = [
     { type: "angry", icon: Angry, label: "Angry", color: "text-orange-600" },
 ];
 
+import { getGuestId } from "@/lib/guest";
+
 export default function ReactionSection({ blogId, initialCount }: ReactionSectionProps) {
     const [count, setCount] = useState(initialCount);
     const [showPicker, setShowPicker] = useState(false);
@@ -27,9 +29,12 @@ export default function ReactionSection({ blogId, initialCount }: ReactionSectio
 
     const handleReact = async (type: string) => {
         try {
-            const response = await apiFetch<{ status: string }>(`blogs/${blogId}/react`, {
+            const response = await apiFetch<{ status: string }>(`v1/public/blogs/${blogId}/react`, {
                 method: "POST",
-                body: JSON.stringify({ type }),
+                body: JSON.stringify({ 
+                    type,
+                    guest_id: getGuestId()
+                }),
             });
 
             if (response.status === "added") {
