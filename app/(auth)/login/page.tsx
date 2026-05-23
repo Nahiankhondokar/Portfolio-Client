@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
 import { User } from "@/type/user";
-import { LogInIcon, StepBackIcon } from "lucide-react";
+import { LogInIcon, StepBackIcon, EyeIcon, EyeOffIcon } from "lucide-react";
 import Link from "next/link";
 import GoogleLoginBtn from "@/app/(auth)/login/components/GoogleLoginBtn";
 import errorMessage from "@/lib/errorMessage";
@@ -32,7 +32,7 @@ export interface LoginResponse {
 export default function LoginPage() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
-
+    const [showPassword, setShowPassword] = useState(false);
     const form = useForm<LoginInput>({
         resolver: zodResolver(loginSchema),
     });
@@ -103,10 +103,20 @@ export default function LoginPage() {
                         {/* Password */}
                         <div className="space-y-1">
                             <Label>Password</Label>
-                            <Input
-                                type="password"
-                                {...form.register("password")}
-                            />
+                            <div className="relative">
+                                <Input
+                                    type={showPassword ? "text" : "password"}
+                                    {...form.register("password")}
+                                    className="pr-10"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                                >
+                                    {showPassword ? <EyeOffIcon size="16" /> : <EyeIcon size="16" />}
+                                </button>
+                            </div>
                             {form.formState.errors.password && (
                                 <p className="text-sm text-red-500">
                                     {form.formState.errors.password.message}
