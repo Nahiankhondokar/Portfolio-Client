@@ -78,7 +78,7 @@ export default function ExperienceTable() {
                                 <TableCell className="font-medium">
                                     {exp.title}
                                 </TableCell>
-                                <TableCell>{exp.company ?? "-"}</TableCell>
+                                <TableCell>{exp.institute ?? "-"}</TableCell>
                                 <TableCell>{exp.duration ?? "-"}</TableCell>
                                 <TableCell>{exp.start_date ?? "-"}</TableCell>
                                 <TableCell>{exp.end_date ?? "-"}</TableCell>
