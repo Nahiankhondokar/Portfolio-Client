@@ -147,14 +147,18 @@ export default function TodoPage() {
       if (data.success) {
         setTodos(data.todos);
         setLiveTodos(data.todos);
-        setStats(data.stats);
+        const normalizedStats = {
+          ...data.stats,
+          active_todo_id: data.stats.active_todo_id ? Number(data.stats.active_todo_id) : null
+        };
+        setStats(normalizedStats);
         setLiveSecondsToday(Math.max(0, data.stats.total_worked_today_seconds));
         setLiveSecondsAllTime(Math.max(0, data.stats.total_worked_all_time_seconds));
         lastLoadTimeRef.current = Date.now();
 
         // Sync localStorage with API state
-        if (data.stats.active_todo_id && data.stats.active_timer_started_at) {
-          const activeTodo = data.todos.find((t: Todo) => t.id === data.stats.active_todo_id);
+        if (normalizedStats.active_todo_id && normalizedStats.active_timer_started_at) {
+          const activeTodo = data.todos.find((t: Todo) => Number(t.id) === Number(normalizedStats.active_todo_id));
           localStorage.setItem("active_todo_id", data.stats.active_todo_id.toString());
           localStorage.setItem("active_timer_started_at", data.stats.active_timer_started_at);
           if (activeTodo) {
@@ -202,7 +206,7 @@ export default function TodoPage() {
         // Update specific todo duration dynamically in local view safely capping at 0
         setLiveTodos(() =>
           todos.map((todo) => {
-            if (todo.id === stats.active_todo_id) {
+            if (stats.active_todo_id && Number(todo.id) === Number(stats.active_todo_id)) {
               return {
                 ...todo,
                 total_duration: Math.max(0, todo.total_duration + secondsSinceLoad),
@@ -259,10 +263,10 @@ export default function TodoPage() {
     try {
       const updatedValue = !todo.completed;
       // Optimistic update
-      setTodos(prev => prev.map(t => t.id === todo.id ? { ...t, completed: updatedValue } : t));
+      setTodos(prev => prev.map(t => Number(t.id) === Number(todo.id) ? { ...t, completed: updatedValue } : t));
       
       // If marking active task complete, remove localStorage tracking
-      if (updatedValue && stats.active_todo_id === todo.id) {
+      if (updatedValue && stats.active_todo_id && Number(stats.active_todo_id) === Number(todo.id)) {
         localStorage.removeItem("active_todo_id");
         localStorage.removeItem("active_timer_started_at");
         localStorage.removeItem("active_todo_title");
@@ -334,9 +338,9 @@ export default function TodoPage() {
   const handleDeleteTodo = async (id: number) => {
     try {
       // Optimistic delete
-      setTodos(prev => prev.filter(t => t.id !== id));
+      setTodos(prev => prev.filter(t => Number(t.id) !== Number(id)));
 
-      if (stats.active_todo_id === id) {
+      if (stats.active_todo_id && Number(stats.active_todo_id) === Number(id)) {
         localStorage.removeItem("active_todo_id");
         localStorage.removeItem("active_timer_started_at");
         localStorage.removeItem("active_todo_title");
@@ -368,7 +372,7 @@ export default function TodoPage() {
 
   // Toggle Timer Play/Pause
   const handleToggleTimer = async (todo: Todo) => {
-    const isCurrentlyRunning = stats.active_todo_id === todo.id;
+    const isCurrentlyRunning = stats.active_todo_id ? Number(stats.active_todo_id) === Number(todo.id) : false;
     const urlSuffix = isCurrentlyRunning ? "stop-track" : "start-track";
     try {
 
@@ -592,7 +596,7 @@ export default function TodoPage() {
                     ) : (
                       liveTodos.map((todo) => {
                         const isEditing = editingId === todo.id;
-                        const isRunning = stats.active_todo_id === todo.id;
+                        const isRunning = stats.active_todo_id ? Number(stats.active_todo_id) === Number(todo.id) : false;
 
                         return (
                           <motion.div
