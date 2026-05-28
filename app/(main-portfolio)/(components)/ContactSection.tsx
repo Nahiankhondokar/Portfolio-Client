@@ -71,7 +71,7 @@ const ContactSection = ({ data }: { data: Contact }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="py-20"
+            className="pt-8 pb-12"
         >
             <h2 className="text-center text-4xl lg:text-5xl font-black uppercase mb-16">
                 Get In <span className="text-yellow-500">Touch</span>

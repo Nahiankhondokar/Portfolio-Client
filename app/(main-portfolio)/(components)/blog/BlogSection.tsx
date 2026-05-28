@@ -175,7 +175,7 @@ const BlogSection = ({ data }: Props) => {
 
     return (
         <>
-            <section className="py-24 px-4 relative overflow-hidden">
+            <section className="py-12 lg:py-24 px-4 relative overflow-hidden">
                 {/* Section Header */}
                 <div className="flex flex-col items-center mb-20 text-center">
                     <h2 className="text-5xl lg:text-7xl font-black uppercase tracking-tighter italic text-zinc-800/30 absolute -top-4 select-none">
