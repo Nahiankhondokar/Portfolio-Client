@@ -125,7 +125,7 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
                 />
             </div>
 
-            <main className="container mx-auto px-4 lg:px-20 pb-24">
+            <main className="container mx-auto px-4 lg:px-20 pb-12 sm:pb-24">
 
                 {/* All sections rendered simultaneously — scroll-spy controls the active indicator */}
                 <section id="home">
@@ -154,7 +154,7 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
             </main>
 
             {/* --- Premium Professional Footer --- */}
-            <footer className="border-t border-zinc-900 bg-black/60 backdrop-blur-xl py-12 mt-12 relative z-50">
+            <footer className="border-t border-zinc-900 bg-black/60 backdrop-blur-xl pt-12 pb-32 sm:py-12 mt-12 relative z-50">
                 <div className="container mx-auto px-4 lg:px-20 flex flex-col sm:flex-row justify-between items-center gap-6">
                     <p className="text-zinc-500 text-xs font-semibold tracking-wide uppercase">
                         © {new Date().getFullYear()} {home.name}. All rights reserved.

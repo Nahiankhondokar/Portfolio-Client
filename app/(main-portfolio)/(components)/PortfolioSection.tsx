@@ -39,7 +39,7 @@ const PortfolioSection = ({ data }: Props) => {
     }
 
     return (
-        <section className="py-24 relative">
+        <section className="py-12 lg:py-24 relative">
             {/* Section Header */}
             <div className="flex flex-col items-center mb-20 text-center">
                 <h2 className="text-5xl lg:text-7xl font-black uppercase tracking-tighter italic text-zinc-800/30 absolute -top-4 select-none">
