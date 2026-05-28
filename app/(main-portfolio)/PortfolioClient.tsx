@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import HomeSection from "@/app/(main-portfolio)/(components)/HomeSection";
 import AboutSection from "@/app/(main-portfolio)/(components)/About/AboutSection";
 import PortfolioSection from "@/app/(main-portfolio)/(components)/PortfolioSection";
@@ -151,6 +152,30 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
                 </section>
 
             </main>
+
+            {/* --- Premium Professional Footer --- */}
+            <footer className="border-t border-zinc-900 bg-black/60 backdrop-blur-xl py-12 mt-12 relative z-50">
+                <div className="container mx-auto px-4 lg:px-20 flex flex-col sm:flex-row justify-between items-center gap-6">
+                    <p className="text-zinc-500 text-xs font-semibold tracking-wide uppercase">
+                        © {new Date().getFullYear()} {home.name}. All rights reserved.
+                    </p>
+
+                    {/* Sleek, professional CTA button for public Todo tracker */}
+                    <Link
+                        href="/todo"
+                        className="relative px-6 py-3 bg-zinc-950 border border-zinc-800 rounded-2xl hover:border-yellow-500/50 hover:bg-zinc-900 transition-all duration-300 group flex items-center gap-3 overflow-hidden shadow-lg"
+                    >
+                        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-yellow-500/30 to-transparent" />
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 group-hover:text-yellow-500 transition-colors">
+                            Todo & Time Tracker
+                        </span>
+                        <span className="text-zinc-600 group-hover:text-white group-hover:translate-x-0.5 transition-all text-xs">
+                            →
+                        </span>
+                    </Link>
+                </div>
+            </footer>
 
             {/* --- Chatbot System --- */}
             <div className="fixed bottom-24 right-6 z-[999] lg:bottom-8 lg:right-8 flex flex-col items-end">
