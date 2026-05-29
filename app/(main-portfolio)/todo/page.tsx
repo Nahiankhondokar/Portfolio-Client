@@ -135,6 +135,9 @@ export default function TodoPage() {
     try {
       const res = await fetch(`${API_BASE}v1/public/todos`, {
         cache: "no-store",
+        headers: {
+          "X-Timezone": Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
+        },
       });
       if (!res.ok) {
         if (res.status === 429) {
