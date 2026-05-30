@@ -516,11 +516,11 @@ export default function TodoPage() {
               Back to Portfolio
             </Link>
             <h1 className="text-4xl lg:text-5xl font-black tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-500 bg-clip-text text-transparent">
-              Demo Tasks & Tracker
+              Task Board & Time Analytics
             </h1>
             <p className="text-zinc-500 text-sm mt-1 flex items-center gap-1.5">
               <Info size={14} className="text-yellow-500/70" />
-              Demonstration utility. List and logs are mapped using your client IP address.
+              An interactive dashboard to manage task execution and log active focus hours. Data is isolated via your client IP address.
             </p>
           </div>
 
