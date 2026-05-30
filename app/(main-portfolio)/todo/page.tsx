@@ -71,6 +71,14 @@ export default function TodoPage() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingTitle, setEditingTitle] = useState("");
   const [notification, setNotification] = useState<{ message: string; type: "success" | "error" | "info" } | null>(null);
+  const [loadingActions, setLoadingActions] = useState<{
+    [todoId: number]: {
+      complete?: boolean;
+      timer?: boolean;
+      delete?: boolean;
+      edit?: boolean;
+    }
+  }>({});
 
   // Live ticking values for active timer
   const [liveSecondsToday, setLiveSecondsToday] = useState(0);
@@ -263,6 +271,7 @@ export default function TodoPage() {
 
   // Toggle todo completion
   const handleToggleComplete = async (todo: Todo) => {
+    setLoadingActions(prev => ({ ...prev, [todo.id]: { ...prev[todo.id], complete: true } }));
     try {
       const updatedValue = !todo.completed;
       // Optimistic update
@@ -298,6 +307,8 @@ export default function TodoPage() {
     } catch (err) {
       showToast("Network error updating status", "error");
       fetchData(true);
+    } finally {
+      setLoadingActions(prev => ({ ...prev, [todo.id]: { ...prev[todo.id], complete: false } }));
     }
   };
 
@@ -314,7 +325,7 @@ export default function TodoPage() {
 
   const handleSaveEdit = async (id: number) => {
     if (!editingTitle.trim()) return;
-
+    setLoadingActions(prev => ({ ...prev, [id]: { ...prev[id], edit: true } }));
     try {
       const res = await fetch(`${API_BASE}v1/public/todos/${id}`, {
         method: "PUT",
@@ -334,11 +345,14 @@ export default function TodoPage() {
       }
     } catch (err) {
       showToast("Network error saving edits", "error");
+    } finally {
+      setLoadingActions(prev => ({ ...prev, [id]: { ...prev[id], edit: false } }));
     }
   };
 
   // Delete Todo task
   const handleDeleteTodo = async (id: number) => {
+    setLoadingActions(prev => ({ ...prev, [id]: { ...prev[id], delete: true } }));
     try {
       // Optimistic delete
       setTodos(prev => prev.filter(t => Number(t.id) !== Number(id)));
@@ -370,6 +384,8 @@ export default function TodoPage() {
     } catch (err) {
       showToast("Network error deleting task", "error");
       fetchData(true);
+    } finally {
+      setLoadingActions(prev => ({ ...prev, [id]: { ...prev[id], delete: false } }));
     }
   };
 
@@ -377,6 +393,7 @@ export default function TodoPage() {
   const handleToggleTimer = async (todo: Todo) => {
     const isCurrentlyRunning = stats.active_todo_id ? Number(stats.active_todo_id) === Number(todo.id) : false;
     const urlSuffix = isCurrentlyRunning ? "stop-track" : "start-track";
+    setLoadingActions(prev => ({ ...prev, [todo.id]: { ...prev[todo.id], timer: true } }));
     try {
 
       if (!isCurrentlyRunning) {
@@ -428,6 +445,8 @@ export default function TodoPage() {
         localStorage.removeItem("active_todo_title");
         localStorage.removeItem("active_todo_duration");
       }
+    } finally {
+      setLoadingActions(prev => ({ ...prev, [todo.id]: { ...prev[todo.id], timer: false } }));
     }
   };
 
@@ -601,6 +620,11 @@ export default function TodoPage() {
                         const isEditing = editingId === todo.id;
                         const isRunning = stats.active_todo_id ? Number(stats.active_todo_id) === Number(todo.id) : false;
 
+                        const isCompleteLoading = loadingActions[todo.id]?.complete;
+                        const isTimerLoading = loadingActions[todo.id]?.timer;
+                        const isDeleteLoading = loadingActions[todo.id]?.delete;
+                        const isEditLoading = loadingActions[todo.id]?.edit;
+
                         return (
                           <motion.div
                             key={todo.id}
@@ -620,11 +644,18 @@ export default function TodoPage() {
                               {/* Complete Checkbox Button */}
                               <button
                                 onClick={() => handleToggleComplete(todo)}
+                                disabled={isCompleteLoading}
                                 className={`mt-0.5 text-zinc-500 transition-colors duration-200 focus:outline-none flex-shrink-0 ${
-                                  todo.completed ? "text-emerald-500" : "hover:text-yellow-500"
+                                  isCompleteLoading 
+                                    ? "animate-pulse pointer-events-none opacity-40" 
+                                    : todo.completed 
+                                    ? "text-emerald-500" 
+                                    : "hover:text-yellow-500"
                                 }`}
                               >
-                                {todo.completed ? (
+                                {isCompleteLoading ? (
+                                  <Circle size={20} className="text-zinc-700" />
+                                ) : todo.completed ? (
                                   <CheckCircle2 size={20} fill="currentColor" className="text-emerald-500 fill-zinc-950" />
                                 ) : (
                                   <Circle size={20} />
@@ -644,9 +675,18 @@ export default function TodoPage() {
                                     />
                                     <button 
                                       onClick={() => handleSaveEdit(todo.id)}
-                                      className="p-1.5 bg-yellow-500/20 text-yellow-500 rounded-lg hover:bg-yellow-500/30 transition-colors"
+                                      disabled={isEditLoading}
+                                      className={`p-1.5 rounded-lg transition-colors ${
+                                        isEditLoading
+                                          ? "animate-pulse bg-zinc-800 text-transparent pointer-events-none"
+                                          : "bg-yellow-500/20 text-yellow-500 hover:bg-yellow-500/30"
+                                      }`}
                                     >
-                                      <Check size={16} strokeWidth={2.5} />
+                                      {isEditLoading ? (
+                                        <div className="w-4 h-4" />
+                                      ) : (
+                                        <Check size={16} strokeWidth={2.5} />
+                                      )}
                                     </button>
                                     <button 
                                       onClick={cancelEditing}
@@ -676,13 +716,18 @@ export default function TodoPage() {
                               {!todo.completed && (
                                 <button
                                   onClick={() => handleToggleTimer(todo)}
+                                  disabled={isTimerLoading}
                                   className={`px-3.5 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-1.5 transition-all duration-200 active:scale-95 ${
-                                    isRunning
+                                    isTimerLoading
+                                      ? "animate-pulse bg-zinc-800 text-transparent border border-zinc-800 pointer-events-none cursor-not-allowed"
+                                      : isRunning
                                       ? "bg-yellow-500 text-black shadow-[0_0_10px_rgba(234,179,8,0.2)]"
                                       : "bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-400 hover:text-white"
                                   }`}
                                 >
-                                  {isRunning ? (
+                                  {isTimerLoading ? (
+                                    <span className="opacity-0">Tracking</span>
+                                  ) : isRunning ? (
                                     <>
                                       <Pause size={12} fill="currentColor" strokeWidth={3} />
                                       <span>Tracking</span>
@@ -710,10 +755,19 @@ export default function TodoPage() {
                               {/* Delete Action */}
                               <button
                                 onClick={() => handleDeleteTodo(todo.id)}
-                                className="p-2 bg-zinc-900 border border-zinc-800 rounded-xl hover:border-rose-500/30 text-zinc-500 hover:text-rose-400 transition-colors focus:outline-none"
+                                disabled={isDeleteLoading}
+                                className={`p-2 bg-zinc-900 border border-zinc-800 rounded-xl hover:border-rose-500/30 text-zinc-500 hover:text-rose-400 transition-colors focus:outline-none ${
+                                  isDeleteLoading
+                                    ? "animate-pulse bg-zinc-800 text-transparent border border-zinc-800 pointer-events-none"
+                                    : ""
+                                }`}
                                 title="Delete Task"
                               >
-                                <Trash2 size={14} />
+                                {isDeleteLoading ? (
+                                  <div className="w-3.5 h-3.5" />
+                                ) : (
+                                  <Trash2 size={14} />
+                                )}
                               </button>
                             </div>
                           </motion.div>
