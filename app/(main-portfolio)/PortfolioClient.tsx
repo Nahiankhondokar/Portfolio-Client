@@ -13,6 +13,7 @@ import { MessageCircle, X, Monitor, Keyboard, Wifi, Headphones, Gamepad2 } from 
 import ChatWidget from "@/Widget/ChatWidget";
 import BlogSection from "@/app/(main-portfolio)/(components)/blog/BlogSection";
 import { Blog } from "@/app/(dashboard)/dashboard/blog/interface/Blog";
+import GithubActivitySection from "@/app/(main-portfolio)/(components)/GithubActivitySection";
 
 // Create a small utility to get or create a Guest ID
 export const getChatSessionId = () => {
@@ -25,7 +26,7 @@ export const getChatSessionId = () => {
 };
 
 // Sections in render order
-const SECTIONS: Section[] = ["home", "about", "portfolio", "blog", "contact"];
+const SECTIONS: Section[] = ["home", "about", "portfolio", "activity", "blog", "contact"];
 
 export default function PortfolioClient({ home, about, portfolio, contact, blog }: {
     home: Home,
@@ -164,6 +165,10 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
 
                 <section id="portfolio">
                     <PortfolioSection data={portfolio} />
+                </section>
+
+                <section id="activity">
+                    <GithubActivitySection />
                 </section>
 
                 <section id="blog">

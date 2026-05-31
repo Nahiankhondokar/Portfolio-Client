@@ -3,7 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import {
-    Home, User, Briefcase, Mail, BookIcon
+    Home, User, Briefcase, Mail, BookIcon, Activity
 } from "lucide-react";
 import { Section } from "@/app/(main-portfolio)/type/type";
 import MobileHeader from "@/app/(main-portfolio)/(components)/MobileHeader";
@@ -18,6 +18,7 @@ const HeaderSection = ({ activeSection, scrollToSection }: HeaderProps) => {
         { id: "home", icon: <Home size={20} />, label: "Home" },
         { id: "about", icon: <User size={20} />, label: "About" },
         { id: "portfolio", icon: <Briefcase size={20} />, label: "Portfolio" },
+        { id: "activity", icon: <Activity size={20} />, label: "Activity" },
         { id: "blog", icon: <BookIcon size={20} />, label: "Blog" },
         { id: "contact", icon: <Mail size={20} />, label: "Contact" },
     ];
