@@ -49,9 +49,9 @@ const AboutSection = ({ data }: { data: About }) => {
             <div className="container mx-auto px-4 sm:px-6 relative z-10">
                 <header className="mb-12 lg:mb-20 text-center lg:text-left">
                     <h2 className="text-4xl sm:text-5xl lg:text-7xl font-black uppercase tracking-tight leading-none">
-                        About <span className="text-yellow-500">Me.</span>
+                        About <span className="text-emerald-400">Me.</span>
                     </h2>
-                    <div className="h-1 w-16 sm:w-20 bg-yellow-500 mt-4 mx-auto lg:mx-0" />
+                    <div className="h-1 w-16 sm:w-20 bg-emerald-500 mt-4 mx-auto lg:mx-0" />
                 </header>
 
                 <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
@@ -65,7 +65,7 @@ const AboutSection = ({ data }: { data: About }) => {
                                         {item.icon}
                                         <span className="text-[10px] uppercase tracking-[2px] font-black">{item.label}</span>
                                     </div>
-                                    <p className="text-sm sm:text-base text-zinc-200 font-medium group-hover:text-yellow-500 transition-colors truncate">
+                                    <p className="text-sm sm:text-base text-zinc-200 font-medium group-hover:text-emerald-400 transition-colors truncate">
                                         {item.value}
                                     </p>
                                 </div>
@@ -76,7 +76,7 @@ const AboutSection = ({ data }: { data: About }) => {
                         <div className="flex flex-col sm:flex-row gap-4 pt-4">
                             <button
                                 onClick={() => resume_url && window.open(resume_url, "_blank")}
-                                className="flex-1 sm:flex-none flex items-center justify-center gap-3 bg-yellow-500 text-black px-8 py-4 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-yellow-400 transition-all active:scale-95"
+                                className="flex-1 sm:flex-none flex items-center justify-center gap-3 bg-emerald-500 text-black px-8 py-4 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-emerald-400 transition-all active:scale-95 shadow-[0_10px_30px_rgba(16, 185, 129,0.15)]"
                             >
                                 <Download size={18} strokeWidth={2.5} />
                                 Download CV
@@ -98,9 +98,9 @@ const AboutSection = ({ data }: { data: About }) => {
                             <motion.div
                                 key={i}
                                 whileHover={{ y: -5 }}
-                                className="bg-zinc-900/40 border border-zinc-800/50 p-6 sm:p-8 rounded-2xl flex flex-col justify-center items-center text-center group hover:border-yellow-500 transition-colors"
+                                className="bg-zinc-900/40 border border-zinc-800/50 p-6 sm:p-8 rounded-2xl flex flex-col justify-center items-center text-center group hover:border-emerald-500 transition-colors"
                             >
-                                <span className="text-3xl sm:text-4xl font-black text-yellow-500 mb-1 group-hover:scale-110 transition-transform">
+                                <span className="text-3xl sm:text-4xl font-black text-emerald-400 mb-1 group-hover:scale-110 transition-transform">
                                     {stat.value}
                                 </span>
                                 <span className="text-[9px] uppercase tracking-[2px] text-zinc-500 font-black leading-tight max-w-[80%]">
@@ -140,7 +140,7 @@ const AboutSection = ({ data }: { data: About }) => {
                                 </div>
                                 <button
                                     onClick={() => setIsPreviewOpen(false)}
-                                    className="bg-yellow-500 text-black px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest ml-auto"
+                                    className="bg-emerald-500 text-black px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest ml-auto hover:bg-emerald-400"
                                 >
                                     Close
                                 </button>

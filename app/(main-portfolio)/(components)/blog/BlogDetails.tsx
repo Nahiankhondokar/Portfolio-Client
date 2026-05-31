@@ -25,7 +25,7 @@ const BlogDetailsContent = ({ blog }: { blog: Blog }) => {
         <main className="relative min-h-screen bg-black text-zinc-300 pb-24">
             {/* Reading Progress Bar */}
             <motion.div
-                className="fixed top-0 left-0 right-0 h-1 bg-yellow-500 origin-left z-[100]"
+                className="fixed top-0 left-0 right-0 h-1 bg-emerald-500 origin-left z-[100]"
                 style={{ scaleX }}
             />
 
@@ -34,7 +34,7 @@ const BlogDetailsContent = ({ blog }: { blog: Blog }) => {
                 <div className="max-w-5xl mx-auto flex justify-between items-center">
                     <Link
                         href="/#blog"
-                        className="group flex items-center gap-2 text-zinc-500 hover:text-yellow-500 transition-colors font-bold uppercase text-[10px] tracking-[2px]"
+                        className="group flex items-center gap-2 text-zinc-500 hover:text-emerald-400 transition-colors font-bold uppercase text-[10px] tracking-[2px]"
                     >
                         <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
                         Back to Journal
@@ -55,7 +55,7 @@ const BlogDetailsContent = ({ blog }: { blog: Blog }) => {
                         animate={{ opacity: 1, y: 0 }}
                         className="flex flex-wrap items-center gap-6 text-zinc-500 text-[10px] font-black uppercase tracking-[3px] mb-8"
                     >
-                        <div className="flex items-center gap-2 text-yellow-500">
+                        <div className="flex items-center gap-2 text-emerald-400">
                             <Tag size={12} />
                             <span>Engineering</span>
                         </div>
@@ -83,7 +83,7 @@ const BlogDetailsContent = ({ blog }: { blog: Blog }) => {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.2 }}
-                            className="text-xl md:text-2xl text-zinc-400 font-medium leading-relaxed max-w-2xl italic border-l-2 border-yellow-500 pl-8 py-2"
+                            className="text-xl md:text-2xl text-zinc-400 font-medium leading-relaxed max-w-2xl italic border-l-2 border-emerald-500 pl-8 py-2"
                         >
                             {blog.subtitle}
                         </motion.p>
@@ -113,11 +113,11 @@ const BlogDetailsContent = ({ blog }: { blog: Blog }) => {
                 <div className="prose prose-invert lg:prose-xl max-w-none 
                     prose-headings:text-white prose-headings:font-black prose-headings:tracking-tight
                     prose-p:text-zinc-400 prose-p:leading-[1.8] prose-p:mb-8
-                    prose-strong:text-yellow-500 prose-strong:font-bold
-                    prose-a:text-yellow-500 prose-a:no-underline hover:prose-a:underline
-                    prose-code:text-yellow-200 prose-code:bg-zinc-900 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:before:content-none prose-code:after:content-none
+                    prose-strong:text-emerald-400 prose-strong:font-bold
+                    prose-a:text-emerald-400 prose-a:no-underline hover:prose-a:underline
+                    prose-code:text-emerald-200 prose-code:bg-zinc-900 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:before:content-none prose-code:after:content-none
                     prose-pre:bg-zinc-950 prose-pre:border prose-pre:border-zinc-800 prose-pre:rounded-3xl
-                    prose-blockquote:border-l-yellow-500 prose-blockquote:bg-zinc-900/30 prose-blockquote:py-2 prose-blockquote:rounded-r-2xl
+                    prose-blockquote:border-l-emerald-500 prose-blockquote:bg-zinc-900/30 prose-blockquote:py-2 prose-blockquote:rounded-r-2xl
                     prose-img:rounded-[2rem] prose-img:shadow-2xl">
                     <div dangerouslySetInnerHTML={{ __html: blog.description || "" }} />
                 </div>
@@ -132,7 +132,7 @@ const BlogDetailsContent = ({ blog }: { blog: Blog }) => {
                 <footer className="mt-32 pt-16 border-t border-zinc-900">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-8">
                         <div className="flex items-center gap-4">
-                            <div className="w-16 h-16 rounded-2xl bg-yellow-500 flex items-center justify-center font-black text-black text-2xl">
+                            <div className="w-16 h-16 rounded-2xl bg-emerald-500 flex items-center justify-center font-black text-black text-2xl">
                                 {blog.title.charAt(0)}
                             </div>
                             <div>
@@ -143,7 +143,7 @@ const BlogDetailsContent = ({ blog }: { blog: Blog }) => {
 
                         <Link
                             href="/#contact"
-                            className="bg-white text-black px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-yellow-500 transition-all active:scale-95"
+                            className="bg-white text-black px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-emerald-500 transition-all active:scale-95"
                         >
                             Discuss this Project
                         </Link>

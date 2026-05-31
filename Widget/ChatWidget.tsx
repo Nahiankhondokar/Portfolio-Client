@@ -87,7 +87,7 @@ export default function ChatWidget({ guestId }: { guestId: string }) {
             <div className="p-5 border-b border-zinc-800 bg-zinc-900/50 backdrop-blur-xl flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     <div className="relative">
-                        <div className="w-10 h-10 rounded-2xl bg-yellow-500 flex items-center justify-center text-black shadow-lg">
+                        <div className="w-10 h-10 rounded-2xl bg-emerald-500 flex items-center justify-center text-black shadow-lg shadow-emerald-500/20">
                             <User size={20} strokeWidth={2.5} />
                         </div>
                         <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-black rounded-full" />
@@ -119,7 +119,7 @@ export default function ChatWidget({ guestId }: { guestId: string }) {
                                 >
                                     <div
                                         className={`relative max-w-[80%] px-4 py-2.5 shadow-sm transition-all ${isGuest
-                                            ? "bg-yellow-500 text-black rounded-2xl rounded-tr-sm"
+                                            ? "bg-emerald-500 text-black rounded-2xl rounded-tr-sm"
                                             : "bg-zinc-900 text-zinc-100 border border-zinc-800 rounded-2xl rounded-tl-sm"
                                             }`}
                                     >
@@ -166,7 +166,7 @@ export default function ChatWidget({ guestId }: { guestId: string }) {
                 <form
                     id="chat-form"
                     onSubmit={handleSendMessage}
-                    className="relative flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-2xl p-1.5 focus-within:border-yellow-500/50 transition-all"
+                    className="relative flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-2xl p-1.5 focus-within:border-emerald-500/50 transition-all"
                 >
                     <Input
                         value={input}
@@ -178,7 +178,7 @@ export default function ChatWidget({ guestId }: { guestId: string }) {
                         type="submit"
                         size="icon"
                         disabled={!input.trim()}
-                        className="bg-yellow-500 hover:bg-yellow-600 text-black rounded-xl shrink-0 shadow-lg transition-transform active:scale-95 disabled:opacity-50 disabled:grayscale"
+                        className="bg-emerald-500 hover:bg-emerald-600 text-black rounded-xl shrink-0 shadow-lg transition-transform active:scale-95 disabled:opacity-50 disabled:grayscale"
                     >
                         <Send size={16} strokeWidth={2.5} />
                     </Button>

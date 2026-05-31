@@ -34,7 +34,7 @@ const ExAndEduSection = ({ experiences, educations }: { experiences: Experience[
             {/* Editorial Header */}
             <div className="text-center mb-20">
                 <h3 className="text-4xl lg:text-5xl font-black uppercase tracking-tighter">
-                    Career <span className="text-yellow-500">&</span> Education
+                    Career <span className="text-emerald-400">&</span> Education
                 </h3>
                 <div className="flex items-center justify-center gap-2 mt-4">
                     <div className="h-px w-8 bg-zinc-800" />
@@ -53,7 +53,7 @@ const ExAndEduSection = ({ experiences, educations }: { experiences: Experience[
                 {/* Experience Column */}
                 <motion.div variants={columnVariants(-30)} className="relative">
                     <div className="flex items-center gap-4 mb-10">
-                        <div className="p-3 bg-yellow-500 rounded-2xl shadow-[0_0_20px_rgba(234,179,8,0.2)]">
+                        <div className="p-3 bg-emerald-500 rounded-2xl shadow-[0_0_20px_rgba(16, 185, 129,0.2)]">
                             <Briefcase size={20} className="text-black" />
                         </div>
                         <h4 className="text-xl font-black uppercase tracking-tight text-white">Experience</h4>
@@ -61,7 +61,7 @@ const ExAndEduSection = ({ experiences, educations }: { experiences: Experience[
 
                     <div className="relative pl-2">
                         {/* The Timeline Track Line */}
-                        <div className="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-yellow-500/50 via-zinc-800 to-transparent ml-[-1px]" />
+                        <div className="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-emerald-500/50 via-zinc-800 to-transparent ml-[-1px]" />
 
                         {experiences.length > 0 ? (
                             <div className="space-y-2">
@@ -83,7 +83,7 @@ const ExAndEduSection = ({ experiences, educations }: { experiences: Experience[
                 <motion.div variants={columnVariants(30)} className="relative mt-12 lg:mt-0">
                     <div className="flex items-center gap-4 mb-10">
                         <div className="p-3 bg-zinc-900 border border-zinc-800 rounded-2xl">
-                            <GraduationCapIcon size={20} className="text-yellow-500" />
+                            <GraduationCapIcon size={20} className="text-emerald-400" />
                         </div>
                         <h4 className="text-xl font-black uppercase tracking-tight text-white">Education</h4>
                     </div>

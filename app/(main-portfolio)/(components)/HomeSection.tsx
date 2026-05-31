@@ -21,7 +21,7 @@ const HomeSection = ({ onNavigate, data }: { onNavigate: (s: Section) => void, d
             {/* Left: Image Side */}
             <div className="w-full lg:w-5/12 flex justify-center lg:justify-start relative">
                 {/* Decorative Glow */}
-                <div className="absolute -inset-4 bg-yellow-500/10 blur-3xl rounded-full opacity-50" />
+                <div className="absolute -inset-4 bg-emerald-500/10 blur-3xl rounded-full opacity-50" />
 
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -48,13 +48,15 @@ const HomeSection = ({ onNavigate, data }: { onNavigate: (s: Section) => void, d
                 <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="flex items-center gap-2 bg-zinc-900/80 border border-zinc-800 px-4 py-2 rounded-full mb-6"
+                    className="flex items-center gap-2.5 bg-zinc-950/60 border border-zinc-900 px-4 py-2.5 rounded-full mb-6 shadow-[0_0_15px_rgba(16, 185, 129,0.05)]"
                 >
                     <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 shadow-[0_0_8px_#34d399]"></span>
                     </span>
-                    <span className="text-xs font-bold uppercase tracking-[2px] text-zinc-400">Available for hire</span>
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-[2px] text-emerald-400/90">
+                        Active & swimming in code
+                    </span>
                 </motion.div>
 
                 <motion.div
@@ -67,7 +69,7 @@ const HomeSection = ({ onNavigate, data }: { onNavigate: (s: Section) => void, d
                     </span>
                     <h1 className="text-5xl lg:text-8xl font-black uppercase leading-[0.9] tracking-tighter italic">
                         {data.name || "Carlos Yang"}
-                        <span className="text-yellow-500 block not-italic mt-2">
+                        <span className="text-emerald-400 block not-italic mt-2">
                             {data.subtitle || "Full Stack Dev"}
                         </span>
                     </h1>
@@ -92,7 +94,7 @@ const HomeSection = ({ onNavigate, data }: { onNavigate: (s: Section) => void, d
                 >
                     <button
                         onClick={() => onNavigate("about")}
-                        className="group relative flex items-center gap-6 bg-yellow-500 text-black px-10 py-5 rounded-2xl font-black uppercase tracking-wider hover:bg-white transition-all active:scale-95 shadow-[0_20px_50px_rgba(234,179,8,0.2)]"
+                        className="group relative flex items-center gap-6 bg-emerald-500 text-black px-10 py-5 rounded-2xl font-black uppercase tracking-wider hover:bg-white hover:text-black transition-all active:scale-95 shadow-[0_20px_50px_rgba(16, 185, 129,0.2)]"
                     >
                         More About Me
                         <div className="bg-black text-white p-2 rounded-lg group-hover:translate-x-2 transition-transform">
