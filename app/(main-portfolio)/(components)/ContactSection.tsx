@@ -74,7 +74,7 @@ const ContactSection = ({ data }: { data: Contact }) => {
             className="pt-8 pb-12"
         >
             <h2 className="text-center text-4xl lg:text-5xl font-black uppercase mb-16">
-                Get In <span className="text-yellow-500">Touch</span>
+                Get In <span className="text-emerald-400">Touch</span>
             </h2>
 
             <div className="grid lg:grid-cols-3 gap-10">
@@ -87,7 +87,7 @@ const ContactSection = ({ data }: { data: Contact }) => {
                     </p>
                     <div className="space-y-4">
                         <div className="flex items-center gap-4">
-                            <div className="bg-[#252525] p-3 rounded-full text-yellow-500">
+                            <div className="bg-[#252525] p-3 rounded-full text-emerald-400">
                                 <MapPin size={24} />
                             </div>
                             <div>
@@ -96,7 +96,7 @@ const ContactSection = ({ data }: { data: Contact }) => {
                             </div>
                         </div>
                         <div className="flex items-center gap-4">
-                            <div className="bg-[#252525] p-3 rounded-full text-yellow-500">
+                            <div className="bg-[#252525] p-3 rounded-full text-emerald-400">
                                 <MailIcon size={24} />
                             </div>
                             <div>
@@ -123,7 +123,7 @@ const ContactSection = ({ data }: { data: Contact }) => {
                                             <Input
                                                 placeholder="YOUR NAME"
                                                 {...field}
-                                                className="bg-[#252525] border-none rounded-2xl px-6 py-6 focus-visible:ring-2 focus-visible:ring-yellow-500 text-white placeholder:text-gray-500 uppercase text-xs font-bold"
+                                                className="bg-[#252525] border-none rounded-2xl px-6 py-6 focus-visible:ring-2 focus-visible:ring-emerald-500 text-white placeholder:text-gray-500 uppercase text-xs font-bold"
                                             />
                                         </FormControl>
                                         <FormMessage className="text-red-500 text-xs ml-4" />
@@ -140,7 +140,7 @@ const ContactSection = ({ data }: { data: Contact }) => {
                                             <Input
                                                 placeholder="YOUR EMAIL"
                                                 {...field}
-                                                className="bg-[#252525] border-none rounded-2xl px-6 py-6 focus-visible:ring-2 focus-visible:ring-yellow-500 text-white placeholder:text-gray-500 uppercase text-xs font-bold"
+                                                className="bg-[#252525] border-none rounded-2xl px-6 py-6 focus-visible:ring-2 focus-visible:ring-emerald-500 text-white placeholder:text-gray-500 uppercase text-xs font-bold"
                                             />
                                         </FormControl>
                                         <FormMessage className="text-red-500 text-xs ml-4" />
@@ -157,7 +157,7 @@ const ContactSection = ({ data }: { data: Contact }) => {
                                             <Input
                                                 placeholder="YOUR SUBJECT"
                                                 {...field}
-                                                className="bg-[#252525] border-none rounded-2xl px-6 py-6 focus-visible:ring-2 focus-visible:ring-yellow-500 text-white placeholder:text-gray-500 uppercase text-xs font-bold"
+                                                className="bg-[#252525] border-none rounded-2xl px-6 py-6 focus-visible:ring-2 focus-visible:ring-emerald-500 text-white placeholder:text-gray-500 uppercase text-xs font-bold"
                                             />
                                         </FormControl>
                                         <FormMessage className="text-red-500 text-xs ml-4" />
@@ -175,7 +175,7 @@ const ContactSection = ({ data }: { data: Contact }) => {
                                                 placeholder="YOUR MESSAGE"
                                                 rows={6}
                                                 {...field}
-                                                className="bg-[#252525] border-none rounded-2xl px-6 py-4 focus-visible:ring-2 focus-visible:ring-yellow-500 text-white placeholder:text-gray-500 uppercase text-xs font-bold resize-none"
+                                                className="bg-[#252525] border-none rounded-2xl px-6 py-4 focus-visible:ring-2 focus-visible:ring-emerald-500 text-white placeholder:text-gray-500 uppercase text-xs font-bold resize-none"
                                             />
                                         </FormControl>
                                         <FormMessage className="text-red-500 text-xs ml-4" />
@@ -186,10 +186,10 @@ const ContactSection = ({ data }: { data: Contact }) => {
                             <button
                                 type="submit"
                                 disabled={form.formState.isSubmitting}
-                                className="w-fit flex items-center gap-4 border-2 border-yellow-500 rounded-2xl pl-8 pr-2 py-2 font-bold uppercase tracking-wider hover:bg-yellow-500 hover:text-black transition-all group disabled:opacity-50"
+                                className="w-fit flex items-center gap-4 border-2 border-emerald-500 rounded-2xl pl-8 pr-2 py-2 font-bold uppercase tracking-wider hover:bg-emerald-500 hover:text-black transition-all group disabled:opacity-50"
                             >
                                 {form.formState.isSubmitting ? "Sending..." : "Send Message"}
-                                <span className="bg-yellow-500 text-white p-3 rounded-full group-hover:bg-black transition-colors">
+                                <span className="bg-emerald-500 text-white p-3 rounded-full group-hover:bg-black transition-colors">
                                     <Send size={18} />
                                 </span>
                             </button>

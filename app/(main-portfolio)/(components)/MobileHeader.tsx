@@ -33,7 +33,7 @@ const MobileHeader = ({ navItems, activeSection, scrollToSection }: propsType) =
                                 {isActive && (
                                     <motion.div
                                         layoutId="activePill"
-                                        className="absolute inset-0 bg-yellow-500 rounded-full -z-10"
+                                        className="absolute inset-0 bg-emerald-500 rounded-full -z-10 shadow-[0_0_15px_rgba(16, 185, 129,0.4)]"
                                         transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                                     />
                                 )}

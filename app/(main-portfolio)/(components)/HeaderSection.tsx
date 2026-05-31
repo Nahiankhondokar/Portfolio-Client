@@ -3,7 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import {
-    Home, User, Briefcase, Mail, BookIcon
+    Home, User, Briefcase, Mail, BookIcon, Activity
 } from "lucide-react";
 import { Section } from "@/app/(main-portfolio)/type/type";
 import MobileHeader from "@/app/(main-portfolio)/(components)/MobileHeader";
@@ -18,6 +18,7 @@ const HeaderSection = ({ activeSection, scrollToSection }: HeaderProps) => {
         { id: "home", icon: <Home size={20} />, label: "Home" },
         { id: "about", icon: <User size={20} />, label: "About" },
         { id: "portfolio", icon: <Briefcase size={20} />, label: "Portfolio" },
+        { id: "activity", icon: <Activity size={20} />, label: "Activity" },
         { id: "blog", icon: <BookIcon size={20} />, label: "Blog" },
         { id: "contact", icon: <Mail size={20} />, label: "Contact" },
     ];
@@ -40,13 +41,13 @@ const HeaderSection = ({ activeSection, scrollToSection }: HeaderProps) => {
                                 {isActive && (
                                     <motion.div
                                         layoutId="activeTab"
-                                        className="absolute inset-0 bg-yellow-500 rounded-full"
+                                        className="absolute inset-0 bg-emerald-500 rounded-full shadow-[0_0_15px_rgba(16, 185, 129,0.4)]"
                                         transition={{ type: "spring", bounce: 0.25, duration: 0.5 }}
                                     />
                                 )}
 
                                 {/* Icon */}
-                                <span className={`relative z-10 transition-colors duration-300 ${isActive ? "text-black" : "text-zinc-500 group-hover:text-yellow-500"
+                                <span className={`relative z-10 transition-colors duration-300 ${isActive ? "text-black font-bold" : "text-zinc-500 group-hover:text-emerald-400"
                                     }`}>
                                     {item.icon}
                                 </span>
@@ -55,11 +56,11 @@ const HeaderSection = ({ activeSection, scrollToSection }: HeaderProps) => {
                                 <div className="absolute right-16 top-1/2 -translate-y-1/2 pointer-events-none">
                                     <div className="relative flex items-center">
                                         <div className="opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-300 ease-out flex items-center">
-                                            <span className="bg-yellow-500 text-black text-[10px] font-black uppercase tracking-[2px] py-2 px-4 rounded-xl whitespace-nowrap shadow-xl">
+                                            <span className="bg-emerald-500 text-black text-[10px] font-black uppercase tracking-[2px] py-2 px-4 rounded-xl whitespace-nowrap shadow-xl">
                                                 {item.label}
                                             </span>
                                             {/* Tooltip Arrow */}
-                                            <div className="w-2 h-2 bg-yellow-500 rotate-45 -ml-1 rounded-sm" />
+                                            <div className="w-2 h-2 bg-emerald-500 rotate-45 -ml-1 rounded-sm" />
                                         </div>
                                     </div>
                                 </div>

@@ -46,9 +46,9 @@ const PortfolioSection = ({ data }: Props) => {
                     Works
                 </h2>
                 <h2 className="relative text-4xl lg:text-5xl font-black uppercase z-10">
-                    My <span className="text-yellow-500">Portfolio</span>
+                    My <span className="text-emerald-400">Portfolio</span>
                 </h2>
-                <div className="h-1.5 w-12 bg-yellow-500 mt-4 rounded-full" />
+                <div className="h-1.5 w-12 bg-emerald-500 mt-4 rounded-full" />
             </div>
 
             <motion.div
@@ -65,7 +65,7 @@ const PortfolioSection = ({ data }: Props) => {
                         href={portfolio.project_link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group relative block bg-zinc-900 rounded-[2rem] overflow-hidden border border-zinc-800 hover:border-yellow-500/50 transition-colors duration-500 shadow-xl"
+                        className="group relative block bg-zinc-900 rounded-[2rem] overflow-hidden border border-zinc-800 hover:border-emerald-500/50 transition-colors duration-500 shadow-xl"
                     >
                         {/* Image Container */}
                         <div className="relative h-72 w-full overflow-hidden">
@@ -88,24 +88,24 @@ const PortfolioSection = ({ data }: Props) => {
 
                         {/* Content Area */}
                         <div className="p-8 relative">
-                            {/* Category Tag (Optional - if you have it in your data) */}
-                            <span className="text-[10px] uppercase tracking-[3px] text-yellow-500 font-bold mb-2 block">
+                            {/* Category Tag */}
+                            <span className="text-[10px] uppercase tracking-[3px] text-emerald-400 font-bold mb-2 block">
                                 Featured Project
                             </span>
 
                             <div className="flex items-center justify-between">
-                                <h4 className="text-xl font-bold text-white tracking-tight group-hover:text-yellow-500 transition-colors">
+                                <h4 className="text-xl font-bold text-white tracking-tight group-hover:text-emerald-400 transition-colors">
                                     {portfolio.title}
                                 </h4>
 
-                                <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center text-white group-hover:bg-yellow-500 group-hover:text-black transition-all duration-300">
+                                <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center text-white group-hover:bg-emerald-500 group-hover:text-black transition-all duration-300">
                                     <ExternalLink size={18} />
                                 </div>
                             </div>
                         </div>
 
                         {/* Hover Border Glow */}
-                        <div className="absolute inset-0 border-2 border-transparent group-hover:border-yellow-500/20 rounded-[2rem] pointer-events-none transition-colors" />
+                        <div className="absolute inset-0 border-2 border-transparent group-hover:border-emerald-500/20 rounded-[2rem] pointer-events-none transition-colors" />
                     </motion.a>
                 ))}
             </motion.div>

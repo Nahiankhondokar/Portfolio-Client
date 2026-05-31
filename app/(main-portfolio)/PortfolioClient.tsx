@@ -9,10 +9,11 @@ import ContactSection from "@/app/(main-portfolio)/(components)/ContactSection";
 import HeaderSection from "@/app/(main-portfolio)/(components)/HeaderSection";
 import { motion, AnimatePresence } from "framer-motion";
 import { About, Contact, Home, Portfolio, Section } from "@/app/(main-portfolio)/type/type";
-import { MessageCircle, X } from "lucide-react";
+import { MessageCircle, X, Monitor, Keyboard, Wifi, Headphones, Gamepad2 } from "lucide-react";
 import ChatWidget from "@/Widget/ChatWidget";
 import BlogSection from "@/app/(main-portfolio)/(components)/blog/BlogSection";
 import { Blog } from "@/app/(dashboard)/dashboard/blog/interface/Blog";
+import GithubActivitySection from "@/app/(main-portfolio)/(components)/GithubActivitySection";
 
 // Create a small utility to get or create a Guest ID
 export const getChatSessionId = () => {
@@ -25,7 +26,7 @@ export const getChatSessionId = () => {
 };
 
 // Sections in render order
-const SECTIONS: Section[] = ["home", "about", "portfolio", "blog", "contact"];
+const SECTIONS: Section[] = ["home", "about", "portfolio", "activity", "blog", "contact"];
 
 export default function PortfolioClient({ home, about, portfolio, contact, blog }: {
     home: Home,
@@ -41,6 +42,15 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
     const [totalUnread, setTotalUnread] = useState(0);
     const [guestId, setGuestId] = useState<string>("");
     const [showTooltip, setShowTooltip] = useState(false);
+    const [activeSpec, setActiveSpec] = useState<string | null>(null);
+
+    const specs = [
+        { id: "display", label: "Display Setup", desc: "Xiaomi 34\" 144Hz Ultrawide", icon: Monitor },
+        { id: "keyboard", label: "Keyboard Specs", desc: "Keychron K2 V2 (Brown Switch)", icon: Keyboard },
+        { id: "network", label: "Network Tools", desc: "MikroTik Router + Fiber", icon: Wifi },
+        { id: "audio", label: "Audio Gear", desc: "FIFINE Studio Mic + Edifier Speaker", icon: Headphones },
+        { id: "gaming", label: "System Specs", desc: "RTX 4070 Laptop + PS5 DualSense", icon: Gamepad2 },
+    ];
 
     // Ref to track if scroll was triggered by a nav click (to avoid fighting IntersectionObserver)
     const isScrollingRef = useRef(false);
@@ -115,7 +125,21 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
     };
 
     return (
-        <div className="bg-black text-white min-h-screen font-sans selection:bg-yellow-500 selection:text-black relative">
+        <div className="bg-[#080b11] text-white min-h-screen font-sans selection:bg-emerald-500 selection:text-black relative overflow-hidden">
+            
+            {/* Subtle Tech Blueprint Grid */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f2937_1px,transparent_1px),linear-gradient(to_bottom,#1f2937_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-[0.05] pointer-events-none -z-10" />
+
+            {/* Glowing Soft Spotlight Orbs */}
+            <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none -z-20 opacity-40" />
+
+            {/* Background Faint Code Syntax Overlay */}
+            <div className="absolute top-32 left-8 text-[11px] font-mono text-zinc-500/5 select-none pointer-events-none -z-30 hidden xl:block leading-relaxed">
+                {`import ap.node\n\ndef python():\n  _cecnons = 'event'\n  for __int i_ arrange(asent, secnons, item){\n    # system init\n  }\n\ndef name(as):\n  fun name():\n    return 'developer'`}
+            </div>
+            <div className="absolute top-[650px] right-8 text-[11px] font-mono text-zinc-500/5 select-none pointer-events-none -z-30 hidden xl:block leading-relaxed text-right">
+                {`function() {\n  if (sections == try) {\n    console.log(poston('latest'));\n  }\n}\n\n{\n  event: {\n    type: 'map(value)'\n  }\n}`}
+            </div>
 
             {/* Header with higher z-index than the Chatbot mobile menu */}
             <div className="relative z-[70]">
@@ -143,6 +167,10 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
                     <PortfolioSection data={portfolio} />
                 </section>
 
+                <section id="activity">
+                    <GithubActivitySection />
+                </section>
+
                 <section id="blog">
                     <BlogSection data={blog} />
                 </section>
@@ -155,19 +183,66 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
 
             {/* --- Premium Professional Footer --- */}
             <footer className="border-t border-zinc-900 bg-black/60 backdrop-blur-xl pt-12 pb-32 sm:py-12 mt-12 relative z-50">
-                <div className="container mx-auto px-4 lg:px-20 flex flex-col sm:flex-row justify-between items-center gap-6">
-                    <p className="text-zinc-500 text-xs font-semibold tracking-wide uppercase">
-                        © {new Date().getFullYear()} {home.name}. All rights reserved.
-                    </p>
+                <div className="container mx-auto px-4 lg:px-20 flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div className="flex flex-col gap-1 items-center md:items-start text-center md:text-left">
+                        <p className="text-zinc-500 text-xs font-semibold tracking-wide uppercase">
+                            © {new Date().getFullYear()} {home.name}. All rights reserved.
+                        </p>
+                        <p className="text-[10px] font-mono text-zinc-600 tracking-wider">
+                            currently swimming in code & occasionally in the sea 🌊
+                        </p>
+                    </div>
+
+                    {/* Developer Hardware Setup Easter Eggs */}
+                    <div className="flex flex-col items-center gap-2">
+                        <div className="flex items-center gap-2 bg-zinc-950/45 border border-zinc-900 rounded-full px-3 py-1.5 z-10">
+                            {specs.map((spec) => {
+                                const Icon = spec.icon;
+                                const isActive = activeSpec === spec.id;
+                                return (
+                                    <button
+                                        key={spec.id}
+                                        onClick={() => setActiveSpec(isActive ? null : spec.id)}
+                                        className={`p-1.5 rounded-full transition-all duration-300 hover:scale-110 active:scale-95 relative ${
+                                            isActive 
+                                                ? "text-emerald-400 bg-emerald-950/20 shadow-[0_0_15px_rgba(16, 185, 129,0.15)] border border-emerald-800/30" 
+                                                : "text-zinc-600 hover:text-zinc-300 hover:bg-zinc-900/40 border border-transparent"
+                                        }`}
+                                        title={spec.label}
+                                    >
+                                        <Icon size={14} />
+                                    </button>
+                                );
+                            })}
+                        </div>
+                        
+                        <AnimatePresence>
+                            {activeSpec && (
+                                <motion.div
+                                    initial={{ opacity: 0, height: 0, y: -4 }}
+                                    animate={{ opacity: 1, height: "auto", y: 0 }}
+                                    exit={{ opacity: 0, height: 0, y: -4 }}
+                                    className="overflow-hidden w-full max-w-[280px]"
+                                >
+                                    <div className="bg-zinc-950/60 border border-zinc-900 rounded-xl px-4 py-2 font-mono text-[9px] text-center text-zinc-400 tracking-wider shadow-inner">
+                                        <span className="text-emerald-400/80 font-black uppercase text-[8px] mr-1 block sm:inline">
+                                            {specs.find(s => s.id === activeSpec)?.label}:
+                                        </span>
+                                        {specs.find(s => s.id === activeSpec)?.desc}
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
 
                     {/* Sleek, professional CTA button for public Todo tracker */}
                     <Link
                         href="/todo"
-                        className="relative px-6 py-3 bg-zinc-950 border border-zinc-800 rounded-2xl hover:border-yellow-500/50 hover:bg-zinc-900 transition-all duration-300 group flex items-center gap-3 overflow-hidden shadow-lg"
+                        className="relative px-6 py-3 bg-zinc-950 border border-zinc-800 rounded-2xl hover:border-emerald-500/50 hover:bg-zinc-900 transition-all duration-300 group flex items-center gap-3 overflow-hidden shadow-lg"
                     >
-                        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-yellow-500/30 to-transparent" />
+                        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
                         <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 group-hover:text-yellow-500 transition-colors">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 group-hover:text-emerald-400 transition-colors">
                             Todo & Time Tracker
                         </span>
                         <span className="text-zinc-600 group-hover:text-white group-hover:translate-x-0.5 transition-all text-xs">
@@ -214,7 +289,7 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
                             toggleChat();
                             setShowTooltip(false);
                         }}
-                        className="relative p-4 lg:p-5 bg-yellow-500 rounded-2xl shadow-[0_10px_40px_rgba(234,179,8,0.3)] hover:scale-110 active:scale-95 transition-all text-black"
+                        className="relative p-4 lg:p-5 bg-emerald-500 rounded-2xl shadow-[0_10px_40px_rgba(16, 185, 129,0.3)] hover:scale-110 active:scale-95 transition-all text-black"
                     >
                     <AnimatePresence mode="wait">
                         {isChatOpen ? (
@@ -227,9 +302,9 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
                             </motion.div>
                         )}
                     </AnimatePresence>
-
+ 
                     {totalUnread > 0 && !isChatOpen && (
-                        <span className="absolute -top-2 -right-2 w-6 h-6 bg-white text-black text-[10px] font-black rounded-full flex items-center justify-center border-2 border-yellow-500 animate-bounce">
+                        <span className="absolute -top-2 -right-2 w-6 h-6 bg-white text-black text-[10px] font-black rounded-full flex items-center justify-center border-2 border-emerald-500 animate-bounce">
                             {totalUnread}
                         </span>
                     )}

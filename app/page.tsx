@@ -58,7 +58,7 @@ async function getPortfolio(): Promise<Portfolio[]> {
     return data.data.portfolios;
 }
 
-async function getBlog(): Promise<Blog> {
+async function getBlog(): Promise<Blog[]> {
     const url = "v1/public/user-info";
 
     const res = await fetch(
