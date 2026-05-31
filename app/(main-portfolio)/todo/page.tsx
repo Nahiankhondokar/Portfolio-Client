@@ -89,6 +89,19 @@ export default function TodoPage() {
 
   const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/";
 
+  // Retrieve or generate browser-persistent guest token
+  const getOrCreateGuestToken = (): string => {
+    if (typeof window === "undefined") return "";
+    let token = localStorage.getItem("guest_token");
+    if (!token) {
+      token = window.crypto && window.crypto.randomUUID 
+        ? window.crypto.randomUUID() 
+        : Math.random().toString(36).substring(2) + Date.now().toString(36);
+      localStorage.setItem("guest_token", token);
+    }
+    return token;
+  };
+
   // Show dynamic message toast
   const showToast = (message: string, type: "success" | "error" | "info" = "success") => {
     setNotification({ message, type });
@@ -145,6 +158,7 @@ export default function TodoPage() {
         cache: "no-store",
         headers: {
           "X-Timezone": Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
+          "X-Guest-Token": getOrCreateGuestToken(),
         },
       });
       if (!res.ok) {
@@ -248,7 +262,10 @@ export default function TodoPage() {
     try {
       const res = await fetch(`${API_BASE}v1/public/todos`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "X-Guest-Token": getOrCreateGuestToken(),
+        },
         body: JSON.stringify({ title: newTitle.trim() }),
       });
 
@@ -289,7 +306,10 @@ export default function TodoPage() {
 
       const res = await fetch(`${API_BASE}v1/public/todos/${todo.id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "X-Guest-Token": getOrCreateGuestToken(),
+        },
         body: JSON.stringify({ completed: updatedValue }),
       });
 
@@ -329,7 +349,10 @@ export default function TodoPage() {
     try {
       const res = await fetch(`${API_BASE}v1/public/todos/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "X-Guest-Token": getOrCreateGuestToken(),
+        },
         body: JSON.stringify({ title: editingTitle.trim() }),
       });
 
@@ -368,6 +391,9 @@ export default function TodoPage() {
 
       const res = await fetch(`${API_BASE}v1/public/todos/${id}`, {
         method: "DELETE",
+        headers: {
+          "X-Guest-Token": getOrCreateGuestToken(),
+        },
       });
 
       const data = await res.json();
@@ -414,6 +440,9 @@ export default function TodoPage() {
 
       const res = await fetch(`${API_BASE}v1/public/todos/${todo.id}/${urlSuffix}`, {
         method: "POST",
+        headers: {
+          "X-Guest-Token": getOrCreateGuestToken(),
+        },
       });
 
       const data = await res.json();
