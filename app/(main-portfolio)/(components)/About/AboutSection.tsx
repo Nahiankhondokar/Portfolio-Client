@@ -37,7 +37,7 @@ const AboutSection = ({ data }: { data: About }) => {
         <motion.section
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="py-16 lg:py-24 relative bg-black text-white overflow-hidden"
+            className="py-16 lg:py-24 relative bg-transparent text-white overflow-hidden"
         >
             {/* Ambient Background Accent - Hidden on mobile to prevent horizontal overflow */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none hidden md:block">

@@ -7,6 +7,11 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Override standard yellow utilities with a high-end copper-bronze theme */
+  --color-yellow-400: #fbbf24;
+  --color-yellow-500: #d97706;
+  --color-yellow-600: #b45309;
 }
 
 
