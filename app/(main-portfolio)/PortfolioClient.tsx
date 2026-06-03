@@ -125,21 +125,22 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
     };
 
     return (
-        <div className="bg-[#080b11] text-white min-h-screen font-sans selection:bg-emerald-500 selection:text-black relative overflow-hidden">
+        <div className="text-white min-h-screen font-sans selection:bg-emerald-500 selection:text-black relative overflow-hidden">
             
+            {/* Solid Dark Background Canvas */}
+            <div className="fixed inset-0 bg-[#080b11] -z-40 pointer-events-none" />
+
+            {/* Premium Fixed Parallax Coding Background */}
+            <div 
+                className="fixed inset-0 bg-[url('/assets/coding_fixed_bg.png')] bg-cover bg-center bg-no-repeat opacity-[0.08] pointer-events-none -z-30 select-none"
+                style={{ filter: "hue-rotate(5deg) contrast(1.15)" }}
+            />
+
             {/* Subtle Tech Blueprint Grid */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f2937_1px,transparent_1px),linear-gradient(to_bottom,#1f2937_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-[0.05] pointer-events-none -z-10" />
 
             {/* Glowing Soft Spotlight Orbs */}
             <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none -z-20 opacity-40" />
-
-            {/* Background Faint Code Syntax Overlay */}
-            <div className="absolute top-32 left-8 text-[11px] font-mono text-zinc-500/5 select-none pointer-events-none -z-30 hidden xl:block leading-relaxed">
-                {`import ap.node\n\ndef python():\n  _cecnons = 'event'\n  for __int i_ arrange(asent, secnons, item){\n    # system init\n  }\n\ndef name(as):\n  fun name():\n    return 'developer'`}
-            </div>
-            <div className="absolute top-[650px] right-8 text-[11px] font-mono text-zinc-500/5 select-none pointer-events-none -z-30 hidden xl:block leading-relaxed text-right">
-                {`function() {\n  if (sections == try) {\n    console.log(poston('latest'));\n  }\n}\n\n{\n  event: {\n    type: 'map(value)'\n  }\n}`}
-            </div>
 
             {/* Header with higher z-index than the Chatbot mobile menu */}
             <div className="relative z-[70]">
