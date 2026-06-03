@@ -14,6 +14,10 @@ import ChatWidget from "@/Widget/ChatWidget";
 import BlogSection from "@/app/(main-portfolio)/(components)/blog/BlogSection";
 import { Blog } from "@/app/(dashboard)/dashboard/blog/interface/Blog";
 import GithubActivitySection from "@/app/(main-portfolio)/(components)/GithubActivitySection";
+import Image from "next/image";
+import codingBg from "@/public/assets/coding_fixed_bg.png";
+
+import { applyThemeColor } from "@/lib/theme";
 
 // Create a small utility to get or create a Guest ID
 export const getChatSessionId = () => {
@@ -56,6 +60,11 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
     const isScrollingRef = useRef(false);
     const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+    // Dynamic theme applying effect
+    useEffect(() => {
+        applyThemeColor(home.theme_color || "indigo");
+    }, [home.theme_color]);
+
     // Initialize the guest session on mount
     useEffect(() => {
         const id = getChatSessionId();
@@ -67,35 +76,34 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
         return () => clearTimeout(timer);
     }, []);
 
-    // --- Scroll-Spy via IntersectionObserver ---
+    // --- Optimized Scroll-Spy via Window Scroll Listener ---
     useEffect(() => {
-        const observers: IntersectionObserver[] = [];
+        const handleScroll = () => {
+            // Only update if not in the middle of a programmatic scroll
+            if (isScrollingRef.current) return;
 
-        SECTIONS.forEach((sectionId) => {
-            const el = document.getElementById(sectionId);
-            if (!el) return;
+            // Trigger when the section passes through the upper-middle region of the screen (35% from top)
+            const scrollPosition = window.scrollY + window.innerHeight * 0.35;
 
-            const observer = new IntersectionObserver(
-                (entries) => {
-                    entries.forEach((entry) => {
-                        // Only update if not in the middle of a programmatic scroll
-                        if (entry.isIntersecting && !isScrollingRef.current) {
-                            setActiveSection(sectionId);
-                        }
-                    });
-                },
-                {
-                    // Trigger when the section occupies at least 40% of the viewport
-                    threshold: 0.4,
+            for (const sectionId of SECTIONS) {
+                const el = document.getElementById(sectionId);
+                if (el) {
+                    const top = el.offsetTop;
+                    const height = el.offsetHeight;
+
+                    if (scrollPosition >= top && scrollPosition < top + height) {
+                        setActiveSection(sectionId);
+                        break; // Stop checking once we find the current active section
+                    }
                 }
-            );
+            }
+        };
 
-            observer.observe(el);
-            observers.push(observer);
-        });
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        handleScroll(); // Trigger initial execution on mount
 
         return () => {
-            observers.forEach((obs) => obs.disconnect());
+            window.removeEventListener("scroll", handleScroll);
         };
     }, []);
 
@@ -125,22 +133,27 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
     };
 
     return (
-        <div className="text-white min-h-screen font-sans selection:bg-emerald-500 selection:text-black relative overflow-hidden">
+        <div className="text-white min-h-screen font-sans selection:bg-indigo-500 selection:text-white relative overflow-hidden">
             
             {/* Solid Dark Background Canvas */}
             <div className="fixed inset-0 bg-[#080b11] -z-40 pointer-events-none" />
 
             {/* Premium Fixed Parallax Coding Background */}
-            <div 
-                className="fixed inset-0 bg-[url('/assets/coding_fixed_bg.png')] bg-cover bg-center bg-no-repeat opacity-[0.08] pointer-events-none -z-30 select-none"
-                style={{ filter: "hue-rotate(5deg) contrast(1.15)" }}
-            />
+            <div className="fixed inset-0 pointer-events-none -z-30 select-none opacity-[0.08]">
+                <Image
+                    src={codingBg}
+                    alt="Coding background texture"
+                    fill
+                    className="object-cover object-center"
+                    priority
+                />
+            </div>
 
             {/* Subtle Tech Blueprint Grid */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f2937_1px,transparent_1px),linear-gradient(to_bottom,#1f2937_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-[0.05] pointer-events-none -z-10" />
 
             {/* Glowing Soft Spotlight Orbs */}
-            <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none -z-20 opacity-40" />
+            <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none -z-20 opacity-40" />
 
             {/* Header with higher z-index than the Chatbot mobile menu */}
             <div className="relative z-[70]">
@@ -206,7 +219,7 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
                                         onClick={() => setActiveSpec(isActive ? null : spec.id)}
                                         className={`p-1.5 rounded-full transition-all duration-300 hover:scale-110 active:scale-95 relative ${
                                             isActive 
-                                                ? "text-emerald-400 bg-emerald-950/20 shadow-[0_0_15px_rgba(16, 185, 129,0.15)] border border-emerald-800/30" 
+                                                ? "text-indigo-400 bg-indigo-950/20 shadow-[0_0_15px_rgba(99,102,241,0.15)] border border-indigo-800/30" 
                                                 : "text-zinc-600 hover:text-zinc-300 hover:bg-zinc-900/40 border border-transparent"
                                         }`}
                                         title={spec.label}
@@ -226,7 +239,7 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
                                     className="overflow-hidden w-full max-w-[280px]"
                                 >
                                     <div className="bg-zinc-950/60 border border-zinc-900 rounded-xl px-4 py-2 font-mono text-[9px] text-center text-zinc-400 tracking-wider shadow-inner">
-                                        <span className="text-emerald-400/80 font-black uppercase text-[8px] mr-1 block sm:inline">
+                                        <span className="text-indigo-400/80 font-black uppercase text-[8px] mr-1 block sm:inline">
                                             {specs.find(s => s.id === activeSpec)?.label}:
                                         </span>
                                         {specs.find(s => s.id === activeSpec)?.desc}
@@ -239,11 +252,11 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
                     {/* Sleek, professional CTA button for public Todo tracker */}
                     <Link
                         href="/todo"
-                        className="relative px-6 py-3 bg-zinc-950 border border-zinc-800 rounded-2xl hover:border-emerald-500/50 hover:bg-zinc-900 transition-all duration-300 group flex items-center gap-3 overflow-hidden shadow-lg"
+                        className="relative px-6 py-3 bg-zinc-950 border border-zinc-800 rounded-2xl hover:border-indigo-500/50 hover:bg-zinc-900 transition-all duration-300 group flex items-center gap-3 overflow-hidden shadow-lg"
                     >
-                        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 group-hover:text-emerald-400 transition-colors">
+                        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
+                        <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 group-hover:text-indigo-400 transition-colors">
                             Todo & Time Tracker
                         </span>
                         <span className="text-zinc-600 group-hover:text-white group-hover:translate-x-0.5 transition-all text-xs">
@@ -290,7 +303,7 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
                             toggleChat();
                             setShowTooltip(false);
                         }}
-                        className="relative p-4 lg:p-5 bg-emerald-500 rounded-2xl shadow-[0_10px_40px_rgba(16, 185, 129,0.3)] hover:scale-110 active:scale-95 transition-all text-black"
+                        className="relative p-4 lg:p-5 bg-indigo-500 rounded-2xl shadow-[0_10px_40px_rgba(99,102,241,0.3)] hover:scale-110 active:scale-95 transition-all text-white"
                     >
                     <AnimatePresence mode="wait">
                         {isChatOpen ? (
@@ -305,7 +318,7 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
                     </AnimatePresence>
  
                     {totalUnread > 0 && !isChatOpen && (
-                        <span className="absolute -top-2 -right-2 w-6 h-6 bg-white text-black text-[10px] font-black rounded-full flex items-center justify-center border-2 border-emerald-500 animate-bounce">
+                        <span className="absolute -top-2 -right-2 w-6 h-6 bg-white text-black text-[10px] font-black rounded-full flex items-center justify-center border-2 border-indigo-500 animate-bounce">
                             {totalUnread}
                         </span>
                     )}

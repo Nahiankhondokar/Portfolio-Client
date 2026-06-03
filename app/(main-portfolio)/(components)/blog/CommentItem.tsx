@@ -80,7 +80,7 @@ export default function CommentItem({ comment, blogId, onReplySuccess }: Comment
                         {!comment.parent_id && (
                             <button
                                 onClick={() => setIsReplying(!isReplying)}
-                                className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-zinc-500 hover:text-emerald-400 transition-colors"
+                                className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-zinc-500 hover:text-indigo-400 transition-colors"
                             >
                                 <Reply size={12} />
                                 Reply
@@ -109,7 +109,7 @@ export default function CommentItem({ comment, blogId, onReplySuccess }: Comment
                                     value={replyContent}
                                     onChange={(e) => setReplyContent(e.target.value)}
                                     placeholder="Write a reply..."
-                                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-sm text-zinc-300 focus:outline-none focus:border-emerald-500 transition-colors min-h-[100px] resize-none"
+                                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-sm text-zinc-300 focus:outline-none focus:border-indigo-500 transition-colors min-h-[100px] resize-none"
                                 />
                                 <div className="flex justify-end mt-2 gap-2">
                                     <button
@@ -122,7 +122,7 @@ export default function CommentItem({ comment, blogId, onReplySuccess }: Comment
                                     <button
                                         type="submit"
                                         disabled={isSubmitting}
-                                        className="px-4 py-2 bg-emerald-500 text-black text-[10px] font-black uppercase tracking-widest rounded-lg hover:bg-white transition-colors disabled:opacity-50"
+                                        className="px-4 py-2 bg-indigo-500 text-white text-[10px] font-black uppercase tracking-widest rounded-lg hover:bg-indigo-600 transition-colors disabled:opacity-50"
                                     >
                                         {isSubmitting ? "Posting..." : "Post Reply"}
                                     </button>

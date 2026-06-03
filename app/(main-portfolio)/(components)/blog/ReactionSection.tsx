@@ -60,11 +60,11 @@ export default function ReactionSection({ blogId, initialCount }: ReactionSectio
                     onClick={() => handleReact("like")}
                     className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all ${
                         activeReaction 
-                        ? "bg-zinc-800 text-emerald-400" 
+                        ? "bg-zinc-800 text-indigo-400" 
                         : "bg-zinc-900 text-zinc-400 hover:bg-zinc-800 hover:text-white"
                     }`}
                 >
-                    <ThumbsUp size={20} className={activeReaction ? "fill-emerald-400" : ""} />
+                    <ThumbsUp size={20} className={activeReaction ? "fill-indigo-400" : ""} />
                     <span className="font-bold text-sm">{activeReaction ? activeReaction.toUpperCase() : "REACT"}</span>
                 </button>
 

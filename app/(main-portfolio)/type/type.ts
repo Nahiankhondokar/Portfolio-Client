@@ -1,6 +1,6 @@
 // --- Types ---
 export type Section = "home" | "about" | "portfolio" | "activity" | "contact" | "blog";
-export type Home = Pick<UserInfo, "name" | "subtitle" | "image" | "bio">
+export type Home = Pick<UserInfo, "name" | "subtitle" | "image" | "bio" | "theme_color">
 export type About = Pick<UserInfo,
     "name" | "location" | "nationality" | "bio" |
     "phone" | "job_type" | "metrics" |
@@ -30,6 +30,7 @@ export interface UserInfo {
     experiences: Experience[] | [];
     educations: Education[] | [];
     portfolios: Portfolio[] | [];
+    theme_color?: string | null;
 }
 
 export interface Metrics {

@@ -1,6 +1,7 @@
 
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { ThemeInitializer } from "@/components/providers/ThemeInitializer";
 import "./globals.css";
 import {AuthProvider} from "@/components/providers/AuthProvider";
 import {Toaster} from "sonner";
@@ -24,7 +25,7 @@ export default function RootLayout({children}: {
           enableSystem
           disableTransitionOnChange
       >
-
+          <ThemeInitializer />
           <GoogleOauthProvider>
               {children}
 

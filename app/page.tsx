@@ -23,6 +23,7 @@ async function getHome(): Promise<Home> {
         subtitle: data.data.subtitle ?? "",
         bio: data.data.bio ?? "",
         image: data.data.image ?? Me,
+        theme_color: data.data.theme_color ?? "indigo",
     };
 }
 

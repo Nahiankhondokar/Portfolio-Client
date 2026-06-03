@@ -29,7 +29,7 @@ const SkillSection = ({ skills }: { skills: Expertise[] }) => {
             </div>
 
             <h3 className="text-center text-3xl lg:text-4xl font-black uppercase mb-20 relative z-10 tracking-tight">
-                My <span className="text-emerald-400">Skills</span>
+                My <span className="text-indigo-400">Skills</span>
             </h3>
 
             {skills.length > 0 ? (
@@ -66,12 +66,12 @@ const SkillSection = ({ skills }: { skills: Expertise[] }) => {
                                         strokeDasharray={364.4} // 2 * PI * r
                                         initial={{ strokeDashoffset: 364.4 }}
                                         whileInView={{
-                                            strokeDashoffset: 364.4 - (364.4 * skill.progress) / 100
+                                            strokeDashoffset: 364.4 - (364.4 * (parseFloat(skill.progress) || 0)) / 100
                                         }}
                                         transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
                                         viewport={{ once: true }}
                                         strokeLinecap="round"
-                                        className="text-emerald-500 drop-shadow-[0_0_8px_rgba(16, 185, 129,0.4)]"
+                                        className="text-indigo-500 drop-shadow-[0_0_8px_rgba(99,102,241,0.45)]"
                                     />
                                 </svg>
 
@@ -84,11 +84,11 @@ const SkillSection = ({ skills }: { skills: Expertise[] }) => {
                             </div>
 
                             <div className="mt-8 text-center">
-                                <p className="uppercase font-black tracking-[3px] text-[11px] text-zinc-500 group-hover:text-emerald-400 transition-colors duration-300">
+                                <p className="uppercase font-black tracking-[3px] text-[11px] text-zinc-500 group-hover:text-indigo-400 transition-colors duration-300">
                                     {skill.name}
                                 </p>
                                 {/* Small decorative bar */}
-                                <div className="h-0.5 w-4 bg-zinc-800 mx-auto mt-2 group-hover:w-8 group-hover:bg-emerald-500 transition-all duration-300" />
+                                <div className="h-0.5 w-4 bg-zinc-800 mx-auto mt-2 group-hover:w-8 group-hover:bg-indigo-500 transition-all duration-300" />
                             </div>
                         </motion.div>
                     ))}

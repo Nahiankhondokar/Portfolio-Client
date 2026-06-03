@@ -55,8 +55,8 @@ const Dashboard = () => {
             key: 'services', 
             label: 'Services', 
             icon: Monitor, 
-            color: 'text-emerald-500', 
-            bg: 'bg-emerald-500/10',
+            color: 'text-indigo-500', 
+            bg: 'bg-indigo-500/10',
             desc: 'Service offerings'
         },
         { 
@@ -171,7 +171,7 @@ const Dashboard = () => {
                 <Card className="bg-zinc-900/20 border-zinc-800 p-4">
                     <CardHeader className="px-2">
                         <CardTitle className="text-lg font-bold text-white flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
                             Engagement Growth
                         </CardTitle>
                     </CardHeader>

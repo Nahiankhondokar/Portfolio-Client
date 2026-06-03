@@ -68,16 +68,15 @@ const AddNewEducation = () => {
   const onSubmit = async (values: formSchemaType) => {
     const fd = new FormData();
 
+    if (mode === "edit") {
+      fd.append("_method", "PUT");
+    }
+
     Object.entries(values).forEach(([k, v]) => {
       if (v !== null && v !== undefined && v !== "") {
-
-        if (mode === "edit") {
-          fd.append("_method", "PUT");
-        }
-
         // Check if it's a date field
         if (k === "start_date" || k === "end_date") {
-          const dateValue = v instanceof Date ? v : new Date(v as string);
+          const dateValue = (v as any) instanceof Date ? (v as unknown as Date) : new Date(v as string);
 
           // Ensure the date is valid before formatting
           if (!isNaN(dateValue.getTime())) {
