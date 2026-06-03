@@ -14,6 +14,8 @@ import ChatWidget from "@/Widget/ChatWidget";
 import BlogSection from "@/app/(main-portfolio)/(components)/blog/BlogSection";
 import { Blog } from "@/app/(dashboard)/dashboard/blog/interface/Blog";
 import GithubActivitySection from "@/app/(main-portfolio)/(components)/GithubActivitySection";
+import Image from "next/image";
+import codingBg from "@/public/assets/coding_fixed_bg.png";
 
 // Create a small utility to get or create a Guest ID
 export const getChatSessionId = () => {
@@ -67,35 +69,34 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
         return () => clearTimeout(timer);
     }, []);
 
-    // --- Scroll-Spy via IntersectionObserver ---
+    // --- Optimized Scroll-Spy via Window Scroll Listener ---
     useEffect(() => {
-        const observers: IntersectionObserver[] = [];
+        const handleScroll = () => {
+            // Only update if not in the middle of a programmatic scroll
+            if (isScrollingRef.current) return;
 
-        SECTIONS.forEach((sectionId) => {
-            const el = document.getElementById(sectionId);
-            if (!el) return;
+            // Trigger when the section passes through the upper-middle region of the screen (35% from top)
+            const scrollPosition = window.scrollY + window.innerHeight * 0.35;
 
-            const observer = new IntersectionObserver(
-                (entries) => {
-                    entries.forEach((entry) => {
-                        // Only update if not in the middle of a programmatic scroll
-                        if (entry.isIntersecting && !isScrollingRef.current) {
-                            setActiveSection(sectionId);
-                        }
-                    });
-                },
-                {
-                    // Trigger when the section occupies at least 40% of the viewport
-                    threshold: 0.4,
+            for (const sectionId of SECTIONS) {
+                const el = document.getElementById(sectionId);
+                if (el) {
+                    const top = el.offsetTop;
+                    const height = el.offsetHeight;
+
+                    if (scrollPosition >= top && scrollPosition < top + height) {
+                        setActiveSection(sectionId);
+                        break; // Stop checking once we find the current active section
+                    }
                 }
-            );
+            }
+        };
 
-            observer.observe(el);
-            observers.push(observer);
-        });
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        handleScroll(); // Trigger initial execution on mount
 
         return () => {
-            observers.forEach((obs) => obs.disconnect());
+            window.removeEventListener("scroll", handleScroll);
         };
     }, []);
 
@@ -131,10 +132,15 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
             <div className="fixed inset-0 bg-[#080b11] -z-40 pointer-events-none" />
 
             {/* Premium Fixed Parallax Coding Background */}
-            <div 
-                className="fixed inset-0 bg-[url('/assets/coding_fixed_bg.png')] bg-cover bg-center bg-no-repeat opacity-[0.08] pointer-events-none -z-30 select-none"
-                style={{ filter: "hue-rotate(5deg) contrast(1.15)" }}
-            />
+            <div className="fixed inset-0 pointer-events-none -z-30 select-none opacity-[0.08]">
+                <Image
+                    src={codingBg}
+                    alt="Coding background texture"
+                    fill
+                    className="object-cover object-center"
+                    priority
+                />
+            </div>
 
             {/* Subtle Tech Blueprint Grid */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f2937_1px,transparent_1px),linear-gradient(to_bottom,#1f2937_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-[0.05] pointer-events-none -z-10" />
