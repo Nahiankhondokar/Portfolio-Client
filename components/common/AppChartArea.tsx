@@ -7,7 +7,7 @@ import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 const chartConfig = {
   desktop: {
     label: "Growth",
-    color: "#10b981", // emerald-500
+    color: "var(--theme-primary)",
   },
   mobile: {
     label: "Base",

@@ -14,14 +14,14 @@ const TimeLineItemSection = ({ data, icon }: { data: Experience; icon: React.Rea
         >
             {/* The Node Dot/Icon */}
             <div className="absolute left-[-20px] top-0 z-20 transition-transform duration-500 group-hover:scale-110">
-                <div className="w-10 h-10 bg-zinc-900 border border-zinc-800 rounded-2xl flex items-center justify-center text-emerald-400 shadow-xl group-hover:border-emerald-500/50 group-hover:shadow-emerald-500/10 transition-all">
+                <div className="w-10 h-10 bg-zinc-900 border border-zinc-800 rounded-2xl flex items-center justify-center text-indigo-400 shadow-xl group-hover:border-indigo-500/50 group-hover:shadow-indigo-500/10 transition-all">
                     {icon}
                 </div>
             </div>
 
             {/* Date Tag */}
             <div className="inline-flex items-center">
-                <span className="px-4 py-1.5 text-[10px] font-black uppercase tracking-[2px] bg-zinc-900/50 border border-zinc-800 text-zinc-400 rounded-lg backdrop-blur-sm group-hover:text-emerald-400 group-hover:border-emerald-500/30 transition-colors">
+                <span className="px-4 py-1.5 text-[10px] font-black uppercase tracking-[2px] bg-zinc-900/50 border border-zinc-800 text-zinc-400 rounded-lg backdrop-blur-sm group-hover:text-indigo-400 group-hover:border-indigo-500/30 transition-colors">
                     {data.year || "Present"}
                 </span>
             </div>
@@ -33,7 +33,7 @@ const TimeLineItemSection = ({ data, icon }: { data: Experience; icon: React.Rea
                 </h5>
 
                 <div className="flex items-center gap-2 mt-1">
-                    <div className="w-4 h-px bg-emerald-500/50" />
+                    <div className="w-4 h-px bg-indigo-500/50" />
                     <span className="text-sm font-bold uppercase tracking-widest text-zinc-500">
                         {data.institute || "Freelance"}
                     </span>
@@ -47,7 +47,7 @@ const TimeLineItemSection = ({ data, icon }: { data: Experience; icon: React.Rea
             </div>
 
             {/* Subtle Hover Glow Backdrop */}
-            <div className="absolute -inset-y-2 -inset-x-4 bg-emerald-500/[0.02] rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity -z-10" />
+            <div className="absolute -inset-y-2 -inset-x-4 bg-indigo-500/[0.02] rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity -z-10" />
         </motion.div>
     );
 };

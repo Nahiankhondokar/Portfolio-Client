@@ -14,6 +14,12 @@ module.exports = {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
+        indigo: {
+          400: 'var(--theme-primary-light)',
+          500: 'var(--theme-primary)',
+          600: 'var(--theme-primary-dark)',
+          950: 'var(--theme-primary-ultra-dark)',
+        },
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {

@@ -26,7 +26,7 @@ const BlogCard = ({
     <motion.div variants={variants}>
         <Link
             href={`/blog/${blog.slug}`}
-            className="group block relative bg-zinc-900 border border-zinc-800 rounded-[2rem] overflow-hidden hover:border-emerald-500/50 transition-all duration-500 shadow-xl"
+            className="group block relative bg-zinc-900 border border-zinc-800 rounded-[2rem] overflow-hidden hover:border-indigo-500/50 transition-all duration-500 shadow-xl"
         >
             {/* Image Header */}
             <div className={`${compact ? "h-44" : "h-60"} relative overflow-hidden`}>
@@ -46,7 +46,7 @@ const BlogCard = ({
 
                 {/* Date Badge */}
                 <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl flex items-center gap-2">
-                    <Calendar size={12} className="text-emerald-400" />
+                    <Calendar size={12} className="text-indigo-400" />
                     <span className="text-[10px] font-bold text-white uppercase tracking-wider">
                         {blog.created_at
                             ? new Date(blog.created_at).toLocaleDateString("en-US", {
@@ -67,7 +67,7 @@ const BlogCard = ({
                 <h4
                     className={`${
                         compact ? "text-base" : "text-xl"
-                    } font-bold text-white leading-snug group-hover:text-emerald-400 transition-colors line-clamp-2 min-h-[3rem]`}
+                    } font-bold text-white leading-snug group-hover:text-indigo-400 transition-colors line-clamp-2 min-h-[3rem]`}
                 >
                     {blog.title}
                 </h4>
@@ -76,14 +76,14 @@ const BlogCard = ({
                     <span className="text-xs font-bold uppercase tracking-widest text-zinc-400 group-hover:text-white transition-colors">
                         Read More
                     </span>
-                    <div className="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center text-white group-hover:bg-emerald-500 group-hover:text-black transition-all">
+                    <div className="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center text-white group-hover:bg-indigo-500 group-hover:text-white transition-all">
                         <ArrowUpRight size={16} />
                     </div>
                 </div>
             </div>
 
             {/* Decorative Bottom Bar */}
-            <div className="absolute bottom-0 left-0 w-0 h-1 bg-emerald-500 group-hover:w-full transition-all duration-500" />
+            <div className="absolute bottom-0 left-0 w-0 h-1 bg-indigo-500 group-hover:w-full transition-all duration-500" />
         </Link>
     </motion.div>
 );
@@ -97,7 +97,7 @@ const ModalBlogRow = ({ blog, index }: { blog: Blog; index: number }) => (
     >
         <Link
             href={`/blog/${blog.slug}`}
-            className="group flex items-center gap-4 p-4 rounded-2xl border border-zinc-800 bg-zinc-900 hover:border-emerald-500/50 hover:bg-zinc-800/60 transition-all duration-300"
+            className="group flex items-center gap-4 p-4 rounded-2xl border border-zinc-800 bg-zinc-900 hover:border-indigo-500/50 hover:bg-zinc-800/60 transition-all duration-300"
         >
             {/* Thumbnail */}
             <div className="relative w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-zinc-800">
@@ -118,12 +118,12 @@ const ModalBlogRow = ({ blog, index }: { blog: Blog; index: number }) => (
 
             {/* Text */}
             <div className="flex-1 min-w-0">
-                <p className="text-white font-semibold text-sm leading-snug line-clamp-2 group-hover:text-emerald-400 transition-colors">
+                <p className="text-white font-semibold text-sm leading-snug line-clamp-2 group-hover:text-indigo-400 transition-colors">
                     {blog.title}
                 </p>
                 {blog.created_at && (
                     <p className="text-zinc-500 text-[11px] mt-1 flex items-center gap-1">
-                        <Calendar size={10} className="text-emerald-400" />
+                        <Calendar size={10} className="text-indigo-400" />
                         {new Date(blog.created_at).toLocaleDateString("en-US", {
                             year: "numeric",
                             month: "short",
@@ -136,7 +136,7 @@ const ModalBlogRow = ({ blog, index }: { blog: Blog; index: number }) => (
             {/* Arrow */}
             <ChevronRight
                 size={18}
-                className="text-zinc-600 group-hover:text-emerald-400 flex-shrink-0 transition-colors"
+                className="text-zinc-600 group-hover:text-indigo-400 flex-shrink-0 transition-colors"
             />
         </Link>
     </motion.div>
@@ -182,9 +182,9 @@ const BlogSection = ({ data }: Props) => {
                         Journal
                     </h2>
                     <h2 className="relative text-4xl lg:text-5xl font-black uppercase z-10 text-white">
-                        Latest <span className="text-emerald-400">Posts</span>
+                        Latest <span className="text-indigo-400">Posts</span>
                     </h2>
-                    <div className="h-1.5 w-12 bg-emerald-500 mt-4 rounded-full" />
+                    <div className="h-1.5 w-12 bg-indigo-500 mt-4 rounded-full" />
                 </div>
 
                 {/* Grid — first 6 */}
@@ -211,24 +211,24 @@ const BlogSection = ({ data }: Props) => {
                     >
                         <button
                             onClick={() => setIsModalOpen(true)}
-                            className="group relative flex items-center gap-3 px-8 py-4 bg-zinc-900 border border-zinc-700 hover:border-emerald-500 rounded-2xl text-white font-bold uppercase tracking-widest text-sm transition-all duration-300 hover:shadow-[0_0_30px_rgba(16, 185, 129,0.15)] overflow-hidden"
+                            className="group relative flex items-center gap-3 px-8 py-4 bg-zinc-900 border border-zinc-700 hover:border-indigo-500 rounded-2xl text-white font-bold uppercase tracking-widest text-sm transition-all duration-300 hover:shadow-[0_0_30px_rgba(99,102,241,0.2)] overflow-hidden"
                         >
                             {/* Animated fill on hover */}
-                            <span className="absolute inset-0 bg-emerald-500/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300 rounded-2xl" />
+                            <span className="absolute inset-0 bg-indigo-500/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300 rounded-2xl" />
 
                             <BookOpen
                                 size={18}
-                                className="relative z-10 text-emerald-400 group-hover:scale-110 transition-transform"
+                                className="relative z-10 text-indigo-400 group-hover:scale-110 transition-transform"
                             />
                             <span className="relative z-10">
                                 Load More
-                                <span className="ml-2 px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded-lg text-xs font-black">
+                                <span className="ml-2 px-2 py-0.5 bg-indigo-500/20 text-indigo-400 rounded-lg text-xs font-black">
                                     +{remainingBlogs.length}
                                 </span>
                             </span>
                             <ArrowUpRight
                                 size={16}
-                                className="relative z-10 text-zinc-500 group-hover:text-emerald-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all"
+                                className="relative z-10 text-zinc-500 group-hover:text-indigo-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all"
                             />
                         </button>
                     </motion.div>
@@ -263,7 +263,7 @@ const BlogSection = ({ data }: Props) => {
                             <div className="flex items-center justify-between px-6 py-5 border-b border-zinc-800 flex-shrink-0">
                                 <div>
                                     <h3 className="text-white font-black text-lg uppercase tracking-wider">
-                                        More <span className="text-emerald-400">Posts</span>
+                                        More <span className="text-indigo-400">Posts</span>
                                     </h3>
                                     <p className="text-zinc-500 text-xs mt-0.5">
                                         {remainingBlogs.length} article{remainingBlogs.length !== 1 ? "s" : ""}

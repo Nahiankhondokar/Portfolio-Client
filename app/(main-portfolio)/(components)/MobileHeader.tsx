@@ -33,12 +33,12 @@ const MobileHeader = ({ navItems, activeSection, scrollToSection }: propsType) =
                                 {isActive && (
                                     <motion.div
                                         layoutId="activePill"
-                                        className="absolute inset-0 bg-emerald-500 rounded-full -z-10 shadow-[0_0_15px_rgba(16, 185, 129,0.4)]"
+                                        className="absolute inset-0 bg-indigo-500 rounded-full -z-10 shadow-[0_0_15px_rgba(99,102,241,0.4)]"
                                         transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                                     />
                                 )}
 
-                                <div className={`transition-transform duration-300 ${isActive ? "scale-110 text-black" : "text-zinc-500"}`}>
+                                <div className={`transition-transform duration-300 ${isActive ? "scale-110 text-white" : "text-zinc-500"}`}>
                                     {item.icon}
                                 </div>
 
@@ -48,7 +48,7 @@ const MobileHeader = ({ navItems, activeSection, scrollToSection }: propsType) =
                                         <motion.span
                                             initial={{ opacity: 0, y: 5 }}
                                             animate={{ opacity: 1, y: 0 }}
-                                            className="text-[9px] uppercase font-black tracking-widest text-black mt-0.5 absolute -bottom-5 whitespace-nowrap"
+                                            className="text-[9px] uppercase font-black tracking-widest text-indigo-400 mt-0.5 absolute -bottom-5 whitespace-nowrap"
                                         >
                                             {item.label}
                                         </motion.span>

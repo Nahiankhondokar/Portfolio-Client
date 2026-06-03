@@ -142,7 +142,7 @@ export default function LoginPage() {
 
 
 
-                        <Link href="/" className="flex justify-center items-center gap-2 text-emerald-400">
+                        <Link href="/" className="flex justify-center items-center gap-2 text-indigo-400 hover:text-indigo-300 transition-colors">
                             <StepBackIcon size="16" />
                             Home Page
                         </Link>

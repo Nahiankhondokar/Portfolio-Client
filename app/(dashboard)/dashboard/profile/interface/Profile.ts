@@ -10,4 +10,5 @@ export interface Profile {
   phone?: string;
   socials?: string[];
   role?: number; // 1 = Super Admin, 2 = Admin, 3 = User, 4 = Viewer (read-only)
+  theme_color?: string;
 }

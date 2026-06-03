@@ -198,13 +198,13 @@ export default function GithubActivitySection() {
         <div className="py-24 relative overflow-hidden">
             {/* Header Title */}
             <div className="flex flex-col items-center mb-16 text-center">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-[4px] text-emerald-400/90 bg-emerald-950/20 px-4 py-2 border border-emerald-800/30 rounded-full mb-4">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-[4px] text-indigo-400/90 bg-indigo-950/20 px-4 py-2 border border-indigo-800/30 rounded-full mb-4">
                     Activity Matrix
                 </span>
                 <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight italic text-white">
-                    Github <span className="text-emerald-400">Workspace</span>
+                    Github <span className="text-indigo-400">Workspace</span>
                 </h2>
-                <div className="h-1.5 w-12 bg-emerald-500 mt-4 rounded-full" />
+                <div className="h-1.5 w-12 bg-indigo-500 mt-4 rounded-full" />
             </div>
 
             {/* Main Wrapper */}
@@ -218,7 +218,7 @@ export default function GithubActivitySection() {
                     href={`https://github.com/${username}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="absolute top-4 right-6 flex items-center gap-1.5 font-mono text-[10px] text-emerald-400/80 hover:text-emerald-400 uppercase tracking-widest transition-colors"
+                    className="absolute top-4 right-6 flex items-center gap-1.5 font-mono text-[10px] text-indigo-400/80 hover:text-indigo-400 uppercase tracking-widest transition-colors"
                 >
                     @{username} <ExternalLink size={10} />
                 </a>
@@ -239,7 +239,7 @@ export default function GithubActivitySection() {
                                 onClick={() => setActiveFilter(btn.id as any)}
                                 className={`px-5 py-2.5 rounded-2xl flex items-center gap-2 text-xs font-black uppercase tracking-wider transition-all duration-300 ${
                                     isSelected
-                                        ? "bg-emerald-500 text-black shadow-[0_10px_20px_rgba(16,185,129,0.2)] scale-105"
+                                        ? "bg-indigo-500 text-white shadow-[0_10px_20px_rgba(99,102,241,0.25)] scale-105"
                                         : "bg-zinc-900/50 text-zinc-400 border border-zinc-800 hover:border-zinc-700 hover:text-white"
                                 }`}
                             >
@@ -257,7 +257,7 @@ export default function GithubActivitySection() {
                 >
                     {loading ? (
                         <div className="h-40 flex items-center justify-center flex-col gap-3">
-                            <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+                            <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
                             <span className="text-zinc-500 font-mono text-xs uppercase tracking-widest">Parsing GitHub contributions...</span>
                         </div>
                     ) : (
@@ -278,15 +278,15 @@ export default function GithubActivitySection() {
                                             let glowClass = "";
 
                                             if (day.level === 1) {
-                                                colorClass = "bg-emerald-950/40 border border-emerald-900/30";
+                                                colorClass = "bg-indigo-950/40 border border-indigo-900/30";
                                             } else if (day.level === 2) {
-                                                colorClass = "bg-emerald-800/30 border border-emerald-700/30";
+                                                colorClass = "bg-indigo-800/30 border border-indigo-700/30";
                                             } else if (day.level === 3) {
-                                                colorClass = "bg-emerald-600/40 border border-emerald-500/40";
-                                                glowClass = "shadow-[0_0_8px_rgba(16,185,129,0.15)]";
+                                                colorClass = "bg-indigo-600/40 border border-indigo-500/40";
+                                                glowClass = "shadow-[0_0_8px_rgba(99,102,241,0.15)]";
                                             } else if (day.level === 4) {
-                                                colorClass = "bg-emerald-500 border border-emerald-400";
-                                                glowClass = "shadow-[0_0_12px_rgba(16,185,129,0.4)]";
+                                                colorClass = "bg-indigo-500 border border-indigo-400";
+                                                glowClass = "shadow-[0_0_12px_rgba(99,102,241,0.45)]";
                                             }
 
                                             const isCurrentlyHovered = hoveredDay?.date === day.date;
@@ -326,7 +326,7 @@ export default function GithubActivitySection() {
                                         className="bg-zinc-950/95 border border-zinc-800 text-white rounded-xl px-4 py-3 shadow-2xl backdrop-blur-md min-w-[200px]"
                                     >
                                         <div className="flex justify-between items-center mb-1.5 pb-1.5 border-b border-zinc-900">
-                                            <span className="text-[10px] font-black uppercase text-emerald-400 font-mono tracking-wider">
+                                            <span className="text-[10px] font-black uppercase text-indigo-400 font-mono tracking-wider">
                                                 {hoveredDay.type.toUpperCase()}
                                             </span>
                                             <span className="text-[9px] font-bold text-zinc-500 font-mono">
@@ -359,7 +359,7 @@ export default function GithubActivitySection() {
                             value: stats.totalContributions.toLocaleString(), 
                             sub: "Yearly Commits & PRs", 
                             icon: Award, 
-                            color: "text-emerald-400" 
+                            color: "text-indigo-400" 
                         },
                         { 
                             label: "Active Streak", 
