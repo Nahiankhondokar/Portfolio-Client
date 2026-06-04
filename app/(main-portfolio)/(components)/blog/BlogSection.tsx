@@ -49,10 +49,12 @@ const BlogCard = ({
                     <Calendar size={12} className="text-indigo-400" />
                     <span className="text-[10px] font-bold text-white uppercase tracking-wider">
                         {blog.created_at
-                            ? new Date(blog.created_at).toLocaleDateString("en-US", {
-                                  month: "short",
-                                  day: "numeric",
-                              })
+                            ? (isNaN(new Date(blog.created_at).getTime())
+                                ? blog.created_at
+                                : new Date(blog.created_at).toLocaleDateString("en-US", {
+                                      month: "short",
+                                      day: "numeric",
+                                  }))
                             : "New"}
                     </span>
                 </div>
@@ -124,11 +126,13 @@ const ModalBlogRow = ({ blog, index }: { blog: Blog; index: number }) => (
                 {blog.created_at && (
                     <p className="text-zinc-500 text-[11px] mt-1 flex items-center gap-1">
                         <Calendar size={10} className="text-indigo-400" />
-                        {new Date(blog.created_at).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                        })}
+                        {isNaN(new Date(blog.created_at).getTime())
+                            ? blog.created_at
+                            : new Date(blog.created_at).toLocaleDateString("en-US", {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                              })}
                     </p>
                 )}
             </div>
