@@ -29,7 +29,8 @@ import {
   Settings,
   LogOut,
   LayoutDashboard,
-  Palette
+  Palette,
+  Clock
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -60,6 +61,7 @@ const ALL_ITEMS = [
   { title: "Portfolio",  url: "/dashboard/portfolio",   icon: BookOpenCheck,   adminOnly: false },
   { title: "Education",  url: "/dashboard/education",   icon: BookOpen,        adminOnly: false },
   { title: "Chatbot",    url: "/dashboard/chatbot",     icon: MessageCircle,   adminOnly: false },
+  { title: "Task Logs",  url: "/dashboard/todo",        icon: Clock,           adminOnly: false },
   { title: "Theme Settings", url: "/dashboard/theme",   icon: Palette,         adminOnly: false },
 ];
 

@@ -61,7 +61,7 @@ const BlogDetailsContent = ({ blog }: { blog: Blog }) => {
                         </div>
                         <div className="flex items-center gap-2">
                             <Calendar size={12} />
-                            <span>{blog.created_at ? new Date(blog.created_at).toLocaleDateString() : "April 2026"}</span>
+                            <span>{blog.created_at ? (isNaN(new Date(blog.created_at).getTime()) ? blog.created_at : new Date(blog.created_at).toLocaleDateString()) : "April 2026"}</span>
                         </div>
                         <div className="flex items-center gap-2">
                             <Clock size={12} />
