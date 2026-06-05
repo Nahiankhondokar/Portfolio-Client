@@ -71,7 +71,7 @@ export default function Chatbot() {
     };
 
     return (
-        <div className="flex h-[calc(100vh-90px)] border rounded-2xl overflow-hidden bg-card shadow-sm">
+        <div className="flex h-[calc(100vh-76px)] min-h-[600px] border rounded-2xl overflow-hidden bg-card shadow-sm">
             {/* --- LEFT SIDE: Conversation List --- */}
             <div className="w-80 border-r flex flex-col bg-muted/10">
                 <div className="p-5 border-b space-y-3">

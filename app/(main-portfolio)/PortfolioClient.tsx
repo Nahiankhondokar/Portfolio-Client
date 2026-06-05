@@ -276,7 +276,7 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
                             initial={{ opacity: 0, y: 20, scale: 0.9, transformOrigin: "bottom right" }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 20, scale: 0.9 }}
-                            className="mb-4 w-[calc(100vw-3rem)] sm:w-96 h-[500px] bg-zinc-950 border border-zinc-800 rounded-[2rem] shadow-2xl overflow-hidden flex flex-col"
+                            className="mb-4 w-[calc(100vw-3rem)] sm:w-96 h-[680px] max-h-[85vh] bg-zinc-950 border border-zinc-800 rounded-[2rem] shadow-2xl overflow-hidden flex flex-col"
                         >
                             <ChatWidget guestId={guestId} />
                         </motion.div>
