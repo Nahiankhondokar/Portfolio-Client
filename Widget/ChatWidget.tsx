@@ -135,7 +135,13 @@ export default function ChatWidget({ guestId }: { guestId: string }) {
                                             animate={{ opacity: 1 }}
                                             className="text-[9px] font-black uppercase tracking-[1px] text-zinc-600 mt-1.5 px-1"
                                         >
-                                            {isGuest ? "Sent" : "Admin"} • {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                            {isGuest ? "Sent" : "Admin"} • {(() => {
+                                                const d = new Date(msg.created_at);
+                                                if (isNaN(d.getTime())) {
+                                                    return msg.created_at;
+                                                }
+                                                return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                                            })()}
                                         </motion.span>
                                     )}
                                 </motion.div>

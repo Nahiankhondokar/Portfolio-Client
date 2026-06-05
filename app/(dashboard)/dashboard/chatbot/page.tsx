@@ -71,7 +71,7 @@ export default function Chatbot() {
     };
 
     return (
-        <div className="flex h-[calc(100vh-120px)] border rounded-2xl overflow-hidden bg-card shadow-sm">
+        <div className="flex h-[calc(100vh-90px)] border rounded-2xl overflow-hidden bg-card shadow-sm">
             {/* --- LEFT SIDE: Conversation List --- */}
             <div className="w-80 border-r flex flex-col bg-muted/10">
                 <div className="p-5 border-b space-y-3">
@@ -91,70 +91,58 @@ export default function Chatbot() {
                         {conversations.map((conversation) => (
                             <div
                                 key={conversation.id}
-                                className={`p-5 cursor-pointer hover:bg-muted/30 transition-colors ${
+                                onClick={() => selectConversation(conversation)}
+                                className={`p-3.5 cursor-pointer hover:bg-muted/30 transition-colors ${
                                     selectedConversation?.id === conversation.id
                                         ? "bg-muted/80"
                                         : ""
                                 }`}
                             >
-                                <div className="grid grid-cols-[1fr,auto] items-start gap-x-2 gap-y-1">
+                                <div className="grid grid-cols-[1fr,auto] items-center gap-x-2">
                                     {/* Left Column: Text */}
                                     <div className="flex flex-col gap-0.5 min-w-0">
-                    <span className="font-medium text-sm text-foreground truncate"
-
-                          onClick={() => selectConversation(conversation)}
-                    >
-                      {conversation.guest_name ||
-                          `Guest #${conversation.id}`}
-                    </span>
+                                        <span className="font-semibold text-sm text-foreground truncate">
+                                            {conversation.guest_name || `Guest #${conversation.id}`}
+                                        </span>
                                         <span className="text-[11px] text-muted-foreground italic truncate">
-                                      ID: {conversation.guest_id.slice(0, 8)}...
-                                    </span>
+                                            ID: {conversation.guest_id.slice(0, 8)}...
+                                        </span>
                                     </div>
 
                                     {/* Right Column: Date & Trash */}
-                                    <div className="flex flex-col items-end gap-1.5 pt-0.5">
-                                    <span className="text-[10px] text-muted-foreground/70 whitespace-nowrap">
-                                      {conversation.updated_at} ago
-                                    </span>
-
-
+                                    <div className="flex items-center gap-2 flex-shrink-0">
+                                        <span className="text-[10px] text-muted-foreground/70 whitespace-nowrap">
+                                            {conversation.updated_at} ago
+                                        </span>
+                                        <ConfirmationAlert
+                                            title="Delete Conversation?"
+                                            description="This action cannot be undone."
+                                            confirmText="Delete permanently"
+                                            onConfirm={async () => {
+                                                try {
+                                                    await deleteConversation(conversation.id);
+                                                    if (selectedConversation?.id === conversation.id) {
+                                                        selectConversation(null);
+                                                    }
+                                                    toast.success("Conversation deleted");
+                                                } catch (error) {
+                                                    toast.error("Delete failed");
+                                                }
+                                            }}
+                                            trigger={
+                                                <Button
+                                                    size="icon"
+                                                    variant="ghost"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                    className="w-7 h-7 rounded-full text-muted-foreground/60 hover:text-red-600 hover:bg-red-50"
+                                                >
+                                                    <Trash size={14} />
+                                                </Button>
+                                            }
+                                        />
                                     </div>
                                 </div>
-
-                                <ConfirmationAlert
-                                    title="Delete Conversation?"
-                                    description="This action cannot be undone."
-                                    confirmText="Delete permanently"
-                                    onConfirm={async () => {
-                                        try {
-                                            // 1. Perform the delete
-                                            await deleteConversation(conversation.id);
-
-                                            // 2. If the deleted chat was the one we were looking at,
-                                            //    clear the selection so the "Welcome" screen shows up.
-                                            if (selectedConversation?.id === conversation.id) {
-                                                selectConversation(null); // Assuming your store action accepts null
-                                            }
-
-                                            toast.success("Conversation deleted");
-                                        } catch (error) {
-                                            toast.error("Delete failed");
-                                        }
-                                    }}
-                                    trigger={
-                                        <Button
-                                            size="icon"
-                                            variant="ghost"
-                                            className="w-7 h-7 -mr-2 rounded-full text-muted-foreground/60 hover:text-red-600 hover:bg-red-50"
-                                        >
-                                            <Trash size={16} />
-                                        </Button>
-                                    }
-                                />
                             </div>
-
-
                         ))}
                     </div>
                 </ScrollArea>
@@ -206,10 +194,16 @@ export default function Chatbot() {
                                                         : "text-muted-foreground/80"
                                                 }`}
                                             >
-                                                {new Date(m.created_at).toLocaleTimeString([], {
-                                                    hour: "2-digit",
-                                                    minute: "2-digit",
-                                                })}
+                                                {(() => {
+                                                    const d = new Date(m.created_at);
+                                                    if (isNaN(d.getTime())) {
+                                                        return m.created_at;
+                                                    }
+                                                    return d.toLocaleTimeString([], {
+                                                        hour: "2-digit",
+                                                        minute: "2-digit",
+                                                    });
+                                                })()}
                                             </p>
                                         </div>
                                     </div>
