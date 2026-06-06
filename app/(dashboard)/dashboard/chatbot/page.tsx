@@ -29,6 +29,12 @@ export default function Chatbot() {
         incrementUnreadCount,
     } = useChatBotStore();
 
+    const selectedConversationIdRef = useRef<number | null>(null);
+    
+    useEffect(() => {
+        selectedConversationIdRef.current = selectedConversation?.id || null;
+    }, [selectedConversation?.id]);
+
     useEffect(() => {
         fetchConversations();
 
@@ -38,7 +44,9 @@ export default function Chatbot() {
                 const incomingMsg = e.message;
                 fetchConversations();
 
-                if (incomingMsg.sender === "guest" && selectedConversation?.id !== incomingMsg.conversation_id) {
+                const currentSelectedId = selectedConversationIdRef.current;
+
+                if (incomingMsg.sender === "guest" && currentSelectedId !== incomingMsg.conversation_id) {
                     incrementUnreadCount(incomingMsg.conversation_id);
                 }
 
@@ -54,7 +62,7 @@ export default function Chatbot() {
             });
 
         return () => echo?.leaveChannel("admin.inbox");
-    }, [fetchConversations, selectedConversation?.id, incrementUnreadCount]);
+    }, [fetchConversations, incrementUnreadCount]);
 
     useEffect(() => {
         scrollRef.current?.scrollIntoView({ behavior: "smooth" });
