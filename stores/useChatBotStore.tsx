@@ -26,6 +26,7 @@ interface ChatState {
     loading: boolean;
     error: boolean;
     selectedConversation: Conversation | null;
+    unreadCounts: Record<number, number>;
 
     // Actions
     fetchConversations: () => Promise<void>;
@@ -36,6 +37,8 @@ interface ChatState {
     sendReply: (conversationId: number, body: string) => Promise<void>;
     addMessage: (message: Message) => void;
     deleteConversation: (id: number) => Promise<void>;
+    incrementUnreadCount: (conversationId: number) => void;
+    clearUnreadCount: (conversationId: number) => void;
 }
 
 export const useChatBotStore = create<ChatState>((set, get) => ({
@@ -44,12 +47,28 @@ export const useChatBotStore = create<ChatState>((set, get) => ({
     loading: false,
     error: false,
     selectedConversation: null,
+    unreadCounts: {},
     setMessages: (message:Message) => {
         set((state) => ({
             messages: [message, ...state.messages]
         }));
 
         console.log(get().messages)
+    },
+    incrementUnreadCount: (conversationId: number) => {
+        set((state) => ({
+            unreadCounts: {
+                ...state.unreadCounts,
+                [conversationId]: (state.unreadCounts[conversationId] || 0) + 1,
+            },
+        }));
+    },
+    clearUnreadCount: (conversationId: number) => {
+        set((state) => {
+            const nextCounts = { ...state.unreadCounts };
+            delete nextCounts[conversationId];
+            return { unreadCounts: nextCounts };
+        });
     },
 
     fetchConversations: async () => {
@@ -127,6 +146,9 @@ export const useChatBotStore = create<ChatState>((set, get) => ({
         }
 
         set({ selectedConversation: conv });
+        // Clear unread count when selected
+        get().clearUnreadCount(conv.id);
+
         // Only fetch if we actually have a conversation object
         await get().fetchMessages(conv.id);
     },

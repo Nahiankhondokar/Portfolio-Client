@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Search, Send, Trash, User } from "lucide-react";
+import { Search, Send, Trash, User, MessageSquare } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -11,6 +11,7 @@ import { ChatBotEvent } from "@/type/chatbot/type";
 import ConfirmationAlert from "@/components/common/ConfirmationAlert";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Chatbot() {
     const [reply, setReply] = useState("");
@@ -24,7 +25,15 @@ export default function Chatbot() {
         messages,
         sendReply,
         deleteConversation,
+        unreadCounts,
+        incrementUnreadCount,
     } = useChatBotStore();
+
+    const selectedConversationIdRef = useRef<number | null>(null);
+    
+    useEffect(() => {
+        selectedConversationIdRef.current = selectedConversation?.id || null;
+    }, [selectedConversation?.id]);
 
     useEffect(() => {
         fetchConversations();
@@ -34,6 +43,12 @@ export default function Chatbot() {
             .listen("ChatBotEvent", (e: ChatBotEvent) => {
                 const incomingMsg = e.message;
                 fetchConversations();
+
+                const currentSelectedId = selectedConversationIdRef.current;
+
+                if (incomingMsg.sender === "guest" && currentSelectedId !== incomingMsg.conversation_id) {
+                    incrementUnreadCount(incomingMsg.conversation_id);
+                }
 
                 useChatBotStore.setState((state) => {
                     if (state.selectedConversation?.id === incomingMsg.conversation_id) {
@@ -47,7 +62,7 @@ export default function Chatbot() {
             });
 
         return () => echo?.leaveChannel("admin.inbox");
-    }, [fetchConversations]);
+    }, [fetchConversations, incrementUnreadCount]);
 
     useEffect(() => {
         scrollRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -71,53 +86,85 @@ export default function Chatbot() {
     };
 
     return (
-        <div className="flex h-[calc(100vh-76px)] min-h-[600px] border rounded-2xl overflow-hidden bg-card shadow-sm">
+        <div className="flex h-[calc(100vh-80px)] min-h-[600px] border border-zinc-800 rounded-[2rem] overflow-hidden bg-black/40 backdrop-blur-xl shadow-2xl">
             {/* --- LEFT SIDE: Conversation List --- */}
-            <div className="w-80 border-r flex flex-col bg-muted/10">
-                <div className="p-5 border-b space-y-3">
-                    <h2 className="text-xl font-semibold text-foreground tracking-tight">
-                        Guest Messages
-                    </h2>
+            <div className="w-80 border-r border-zinc-800 flex flex-col bg-zinc-950/30">
+                <div className="p-5 border-b border-zinc-800/80 space-y-4">
+                    <div>
+                        <h2 className="text-sm font-black text-white uppercase tracking-wider">
+                            Guest Inbox
+                        </h2>
+                        <div className="w-8 h-1 bg-indigo-500 rounded-full mt-1" />
+                    </div>
                     <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/70" />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-500" />
                         <Input
-                            placeholder="Search guests by name or ID..."
-                            className="pl-9 bg-background/50 h-10 rounded-full"
+                            placeholder="Search guest ID..."
+                            className="pl-9 bg-zinc-900/50 border-zinc-800 focus:border-indigo-500/50 rounded-2xl h-10 text-xs placeholder:text-zinc-600 text-zinc-200"
                         />
                     </div>
                 </div>
+                
                 <ScrollArea className="flex-1">
-                    <div className="divide-y divide-muted/30">
-                        {conversations.map((conversation) => (
-                            <div
-                                key={conversation.id}
-                                onClick={() => selectConversation(conversation)}
-                                className={`p-3.5 cursor-pointer hover:bg-muted/30 transition-colors ${
-                                    selectedConversation?.id === conversation.id
-                                        ? "bg-muted/80"
-                                        : ""
-                                }`}
-                            >
-                                <div className="grid grid-cols-[1fr,auto] items-center gap-x-2">
-                                    {/* Left Column: Text */}
-                                    <div className="flex flex-col gap-0.5 min-w-0">
-                                        <span className="font-semibold text-sm text-foreground truncate">
-                                            {conversation.guest_name || `Guest #${conversation.id}`}
-                                        </span>
-                                        <span className="text-[11px] text-muted-foreground italic truncate">
-                                            ID: {conversation.guest_id.slice(0, 8)}...
-                                        </span>
+                    <div className="divide-y divide-zinc-900/40 p-2 space-y-1">
+                        {conversations.map((conversation) => {
+                            const isSelected = selectedConversation?.id === conversation.id;
+                            const unreadCount = unreadCounts[conversation.id] || 0;
+
+                            return (
+                                <div
+                                    key={conversation.id}
+                                    onClick={() => selectConversation(conversation)}
+                                    className={`relative p-3.5 rounded-2xl cursor-pointer transition-all duration-300 flex items-center gap-3 group border ${
+                                        isSelected
+                                            ? "bg-zinc-900/80 border-zinc-800/80 shadow-md shadow-black/30"
+                                            : "bg-transparent border-transparent hover:bg-zinc-900/30"
+                                    }`}
+                                >
+                                    {/* Left active line accent */}
+                                    <div className={`absolute left-0 top-3 bottom-3 w-1 rounded-r-full transition-all duration-300 ${
+                                        isSelected ? "bg-indigo-500 scale-y-100" : "bg-transparent scale-y-0"
+                                    }`} />
+
+                                    {/* Avatar with customized gradients */}
+                                    <Avatar className="h-10 w-10 border border-zinc-800 flex-shrink-0">
+                                        <AvatarFallback className="bg-gradient-to-br from-indigo-500/10 to-indigo-500/30 text-indigo-400 text-xs font-black">
+                                            {getGuestInitials(conversation.guest_name || undefined)}
+                                        </AvatarFallback>
+                                    </Avatar>
+
+                                    {/* Conversation Details */}
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center justify-between gap-1 mb-0.5">
+                                            <span className={`text-xs truncate transition-colors ${
+                                                isSelected ? "text-indigo-400 font-extrabold" : "text-zinc-200 font-bold"
+                                            }`}>
+                                                {conversation.guest_name || "Anonymous Guest"}
+                                            </span>
+                                            <span className="text-[9px] font-bold uppercase tracking-wider text-zinc-500 flex-shrink-0">
+                                                {conversation.updated_at} ago
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center justify-between gap-1">
+                                            <span className="text-[10px] text-zinc-500 font-mono truncate">
+                                                ID: {conversation.guest_id.slice(0, 12)}...
+                                            </span>
+                                            
+                                            {/* Red alert unread badge counts */}
+                                            {unreadCount > 0 && (
+                                                <span className="flex h-4 min-w-4 px-1 items-center justify-center rounded-full bg-rose-600 text-white text-[9px] font-black tracking-tight shadow-lg shadow-rose-600/30 animate-pulse">
+                                                    {unreadCount}
+                                                </span>
+                                            )}
+                                        </div>
                                     </div>
 
-                                    {/* Right Column: Date & Trash */}
-                                    <div className="flex items-center gap-2 flex-shrink-0">
-                                        <span className="text-[10px] text-muted-foreground/70 whitespace-nowrap">
-                                            {conversation.updated_at} ago
-                                        </span>
+                                    {/* Action Box: Hidden by default, visible on hover */}
+                                    <div className="opacity-0 group-hover:opacity-100 transition-opacity ml-1 flex-shrink-0">
                                         <ConfirmationAlert
                                             title="Delete Conversation?"
-                                            description="This action cannot be undone."
-                                            confirmText="Delete permanently"
+                                            description="All guest message logs for this session will be permanently deleted."
+                                            confirmText="Delete"
                                             onConfirm={async () => {
                                                 try {
                                                     await deleteConversation(conversation.id);
@@ -134,116 +181,131 @@ export default function Chatbot() {
                                                     size="icon"
                                                     variant="ghost"
                                                     onClick={(e) => e.stopPropagation()}
-                                                    className="w-7 h-7 rounded-full text-muted-foreground/60 hover:text-red-600 hover:bg-red-50"
+                                                    className="w-7 h-7 rounded-xl text-zinc-500 hover:text-rose-500 hover:bg-rose-500/10 transition-colors"
                                                 >
-                                                    <Trash size={14} />
+                                                    <Trash size={13} />
                                                 </Button>
                                             }
                                         />
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </ScrollArea>
             </div>
 
             {/* --- RIGHT SIDE: Message Thread --- */}
-            <div className="flex-1 flex flex-col bg-background">
+            <div className="flex-1 flex flex-col bg-zinc-950/10">
                 {selectedConversation ? (
                     <>
-                        <div className="p-5 border-b flex items-center justify-between bg-muted/5">
-                            <div className="flex items-center gap-4">
-                                <Avatar className="h-11 w-11 border">
-                                    <AvatarFallback className="bg-primary/5 text-primary text-sm font-semibold">
-                                        {selectedConversation?.guest_name}
+                        {/* Conversation Header */}
+                        <div className="p-5 border-b border-zinc-800/80 flex items-center justify-between bg-zinc-950/20 backdrop-blur-md">
+                            <div className="flex items-center gap-3.5">
+                                <Avatar className="h-10 w-10 border border-zinc-800">
+                                    <AvatarFallback className="bg-gradient-to-br from-indigo-500/10 to-indigo-500/30 text-indigo-400 text-xs font-black">
+                                        {getGuestInitials(selectedConversation?.guest_name || undefined)}
                                     </AvatarFallback>
                                 </Avatar>
                                 <div>
-                                    <h3 className="font-semibold text-base text-foreground">
-                                        {selectedConversation.guest_name || "Anonymous Guest"}
-                                    </h3>
-                                    <p className="text-[11px] text-muted-foreground italic font-mono">
-                                        {selectedConversation.guest_id}
+                                    <div className="flex items-center gap-2">
+                                        <h3 className="font-extrabold text-sm text-zinc-100 uppercase tracking-wide">
+                                            {selectedConversation.guest_name || "Anonymous Guest"}
+                                        </h3>
+                                        <span className="flex items-center gap-1 text-[9px] font-black uppercase text-green-500 tracking-wider">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                                            Active
+                                        </span>
+                                    </div>
+                                    <p className="text-[10px] text-zinc-500 font-mono mt-0.5">
+                                        Guest ID: {selectedConversation.guest_id}
                                     </p>
                                 </div>
                             </div>
                         </div>
 
-                        <ScrollArea className="flex-1 px-6 py-8">
-                            <div className="space-y-6">
-                                {messages.map((m) => (
-                                    <div
-                                        key={m.id}
-                                        className={`flex ${
-                                            m.sender === "admin" ? "justify-end" : "justify-start"
-                                        }`}
-                                    >
-                                        <div
-                                            className={`max-w-[75%] p-4 rounded-3xl text-sm leading-relaxed ${
-                                                m.sender === "admin"
-                                                    ? "bg-primary text-primary-foreground rounded-br-none"
-                                                    : "bg-muted text-foreground rounded-tl-none border border-muted/50"
-                                            }`}
-                                        >
-                                            {m.body}
-                                            <p
-                                                className={`text-[10px] mt-2 font-mono ${
-                                                    m.sender === "admin"
-                                                        ? "opacity-80"
-                                                        : "text-muted-foreground/80"
-                                                }`}
+                        {/* Message Feed */}
+                        <ScrollArea className="flex-1 px-6 py-6 bg-black/10">
+                            <div className="flex flex-col gap-4">
+                                <AnimatePresence initial={false}>
+                                    {messages.map((m) => {
+                                        const isAdmin = m.sender === "admin";
+                                        return (
+                                            <motion.div
+                                                key={m.id}
+                                                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                                className={`flex ${isAdmin ? "justify-end" : "justify-start"}`}
                                             >
-                                                {(() => {
-                                                    const d = new Date(m.created_at);
-                                                    if (isNaN(d.getTime())) {
-                                                        return m.created_at;
-                                                    }
-                                                    return d.toLocaleTimeString([], {
-                                                        hour: "2-digit",
-                                                        minute: "2-digit",
-                                                    });
-                                                })()}
-                                            </p>
-                                        </div>
-                                    </div>
-                                ))}
+                                                <div
+                                                    className={`max-w-[70%] px-4 py-3 rounded-2xl shadow-lg leading-relaxed flex flex-col ${
+                                                        isAdmin
+                                                            ? "bg-indigo-500 text-white rounded-br-none shadow-indigo-500/5"
+                                                            : "bg-zinc-900 border border-zinc-800 text-zinc-100 rounded-tl-none shadow-black/40"
+                                                    }`}
+                                                >
+                                                    <p className="text-sm font-medium break-words leading-relaxed">
+                                                        {m.body}
+                                                    </p>
+                                                    <span
+                                                        className={`text-[9px] mt-1.5 font-bold uppercase tracking-wider ${
+                                                            isAdmin ? "text-indigo-200/80" : "text-zinc-500"
+                                                        }`}
+                                                    >
+                                                        {(() => {
+                                                            const d = new Date(m.created_at);
+                                                            if (isNaN(d.getTime())) {
+                                                                return m.created_at;
+                                                            }
+                                                            return d.toLocaleTimeString([], {
+                                                                hour: "2-digit",
+                                                                minute: "2-digit",
+                                                            });
+                                                        })()}
+                                                    </span>
+                                                </div>
+                                            </motion.div>
+                                        );
+                                    })}
+                                </AnimatePresence>
                                 <div ref={scrollRef} />
                             </div>
                         </ScrollArea>
 
-                        <form
-                            onSubmit={handleSendReply}
-                            className="p-4 border-t bg-muted/5 flex gap-3"
-                        >
-                            <Input
-                                value={reply}
-                                onChange={(e) => setReply(e.target.value)}
-                                placeholder="Type your message..."
-                                className="flex-1 rounded-full h-11 px-5 border-muted/40"
-                            />
-                            <Button
-                                type="submit"
-                                size="icon"
-                                className="rounded-full h-11 w-11"
-                                disabled={!reply.trim()}
+                        {/* Input Footer Form */}
+                        <div className="p-4 bg-zinc-950/40 border-t border-zinc-800/80">
+                            <form
+                                onSubmit={handleSendReply}
+                                className="flex gap-3 bg-zinc-900 border border-zinc-800/85 rounded-2xl p-1.5 focus-within:border-indigo-500/50 transition-all shadow-inner"
                             >
-                                <Send size={18} />
-                            </Button>
-                        </form>
+                                <Input
+                                    value={reply}
+                                    onChange={(e) => setReply(e.target.value)}
+                                    placeholder="Type your message..."
+                                    className="flex-1 bg-transparent border-none text-zinc-100 placeholder:text-zinc-600 focus-visible:ring-0 focus-visible:ring-offset-0 text-sm"
+                                />
+                                <Button
+                                    type="submit"
+                                    size="icon"
+                                    className="rounded-xl h-10 w-10 bg-indigo-500 hover:bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 active:scale-95 transition-transform"
+                                    disabled={!reply.trim()}
+                                >
+                                    <Send size={15} strokeWidth={2.5} />
+                                </Button>
+                            </form>
+                        </div>
                     </>
                 ) : (
-                    <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground/70 px-10 text-center gap-5">
-                        <div className="p-6 bg-muted rounded-full border border-muted/70">
-                            <User size={56} className="opacity-60" />
+                    <div className="flex-1 flex flex-col items-center justify-center text-zinc-500/80 px-10 text-center gap-5">
+                        <div className="p-6 bg-zinc-900/30 border border-zinc-800/60 rounded-3xl shadow-inner shadow-black/20 text-indigo-400">
+                            <MessageSquare size={44} className="opacity-80" />
                         </div>
-                        <div className="space-y-1.5">
-                            <h3 className="text-xl font-semibold tracking-tight text-foreground/80">
-                                Welcome to Inbox
+                        <div className="space-y-2">
+                            <h3 className="text-base font-black tracking-wider text-white uppercase">
+                                Inbox Workspace
                             </h3>
-                            <p className="max-w-[280px]">
-                                Select a conversation from the left to start chatting with your
-                                guests.
+                            <p className="max-w-xs text-xs text-zinc-500 leading-relaxed font-semibold">
+                                Select a visitor thread from the sidebar to initialize real-time workspace and chat with guests.
                             </p>
                         </div>
                     </div>
