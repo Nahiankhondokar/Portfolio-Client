@@ -4,7 +4,7 @@ export interface Experience {
   description: string | null;
   position: string | null;
   duration: string | null;
-  institute: string | null;
+  company: string | null;
   start_date: string | null;
   end_date: string | null;
   image: {

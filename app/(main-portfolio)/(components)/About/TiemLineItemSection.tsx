@@ -2,9 +2,11 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Experience } from "@/app/(main-portfolio)/type/type";
+import { Experience, Education } from "@/app/(main-portfolio)/type/type";
 
-const TimeLineItemSection = ({ data, icon }: { data: Experience; icon: React.ReactNode }) => {
+const TimeLineItemSection = ({ data, icon }: { data: Experience | Education; icon: React.ReactNode }) => {
+    const displayInstitution = "company" in data ? data.company : data.institute;
+
     return (
         <motion.div
             initial={{ opacity: 0, x: -10 }}
@@ -35,7 +37,7 @@ const TimeLineItemSection = ({ data, icon }: { data: Experience; icon: React.Rea
                 <div className="flex items-center gap-2 mt-1">
                     <div className="w-4 h-px bg-indigo-500/50" />
                     <span className="text-sm font-bold uppercase tracking-widest text-zinc-500">
-                        {data.institute || "Freelance"}
+                        {displayInstitution || "Freelance"}
                     </span>
                 </div>
 
