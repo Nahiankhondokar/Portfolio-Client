@@ -51,7 +51,7 @@ export interface Experience {
     description: string;
     position: string;
     duration: string;
-    institute: string;
+    company: string;
     start_date: string; // ISO date
     end_date: string;   // ISO date
     media: string | null;

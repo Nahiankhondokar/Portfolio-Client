@@ -25,7 +25,7 @@ type formSchemaType = z.infer<typeof formSchema>;
 
 const mapExperienceToForm = (exp: Experience): formSchemaType => ({
     title: exp.title ?? "",
-    institute: exp.institute ?? "",
+    company: exp.company ?? "",
     position: exp.position ?? "",
     start_date: exp.start_date ?? "",
     end_date: exp.end_date ?? "",
@@ -49,7 +49,7 @@ const AddNewExperience = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
         title: "",
-        institute: "",
+        company: "",
         position: "",
         start_date: "",
         end_date: "",
@@ -118,7 +118,7 @@ const AddNewExperience = () => {
             {/* Company / Institute */}
             <FormField
                 control={form.control}
-                name="institute"
+                name="company"
                 render={({ field }) => (
                     <FormItem>
                         <FormLabel>Company / Institute</FormLabel>
