@@ -5,32 +5,34 @@ import { motion } from "framer-motion";
 import { Expertise } from "@/app/(main-portfolio)/type/type";
 import EmptyStateSection from "@/app/(main-portfolio)/(components)/About/EmptyStateSection";
 
+const containerVars = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: { staggerChildren: 0.08 }
+    }
+};
+
+const itemVars = {
+    hidden: { opacity: 0, y: 30, scale: 0.95 },
+    visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: [0.23, 1, 0.32, 1] } }
+};
+
 const SkillSection = ({ skills }: { skills: Expertise[] }) => {
-    // Animation variants for the container
-    const containerVars = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: { staggerChildren: 0.1 }
-        }
-    };
-
-    // Animation variants for the text
-    const itemVars = {
-        hidden: { opacity: 0, y: 10 },
-        visible: { opacity: 1, y: 0 }
-    };
-
     return (
         <div className="mb-32 relative">
-            {/* Background Label */}
             <div className="absolute -top-10 left-1/2 -translate-x-1/2 opacity-[0.03] select-none pointer-events-none">
                 <span className="text-8xl font-black uppercase tracking-tighter italic">Expertise</span>
             </div>
 
-            <h3 className="text-center text-3xl lg:text-4xl font-black uppercase mb-20 relative z-10 tracking-tight">
-                My <span className="text-indigo-400">Skills</span>
-            </h3>
+            <div className="text-center mb-16 relative z-10">
+                <span className="text-indigo-400/80 font-mono text-[10px] uppercase tracking-[4px] font-black mb-3 block">
+                    Technical Proficiency
+                </span>
+                <h3 className="text-3xl lg:text-5xl font-black uppercase tracking-tight">
+                    My <span className="text-indigo-400">Skills</span>
+                </h3>
+            </div>
 
             {skills.length > 0 ? (
                 <motion.div
@@ -38,60 +40,74 @@ const SkillSection = ({ skills }: { skills: Expertise[] }) => {
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true, margin: "-50px" }}
-                    className="grid grid-cols-2 md:grid-cols-4 gap-y-16 gap-x-8"
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
                 >
-                    {skills.map((skill) => (
-                        <motion.div key={skill.name} variants={itemVars} className="flex flex-col items-center group">
-                            <div className="relative w-32 h-32 flex items-center justify-center">
-                                {/* SVG Circular Progress */}
-                                <svg className="w-full h-full transform -rotate-90">
-                                    {/* Background Circle */}
-                                    <circle
-                                        cx="64"
-                                        cy="64"
-                                        r="58"
-                                        stroke="currentColor"
-                                        strokeWidth="6"
-                                        fill="transparent"
-                                        className="text-zinc-900"
-                                    />
-                                    {/* Animated Progress Circle */}
-                                    <motion.circle
-                                        cx="64"
-                                        cy="64"
-                                        r="58"
-                                        stroke="currentColor"
-                                        strokeWidth="6"
-                                        fill="transparent"
-                                        strokeDasharray={364.4} // 2 * PI * r
-                                        initial={{ strokeDashoffset: 364.4 }}
-                                        whileInView={{
-                                            strokeDashoffset: 364.4 - (364.4 * (parseFloat(skill.progress) || 0)) / 100
-                                        }}
-                                        transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
-                                        viewport={{ once: true }}
-                                        strokeLinecap="round"
-                                        className="text-indigo-500 drop-shadow-[0_0_8px_rgba(99,102,241,0.45)]"
-                                    />
-                                </svg>
+                    {skills.map((skill) => {
+                        const progress = parseFloat(skill.progress) || 0;
+                        return (
+                            <motion.div
+                                key={skill.name}
+                                variants={itemVars}
+                                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                                className="group relative bg-zinc-950/40 border border-zinc-800/60 rounded-2xl p-5 hover:border-indigo-500/40 transition-colors duration-500 overflow-hidden"
+                            >
+                                {/* Hover glow */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl" />
 
-                                {/* Percentage Text */}
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <span className="text-2xl font-black text-white group-hover:scale-110 transition-transform duration-300">
-                                        {skill.progress}%
-                                    </span>
+                                {/* Top accent line */}
+                                <div className="absolute top-0 left-4 right-4 h-[1px] bg-gradient-to-r from-transparent via-zinc-700/50 to-transparent group-hover:via-indigo-500/40 transition-all duration-500" />
+
+                                <div className="relative z-10">
+                                    {/* Header row */}
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div className="flex items-center gap-3">
+                                            {/* Skill icon dot */}
+                                            <div className="relative flex-shrink-0">
+                                                <div className="w-2.5 h-2.5 rounded-full bg-indigo-500 group-hover:shadow-[0_0_12px_rgba(99,102,241,0.6)] transition-shadow duration-500" />
+                                                <div className="absolute inset-0 w-2.5 h-2.5 rounded-full bg-indigo-400 animate-ping opacity-40 group-hover:opacity-60 transition-opacity" />
+                                            </div>
+                                            <h4 className="font-black uppercase tracking-[2px] text-xs text-zinc-300 group-hover:text-white transition-colors duration-300">
+                                                {skill.name}
+                                            </h4>
+                                        </div>
+                                        <span className="font-mono text-lg font-black text-indigo-400 tabular-nums">
+                                            {progress}
+                                            <span className="text-[10px] text-zinc-600 ml-0.5">%</span>
+                                        </span>
+                                    </div>
+
+                                    {/* Progress bar */}
+                                    <div className="relative h-1.5 bg-zinc-900 rounded-full overflow-hidden">
+                                        {/* Background shimmer */}
+                                        <div className="absolute inset-0 bg-gradient-to-r from-zinc-800/50 via-zinc-700/30 to-zinc-800/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                        {/* Fill */}
+                                        <motion.div
+                                            className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-400"
+                                            initial={{ width: 0 }}
+                                            whileInView={{ width: `${progress}%` }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 1.2, ease: [0.34, 1.56, 0.64, 1], delay: 0.2 }}
+                                        />
+                                        {/* Fill glow */}
+                                        <motion.div
+                                            className="absolute inset-y-0 left-0 rounded-full bg-indigo-400 blur-sm opacity-0 group-hover:opacity-50 transition-opacity duration-500"
+                                            initial={{ width: 0 }}
+                                            whileInView={{ width: `${progress}%` }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 1.2, ease: [0.34, 1.56, 0.64, 1], delay: 0.2 }}
+                                        />
+                                    </div>
+
+                                    {/* Description */}
+                                    {skill.description && (
+                                        <p className="mt-3 text-[11px] text-zinc-500 leading-relaxed line-clamp-2 group-hover:text-zinc-400 transition-colors duration-300">
+                                            {skill.description}
+                                        </p>
+                                    )}
                                 </div>
-                            </div>
-
-                            <div className="mt-8 text-center">
-                                <p className="uppercase font-black tracking-[3px] text-[11px] text-zinc-500 group-hover:text-indigo-400 transition-colors duration-300">
-                                    {skill.name}
-                                </p>
-                                {/* Small decorative bar */}
-                                <div className="h-0.5 w-4 bg-zinc-800 mx-auto mt-2 group-hover:w-8 group-hover:bg-indigo-500 transition-all duration-300" />
-                            </div>
-                        </motion.div>
-                    ))}
+                            </motion.div>
+                        );
+                    })}
                 </motion.div>
             ) : (
                 <EmptyStateSection message="No expertise data found" />
