@@ -146,10 +146,10 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
         <div className="text-white min-h-screen font-sans selection:bg-indigo-500 selection:text-white relative overflow-hidden">
             
             {/* Solid Dark Background Canvas */}
-            <div className="fixed inset-0 bg-[#080b11] -z-40 pointer-events-none" />
+            <div className="fixed inset-0 bg-[#080b11] -z-40 pointer-events-none will-change-transform" style={{ transform: "translateZ(0)" }} />
 
             {/* Premium Fixed Parallax Coding Background */}
-            <div className="fixed inset-0 pointer-events-none -z-30 select-none opacity-[0.08]">
+            <div className="fixed inset-0 pointer-events-none -z-30 select-none opacity-[0.08] will-change-transform" style={{ transform: "translateZ(0)" }}>
                 <Image
                     src={codingBg}
                     alt="Coding background texture"
@@ -160,10 +160,12 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
             </div>
 
             {/* Subtle Tech Blueprint Grid */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f2937_1px,transparent_1px),linear-gradient(to_bottom,#1f2937_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-[0.05] pointer-events-none -z-10" />
+            <div className="fixed inset-0 bg-[linear-gradient(to_right,#1f2937_1px,transparent_1px),linear-gradient(to_bottom,#1f2937_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-[0.05] pointer-events-none -z-10 will-change-transform" style={{ transform: "translateZ(0)" }} />
 
             {/* Glowing Soft Spotlight Orbs */}
-            <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none -z-20 opacity-40" />
+            <div className="fixed inset-0 pointer-events-none -z-20 will-change-transform" style={{ transform: "translateZ(0)" }}>
+                <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px] opacity-40" />
+            </div>
 
             {/* Header with higher z-index than the Chatbot mobile menu */}
             <div className="relative z-[70]">
@@ -206,7 +208,7 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
             </main>
 
             {/* --- Premium Professional Footer --- */}
-            <footer className="border-t border-zinc-900 bg-black/60 backdrop-blur-xl pt-12 pb-32 sm:py-12 mt-12 relative z-50">
+            <footer className="border-t border-zinc-900 bg-black/60 backdrop-blur-xl pt-12 pb-32 sm:py-12 mt-12 relative z-50" style={{ willChange: "transform", transform: "translateZ(0)" }}>
                 <div className="container mx-auto px-4 lg:px-20 flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="flex flex-col gap-1 items-center md:items-start text-center md:text-left">
                         <p className="text-zinc-500 text-xs font-semibold tracking-wide uppercase">
