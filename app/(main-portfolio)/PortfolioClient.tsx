@@ -78,32 +78,42 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
 
     // --- Optimized Scroll-Spy via Window Scroll Listener ---
     useEffect(() => {
+        // Cache section tops/heights to avoid layout thrashing on every scroll
+        let sectionTops: { id: string; top: number; height: number }[] = [];
+
+        const recalcSectionPositions = () => {
+            sectionTops = SECTIONS.map((sectionId) => {
+                const el = document.getElementById(sectionId);
+                return {
+                    id: sectionId,
+                    top: el ? el.offsetTop : 0,
+                    height: el ? el.offsetHeight : 0,
+                };
+            });
+        };
+
+        recalcSectionPositions();
+        window.addEventListener("resize", recalcSectionPositions, { passive: true });
+
         const handleScroll = () => {
-            // Only update if not in the middle of a programmatic scroll
             if (isScrollingRef.current) return;
 
-            // Trigger when the section passes through the upper-middle region of the screen (35% from top)
             const scrollPosition = window.scrollY + window.innerHeight * 0.35;
 
-            for (const sectionId of SECTIONS) {
-                const el = document.getElementById(sectionId);
-                if (el) {
-                    const top = el.offsetTop;
-                    const height = el.offsetHeight;
-
-                    if (scrollPosition >= top && scrollPosition < top + height) {
-                        setActiveSection(sectionId);
-                        break; // Stop checking once we find the current active section
-                    }
+            for (const s of sectionTops) {
+                if (scrollPosition >= s.top && scrollPosition < s.top + s.height) {
+                    setActiveSection(s.id as Section);
+                    break;
                 }
             }
         };
 
         window.addEventListener("scroll", handleScroll, { passive: true });
-        handleScroll(); // Trigger initial execution on mount
+        handleScroll();
 
         return () => {
             window.removeEventListener("scroll", handleScroll);
+            window.removeEventListener("resize", recalcSectionPositions);
         };
     }, []);
 
