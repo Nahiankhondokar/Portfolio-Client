@@ -9,7 +9,7 @@ import ContactSection from "@/app/(main-portfolio)/(components)/ContactSection";
 import HeaderSection from "@/app/(main-portfolio)/(components)/HeaderSection";
 import { motion, AnimatePresence } from "framer-motion";
 import { About, Contact, Home, Portfolio, Section } from "@/app/(main-portfolio)/type/type";
-import { MessageCircle, X, Monitor, Keyboard, Wifi, Headphones, Gamepad2 } from "lucide-react";
+import { MessageCircle, X } from "lucide-react";
 import ChatWidget from "@/Widget/ChatWidget";
 import BlogSection from "@/app/(main-portfolio)/(components)/blog/BlogSection";
 import { Blog } from "@/app/(dashboard)/dashboard/blog/interface/Blog";
@@ -46,17 +46,6 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
     const [totalUnread, setTotalUnread] = useState(0);
     const [guestId, setGuestId] = useState<string>("");
     const [showTooltip, setShowTooltip] = useState(false);
-    const [activeSpec, setActiveSpec] = useState<string | null>(null);
-
-    const specs = [
-        { id: "display", label: "Display Setup", desc: "Xiaomi 34\" 144Hz Ultrawide", icon: Monitor },
-        { id: "keyboard", label: "Keyboard Specs", desc: "Keychron K2 V2 (Brown Switch)", icon: Keyboard },
-        { id: "network", label: "Network Tools", desc: "MikroTik Router + Fiber", icon: Wifi },
-        { id: "audio", label: "Audio Gear", desc: "FIFINE Studio Mic + Edifier Speaker", icon: Headphones },
-        { id: "gaming", label: "System Specs", desc: "RTX 4070 Laptop + PS5 DualSense", icon: Gamepad2 },
-    ];
-
-    // Ref to track if scroll was triggered by a nav click (to avoid fighting IntersectionObserver)
     const isScrollingRef = useRef(false);
     const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -214,51 +203,6 @@ export default function PortfolioClient({ home, about, portfolio, contact, blog 
                         <p className="text-zinc-500 text-xs font-semibold tracking-wide uppercase">
                             © {new Date().getFullYear()} {home.name}. All rights reserved.
                         </p>
-                        <p className="text-[10px] font-mono text-zinc-600 tracking-wider">
-                            currently swimming in code & occasionally in the sea 🌊
-                        </p>
-                    </div>
-
-                    {/* Developer Hardware Setup Easter Eggs */}
-                    <div className="flex flex-col items-center gap-2">
-                        <div className="flex items-center gap-2 bg-zinc-950/45 border border-zinc-900 rounded-full px-3 py-1.5 z-10">
-                            {specs.map((spec) => {
-                                const Icon = spec.icon;
-                                const isActive = activeSpec === spec.id;
-                                return (
-                                    <button
-                                        key={spec.id}
-                                        onClick={() => setActiveSpec(isActive ? null : spec.id)}
-                                        className={`p-1.5 rounded-full transition-all duration-300 hover:scale-110 active:scale-95 relative ${
-                                            isActive 
-                                                ? "text-indigo-400 bg-indigo-950/20 shadow-[0_0_15px_rgba(99,102,241,0.15)] border border-indigo-800/30" 
-                                                : "text-zinc-600 hover:text-zinc-300 hover:bg-zinc-900/40 border border-transparent"
-                                        }`}
-                                        title={spec.label}
-                                    >
-                                        <Icon size={14} />
-                                    </button>
-                                );
-                            })}
-                        </div>
-                        
-                        <AnimatePresence>
-                            {activeSpec && (
-                                <motion.div
-                                    initial={{ opacity: 0, height: 0, y: -4 }}
-                                    animate={{ opacity: 1, height: "auto", y: 0 }}
-                                    exit={{ opacity: 0, height: 0, y: -4 }}
-                                    className="overflow-hidden w-full max-w-[280px]"
-                                >
-                                    <div className="bg-zinc-950/60 border border-zinc-900 rounded-xl px-4 py-2 font-mono text-[9px] text-center text-zinc-400 tracking-wider shadow-inner">
-                                        <span className="text-indigo-400/80 font-black uppercase text-[8px] mr-1 block sm:inline">
-                                            {specs.find(s => s.id === activeSpec)?.label}:
-                                        </span>
-                                        {specs.find(s => s.id === activeSpec)?.desc}
-                                    </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
                     </div>
 
                     {/* Sleek, professional CTA button for public Todo tracker */}
