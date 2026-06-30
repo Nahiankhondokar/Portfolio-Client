@@ -96,7 +96,7 @@ const TimelineCard = ({
                     <div className="relative p-6">
                         {isLatest && (
                             <div
-                                className="absolute top-3 right-3 px-2 py-0.5 rounded-full border text-[8px] font-black uppercase tracking-[2px]"
+                                className="absolute top-3 right-3 px-2.5 py-1 rounded-full border text-[10px] font-black uppercase tracking-[2px]"
                                 style={{
                                     backgroundColor: "rgba(99, 102, 241, 0.1)",
                                     borderColor: "rgba(99, 102, 241, 0.3)",
@@ -110,31 +110,31 @@ const TimelineCard = ({
                         {/* Date + Duration row */}
                         <div className="flex items-center gap-3 mb-4">
                             <div
-                                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider"
+                                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider"
                                 style={{
                                     backgroundColor: "rgba(99, 102, 241, 0.08)",
                                     border: "1px solid rgba(99, 102, 241, 0.15)",
                                     color: "rgb(165, 180, 252)",
                                 }}
                             >
-                                <Calendar size={11} />
+                                <Calendar size={12} />
                                 <span>{startDate || "?"} — {endDate || "Present"}</span>
                             </div>
-                            <div className="flex items-center gap-1 text-[9px] font-mono text-zinc-600">
-                                <Clock size={10} />
+                            <div className="flex items-center gap-1 text-xs font-mono text-zinc-500">
+                                <Clock size={11} />
                                 <span>{yearDiff(data.start_date, data.end_date)} yrs</span>
                             </div>
                         </div>
 
                         {/* Title */}
-                        <h4 className="text-lg lg:text-xl font-black uppercase tracking-tight text-white group-hover:text-zinc-100 transition-colors mb-2">
+                        <h4 className="text-xl lg:text-2xl font-black uppercase tracking-tight text-white group-hover:text-zinc-100 transition-colors mb-2">
                             {data.title || "Untitled"}
                         </h4>
 
                         {/* Institution */}
                         <div className="flex items-center gap-2 mb-3">
                             <div
-                                className="w-6 h-6 rounded-md flex items-center justify-center"
+                                className="w-7 h-7 rounded-md flex items-center justify-center"
                                 style={{
                                     backgroundColor: "rgba(99, 102, 241, 0.1)",
                                     border: "1px solid rgba(99, 102, 241, 0.2)",
@@ -143,13 +143,13 @@ const TimelineCard = ({
                             >
                                 {icon}
                             </div>
-                            <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
+                            <span className="text-sm font-bold uppercase tracking-wider text-zinc-300">
                                 {displayInstitution || "Freelance"}
                             </span>
                             {data.position && (
                                 <>
-                                    <span className="text-zinc-700 text-xs">·</span>
-                                    <span className="text-[10px] font-medium uppercase tracking-wider text-zinc-500">
+                                    <span className="text-zinc-600 text-sm">·</span>
+                                    <span className="text-xs font-medium uppercase tracking-wider text-zinc-400">
                                         {data.position}
                                     </span>
                                 </>
@@ -160,18 +160,18 @@ const TimelineCard = ({
                         {data.description && (
                             <div>
                                 <motion.div
-                                    animate={{ height: expanded ? "auto" : "36px" }}
+                                    animate={{ height: expanded ? "auto" : "68px" }}
                                     transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
                                     className="overflow-hidden"
                                 >
-                                    <p className="text-sm text-zinc-400 leading-relaxed">
+                                    <p className="text-base text-zinc-400 leading-relaxed">
                                         {data.description}
                                     </p>
                                 </motion.div>
-                                {data.description.length > 80 && (
+                                {data.description.length > 120 && (
                                     <button
                                         onClick={() => setExpanded(!expanded)}
-                                        className="mt-2 text-[10px] font-black uppercase tracking-[3px] text-indigo-400/80 hover:text-indigo-300 transition-colors"
+                                        className="mt-2 text-xs font-black uppercase tracking-[3px] text-indigo-400/80 hover:text-indigo-300 transition-colors"
                                     >
                                         {expanded ? "Collapse" : "Continue reading →"}
                                     </button>
@@ -194,10 +194,10 @@ const TimelineCard = ({
 };
 
 const StatBlock = ({ label, value, icon }: { label: string; value: string; icon: React.ReactNode }) => (
-    <div className="flex flex-col items-center p-4 rounded-2xl bg-zinc-950/30 border border-zinc-800/40 hover:border-indigo-500/20 transition-colors duration-500">
+    <div className="flex flex-col items-center p-5 rounded-2xl bg-zinc-950/30 border border-zinc-800/40 hover:border-indigo-500/20 transition-colors duration-500">
         <div className="text-indigo-400/70 mb-2">{icon}</div>
-        <span className="text-2xl font-black text-white font-mono tabular-nums">{value}</span>
-        <span className="text-[9px] uppercase tracking-[3px] text-zinc-500 font-bold mt-1">{label}</span>
+        <span className="text-3xl font-black text-white font-mono tabular-nums">{value}</span>
+        <span className="text-xs uppercase tracking-[2px] text-zinc-500 font-bold mt-1">{label}</span>
     </div>
 );
 
@@ -218,10 +218,10 @@ const ExAndEduSection = ({ experiences, educations }: { experiences: Experience[
         <section className="max-w-6xl mx-auto py-12 relative">
             {/* Header */}
             <div className="text-center mb-12">
-                <span className="text-indigo-400/70 font-mono text-[10px] uppercase tracking-[5px] font-black mb-4 block">
+                <span className="text-indigo-400/70 font-mono text-xs uppercase tracking-[5px] font-black mb-4 block">
                     My Journey
                 </span>
-                <h3 className="text-4xl lg:text-6xl font-black uppercase tracking-tighter leading-none">
+                <h3 className="text-4xl lg:text-7xl font-black uppercase tracking-tighter leading-none">
                     Career <span className="text-indigo-400">&</span> Education
                 </h3>
                 <div className="mt-5 flex items-center justify-center gap-4">
@@ -269,7 +269,7 @@ const ExAndEduSection = ({ experiences, educations }: { experiences: Experience[
                         <button
                             key={tab.key}
                             onClick={() => setActiveTab(tab.key)}
-                            className="relative px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-[2px] transition-colors duration-300"
+                            className="relative px-7 py-3 rounded-full text-sm font-black uppercase tracking-[2px] transition-colors duration-300"
                         >
                             {activeTab === tab.key && (
                                 <motion.div
@@ -300,7 +300,7 @@ const ExAndEduSection = ({ experiences, educations }: { experiences: Experience[
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -24 }}
                     transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
-                    className="max-w-2xl mx-auto relative"
+                    className="max-w-3xl mx-auto relative"
                 >
                     {activeData.length > 0 ? (
                         <div>
