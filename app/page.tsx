@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 
 import React from "react";
 import Me from "@/public/assets/me/me.jpg";
@@ -6,112 +7,119 @@ import { About, Contact, Home, Portfolio } from "@/app/(main-portfolio)/type/typ
 import { Blog } from "@/app/(dashboard)/dashboard/blog/interface/Blog";
 
 // ---- APIs calls ----
-async function getHome(): Promise<Home> {
-    const url = "v1/public/user-info";
-
-    const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}${url}`,
-        {
-            cache: "no-store", // forces SSR (no caching)
-        }
-    );
-
-    const data = await res.json();
-
-    return {
-        name: data.data.name,
-        subtitle: data.data.subtitle ?? "",
-        bio: data.data.bio ?? "",
-        image: data.data.image ?? Me,
-        theme_color: data.data.theme_color ?? "indigo",
+interface UserInfoResponse {
+    success?: boolean;
+    data: {
+        name: string;
+        subtitle?: string;
+        bio?: string;
+        image?: string;
+        theme_color?: string;
+        address?: string;
+        email?: string;
+        location?: string;
+        nationality?: string;
+        job_type?: string;
+        expertise?: any[];
+        experiences?: any[];
+        educations?: any[];
+        phone?: string;
+        resume_url?: string | null;
+        metrics?: any[];
+        portfolios?: Portfolio[];
+        blogs?: Blog[];
     };
 }
 
-async function getContact(): Promise<Contact> {
-    const url = "v1/public/user-info";
+async function getUserInfo(): Promise<UserInfoResponse> {
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || "https://portfolio-api.alnahian.me/api/";
+    const url = `${apiBase}v1/public/user-info`;
 
-    const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}${url}`,
-        {
+    console.log(`[Fetch] Fetching user info from: ${url}`);
+
+    let res: Response;
+    try {
+        res = await fetch(url, {
             cache: "no-store", // forces SSR (no caching)
-        }
-    );
+        });
+    } catch (fetchError: any) {
+        console.error(`[Fetch Error] Network or DNS failure when fetching ${url}:`, fetchError.message || fetchError);
+        throw new Error(`Failed to connect to API server at ${url}`);
+    }
 
-    const data = await res.json();
+    if (!res.ok) {
+        let errorBody = "";
+        try {
+            errorBody = await res.text();
+        } catch (_) {}
+        console.error(
+            `[API Error] Received non-ok response from ${url}.\n` +
+            `Status: ${res.status} ${res.statusText}\n` +
+            `Body: ${errorBody.slice(0, 1000)}`
+        );
+        throw new Error(`API returned status ${res.status}: ${res.statusText}`);
+    }
 
-    return {
-        name: data.data.name,
-        address: data.data.address ?? "",
-        email: data.data.email ?? "",
-    };
+    const contentType = res.headers.get("content-type") || "";
+    if (!contentType.includes("application/json")) {
+        let bodyText = "";
+        try {
+            bodyText = await res.text();
+        } catch (_) {}
+        console.error(
+            `[API Error] Received non-JSON response from ${url}.\n` +
+            `Content-Type: ${contentType}\n` +
+            `Body: ${bodyText.slice(0, 1000)}`
+        );
+        throw new Error(`Expected JSON response from API, but received Content-Type: ${contentType}`);
+    }
+
+    try {
+        const data = await res.json();
+        return data as UserInfoResponse;
+    } catch (parseError: any) {
+        console.error(`[API Error] Failed to parse JSON from ${url}:`, parseError.message || parseError);
+        throw new Error("Failed to parse JSON response from API");
+    }
 }
-async function getPortfolio(): Promise<Portfolio[]> {
-    const url = "v1/public/user-info";
-
-    const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}${url}`,
-        {
-            cache: "no-store", // forces SSR (no caching)
-        }
-    );
-
-    const data = await res.json();
-    return data.data.portfolios;
-}
-
-async function getBlog(): Promise<Blog[]> {
-    const url = "v1/public/user-info";
-
-    const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}${url}`,
-        {
-            cache: "no-store", // forces SSR (no caching)
-        }
-    );
-
-    const data = await res.json();
-
-    return data.data.blogs;
-}
-
-async function getAbout(): Promise<About> {
-    const url = "v1/public/user-info";
-
-    const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}${url}`,
-        {
-            cache: "no-store", // forces SSR (no caching)
-        }
-    );
-
-    const data = await res.json();
-
-    return {
-        name: data.data.name,
-        location: data.data.location ?? "",
-        bio: data.data.bio ?? "",
-        nationality: data.data.nationality ?? "",
-        job_type: data.data.job_type ?? "",
-        expertise: data.data.expertise ?? [],
-        experiences: data.data.experiences ?? [],
-        educations: data.data.educations ?? [],
-        email: data.data.email ?? "",
-        phone: data.data.phone ?? "",
-        resume_url: data.data.resume_url ?? null,
-        metrics: data.data.metrics ?? []
-    };
-}
-
-
 
 export default async function page() {
-    // parallel fetch
-    const [home, about, portfolio, contact, blog] = await Promise.all([
-        getHome(), getAbout(), getPortfolio(), getContact(), getBlog()
-    ]);
+    const response = await getUserInfo();
+    const data = response.data;
+
+    const home: Home = {
+        name: data.name,
+        subtitle: data.subtitle ?? "",
+        bio: data.bio ?? "",
+        image: (data.image ?? Me) as any,
+        theme_color: data.theme_color ?? "indigo",
+    };
+
+    const contact: Contact = {
+        name: data.name,
+        address: data.address ?? "",
+        email: data.email ?? "",
+    };
+
+    const portfolio: Portfolio[] = data.portfolios ?? [];
+    const blog: Blog[] = data.blogs ?? [];
+
+    const about: About = {
+        name: data.name,
+        location: data.location ?? "",
+        bio: data.bio ?? "",
+        nationality: data.nationality ?? "",
+        job_type: data.job_type ?? "",
+        expertise: data.expertise ?? [],
+        experiences: data.experiences ?? [],
+        educations: data.educations ?? [],
+        email: data.email ?? "",
+        phone: data.phone ?? "",
+        resume_url: data.resume_url ?? null,
+        metrics: data.metrics ?? []
+    };
 
     return (
-        // pass server-fetched data as props to the client
         <div className="">
             <PortfolioClient
                 home={home}
