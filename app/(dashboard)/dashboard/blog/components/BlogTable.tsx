@@ -29,7 +29,6 @@ export default function BlogTable() {
         pagination,
         fetchBlog,
         loading,
-        openEditModal,
         deleteBlog,
         toggleStatus
     } = useBlogStore();
@@ -121,9 +120,11 @@ export default function BlogTable() {
                                 <TableCell className="text-right">
                                     <div className="flex justify-end gap-2">
                                         {canEdit && (
-                                            <Button size="icon" variant="outline" onClick={() => openEditModal(blog)}>
-                                                <Pencil size={16} />
-                                            </Button>
+                                            <Link href={`/dashboard/blog/${blog.slug}/edit`}>
+                                                <Button size="icon" variant="outline">
+                                                    <Pencil size={16} />
+                                                </Button>
+                                            </Link>
                                         )}
 
                                         {canDelete && (
