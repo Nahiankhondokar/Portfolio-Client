@@ -32,15 +32,15 @@ const mapBlogToForm = (blog: Blog): formSchemaType => ({
     image: blog?.image ?? ""
 });
 
-const AddNewBlog = () => {
+type AddNewBlogProps = {
+    mode: "create" | "edit";
+    blog?: Blog | null;
+    onSuccess?: () => void;
+};
 
-    const {
-        mode,
-        selectedBlog,
-        createBlog,
-        updateBlog,
-        modalOpen
-    } = useBlogStore();
+const AddNewBlog = ({ mode, blog, onSuccess }: AddNewBlogProps) => {
+
+    const { createBlog, updateBlog } = useBlogStore();
 
     const fileRef = useRef<HTMLInputElement | null>(null);
 
@@ -59,7 +59,6 @@ const AddNewBlog = () => {
 
         const fd = new FormData();
 
-        // Laravel requires _method:PUT for file uploads (form method spoofing)
         if (mode === "edit") fd.append("_method", "PUT");
 
         Object.entries(values).forEach(([k, v]) => {
@@ -81,109 +80,130 @@ const AddNewBlog = () => {
                 await createBlog(fd);
                 toast.success("Blog created");
             } else {
-                await updateBlog(selectedBlog!.id, fd);
+                await updateBlog(blog!.id, fd);
                 toast.success("Blog updated");
             }
+            onSuccess?.();
         } catch {
             toast.error("Something went wrong");
         }
     };
 
     useEffect(() => {
-        if (mode === "edit" && selectedBlog) {
-            form.reset(mapBlogToForm(selectedBlog));
+        if (mode === "edit" && blog) {
+            form.reset(mapBlogToForm(blog));
         }
-
-        if (!modalOpen) {
-            form.reset();
-            if (fileRef.current) fileRef.current.value = "";
-        }
-    }, [form, mode, selectedBlog, modalOpen]);
+    }, [mode, blog, form]);
 
     return (
-        /* 1. Use a flex container with a fixed max-height */
-        <div className="flex flex-col h-full max-h-[85vh]">
+        <div className="max-w-4xl mx-auto py-8 px-4">
+            <div className="mb-8">
+                <h1 className="text-2xl font-bold">
+                    {mode === "create" ? "Add New Blog" : "Edit Blog"}
+                </h1>
+            </div>
+
             <Form {...form}>
                 <form
-                    id="user-form"
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className="flex flex-col h-[85vh]" // Ensure form takes full available height
+                    className="space-y-8"
                 >
-                    {/* 2. SCROLLABLE AREA: This holds all your inputs */}
-                    <div className="flex-1 overflow-y-auto px-1 pr-4 space-y-6 custom-scrollbar">
-                        {/* Title */}
-                        <FormField
-                            control={form.control}
-                            name="title"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Title</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Enter title" {...field} className="bg-zinc-950 border-zinc-800" />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div className="lg:col-span-2 space-y-6">
+                            <FormField
+                                control={form.control}
+                                name="title"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Title</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Enter title" {...field} className="bg-zinc-950 border-zinc-800" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                        {/* Sub Title */}
-                        <FormField
-                            control={form.control}
-                            name="subtitle"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Sub Title</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Enter subtitle" {...field} className="bg-zinc-950 border-zinc-800" />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                            <FormField
+                                control={form.control}
+                                name="subtitle"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Sub Title</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Enter subtitle" {...field} className="bg-zinc-950 border-zinc-800" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                        {/* Description (Tiptap) */}
-                        <FormField
-                            control={form.control}
-                            name="description"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Blog Content</FormLabel>
-                                    <FormControl>
-                                        <TextEditor value={field.value} onChange={field.onChange} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                            <FormField
+                                control={form.control}
+                                name="description"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Blog Content</FormLabel>
+                                        <FormControl>
+                                            <TextEditor value={field.value} onChange={field.onChange} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
 
-                        {/* Image Upload */}
-                        <FormField
-                            control={form.control}
-                            name="image"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Feature Image</FormLabel>
-                                    <FormControl>
-                                        <ImageUpload
-                                            value={field.value}
-                                            onChange={(file) => field.onChange(file)}
-                                            onRemove={() => field.onChange(null)}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        <div className="space-y-6">
+                            <FormField
+                                control={form.control}
+                                name="image"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Feature Image</FormLabel>
+                                        <FormControl>
+                                            <ImageUpload
+                                                value={field.value}
+                                                onChange={(file) => field.onChange(file)}
+                                                onRemove={() => field.onChange(null)}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <div className="rounded-xl border border-zinc-800 bg-zinc-950/50 p-4">
+                                <div className="flex items-center gap-2">
+                                    <Input
+                                        type="checkbox"
+                                        className="h-4 w-4 accent-yellow-500"
+                                        checked={form.watch("status")}
+                                        onChange={(e) => form.setValue("status", e.target.checked)}
+                                        id="blog-status"
+                                    />
+                                    <FormLabel htmlFor="blog-status" className="text-xs font-bold uppercase tracking-widest text-zinc-400 cursor-pointer">
+                                        Published
+                                    </FormLabel>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    {/* 3. FIXED BOTTOM BUTTON: Always visible */}
-                    <div className="mt-auto pt-6 border-t border-zinc-800 bg-black/90 backdrop-blur-md">
+                    <div className="flex items-center gap-4 pt-6 border-t border-zinc-800">
                         <Button
                             type="submit"
                             disabled={form.formState.isSubmitting}
-                            className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-black uppercase tracking-widest py-6 rounded-xl shadow-[0_-10px_30px_rgba(0,0,0,0.5)] transition-all active:scale-[0.98]"
+                            className="bg-yellow-500 hover:bg-yellow-400 text-black font-black uppercase tracking-widest px-8 py-6 rounded-xl transition-all active:scale-[0.98]"
                         >
                             {form.formState.isSubmitting ? "Saving..." : mode === "create" ? "Create Post" : "Update Post"}
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            onClick={() => window.history.back()}
+                            className="text-zinc-400"
+                        >
+                            Cancel
                         </Button>
                     </div>
                 </form>
