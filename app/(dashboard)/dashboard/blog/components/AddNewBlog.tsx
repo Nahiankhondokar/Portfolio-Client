@@ -29,7 +29,9 @@ const mapBlogToForm = (blog: Blog): formSchemaType => ({
     subtitle: blog.subtitle ?? "",
     status: blog.status ?? true,
     description: blog.description ?? "",
-    image: blog?.image ?? ""
+    image: blog?.image ?? "",
+    meta_title: blog.meta?.meta_title ?? "",
+    meta_description: blog.meta?.meta_description ?? "",
 });
 
 type AddNewBlogProps = {
@@ -52,6 +54,8 @@ const AddNewBlog = ({ mode, blog, onSuccess }: AddNewBlogProps) => {
             status: true,
             description: "",
             image: null,
+            meta_title: "",
+            meta_description: "",
         },
     });
 
@@ -61,8 +65,11 @@ const AddNewBlog = ({ mode, blog, onSuccess }: AddNewBlogProps) => {
 
         if (mode === "edit") fd.append("_method", "PUT");
 
+        const metaKeys = ["meta_title", "meta_description"];
+
         Object.entries(values).forEach(([k, v]) => {
             if (v === null || v === undefined) return;
+            if (metaKeys.includes(k)) return;
 
             if (k === "image" && v instanceof File) {
                 fd.append("image", v);
@@ -74,6 +81,9 @@ const AddNewBlog = ({ mode, blog, onSuccess }: AddNewBlogProps) => {
                 fd.append(k, v as string);
             }
         });
+
+        if (values.meta_title) fd.append("meta[meta_title]", values.meta_title);
+        if (values.meta_description) fd.append("meta[meta_description]", values.meta_description);
 
         try {
             if (mode === "create") {
@@ -171,6 +181,36 @@ const AddNewBlog = ({ mode, blog, onSuccess }: AddNewBlogProps) => {
                                     </FormItem>
                                 )}
                             />
+
+                            <div className="rounded-xl border border-zinc-800 bg-zinc-950/50 p-4 space-y-4">
+                                <h3 className="text-[10px] font-black uppercase tracking-widest text-zinc-500">SEO Meta</h3>
+                                <FormField
+                                    control={form.control}
+                                    name="meta_title"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Meta Title</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="SEO title (max 70 chars)" {...field} maxLength={70} className="bg-zinc-950 border-zinc-800 text-xs" />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="meta_description"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Meta Description</FormLabel>
+                                            <FormControl>
+                                                <Textarea placeholder="SEO description (max 160 chars)" {...field} maxLength={160} rows={3} className="bg-zinc-950 border-zinc-800 text-xs resize-none" />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
 
                             <div className="rounded-xl border border-zinc-800 bg-zinc-950/50 p-4">
                                 <div className="flex items-center gap-2">

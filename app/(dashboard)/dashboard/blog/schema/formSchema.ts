@@ -5,12 +5,7 @@ export const formSchema = z.object({
     subtitle: z.string().optional(),
     status: z.boolean().optional(),
     description: z.string(),
-    image: z.any().nullable().optional()
-    // image: z
-    //     .i
-    //     .refine((file) => file.size <= 2 * 1024 * 1024, {
-    //         message: "Max file size is 2MB",
-    //     })
-    //     .nullable()
-    //     .optional(),
+    image: z.any().nullable().optional(),
+    meta_title: z.string().max(70).optional().or(z.literal("")),
+    meta_description: z.string().max(160).optional().or(z.literal("")),
 });
