@@ -10,4 +10,8 @@ export interface Blog {
   image?: string | null;
   reactions_count?: number;
   comments_count?: number;
+  meta?: {
+    meta_title?: string;
+    meta_description?: string;
+  } | null;
 }
