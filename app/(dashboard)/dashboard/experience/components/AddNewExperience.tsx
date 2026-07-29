@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Form,
   FormControl,
@@ -15,6 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import {useExperienceStore} from "@/stores/useExperienceStore";
 import {toast} from "sonner";
 import {formSchema} from "@/app/(dashboard)/dashboard/experience/schema/formSchema";
@@ -44,6 +45,7 @@ const AddNewExperience = () => {
     } = useExperienceStore();
 
     const fileRef = useRef<HTMLInputElement | null>(null);
+    const [isPresent, setIsPresent] = useState(false);
 
   const form = useForm<formSchemaType>({
     resolver: zodResolver(formSchema),
@@ -64,6 +66,7 @@ const AddNewExperience = () => {
         if (mode === "edit") fd.append("_method", "PUT");
 
         Object.entries(values).forEach(([k, v]) => {
+            if (k === "end_date" && isPresent) return;
             if (v !== null && v !== undefined) fd.append(k, v);
         });
 
@@ -83,10 +86,12 @@ const AddNewExperience = () => {
     useEffect(() => {
         if (mode === "edit" && selectedExperience) {
             form.reset(mapExperienceToForm(selectedExperience));
+            setIsPresent(!selectedExperience.end_date);
         }
 
         if (!modalOpen) {
             form.reset();
+            setIsPresent(false);
             if (fileRef.current) fileRef.current.value = "";
         }
     }, [form, mode, selectedExperience, modalOpen]);
@@ -191,9 +196,23 @@ const AddNewExperience = () => {
                                 <DatePicker
                                     value={field.value}
                                     onChange={field.onChange}
-                                    placeholder="Select end date"
+                                    placeholder={isPresent ? "Present" : "Select end date"}
+                                    disabled={isPresent}
                                 />
                             </FormControl>
+                            <div className="flex items-center gap-2 pt-1">
+                                <Checkbox
+                                    id="isPresent"
+                                    checked={isPresent}
+                                    onCheckedChange={(checked) => {
+                                        setIsPresent(!!checked);
+                                        if (checked) form.setValue("end_date", "");
+                                    }}
+                                />
+                                <label htmlFor="isPresent" className="text-sm text-muted-foreground cursor-pointer select-none">
+                                    Currently working here
+                                </label>
+                            </div>
                             <FormMessage />
                         </FormItem>
                     )}

@@ -16,10 +16,19 @@ interface DatePickerProps {
     value?: string | null;
     onChange: (date: string | undefined) => void;
     placeholder?: string;
+    disabled?: boolean;
+    fromYear?: number;
+    toYear?: number;
 }
 
-export function DatePicker({ value, onChange, placeholder = "Pick a date" }: DatePickerProps) {
-    // Convert string from form state back to Date object for the Calendar UI
+export function DatePicker({
+    value,
+    onChange,
+    placeholder = "Pick a date",
+    disabled = false,
+    fromYear = 1900,
+    toYear = new Date().getFullYear(),
+}: DatePickerProps) {
     const dateValue = React.useMemo(() => {
         if (!value) return undefined;
         const parsed = parseISO(value);
@@ -31,6 +40,7 @@ export function DatePicker({ value, onChange, placeholder = "Pick a date" }: Dat
             <PopoverTrigger asChild>
                 <Button
                     variant={"outline"}
+                    disabled={disabled}
                     className={cn(
                         "w-full justify-start text-left font-normal",
                         !value && "text-muted-foreground"
@@ -45,9 +55,11 @@ export function DatePicker({ value, onChange, placeholder = "Pick a date" }: Dat
                     mode="single"
                     selected={dateValue}
                     onSelect={(date) => {
-                        // Convert Date object back to ISO string for the Form/API
                         onChange(date?.toISOString());
                     }}
+                    captionLayout="dropdown"
+                    fromYear={fromYear}
+                    toYear={toYear}
                     initialFocus
                 />
             </PopoverContent>

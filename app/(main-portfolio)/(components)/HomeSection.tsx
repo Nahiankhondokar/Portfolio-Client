@@ -75,7 +75,7 @@ const HomeSection = ({ onNavigate, data }: { onNavigate: (s: Section) => void, d
                             src={data?.image ?? Me}
                             alt={data.name || "Profile"}
                             fill
-                            className="object-cover grayscale hover:grayscale-0 transition-all duration-700 scale-105 hover:scale-110 rounded-full"
+                            className="object-cover scale-105 hover:scale-110 transition-all duration-700 rounded-full"
                             priority
                         />
                         

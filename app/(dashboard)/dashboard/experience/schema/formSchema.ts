@@ -5,6 +5,6 @@ export const formSchema = z.object({
     company: z.string().min(1, 'Company is required'),
     position: z.string().optional(),
     start_date: z.string(),
-    end_date: z.string(),
+    end_date: z.string().optional(),
     description: z.string().optional(),
 });
