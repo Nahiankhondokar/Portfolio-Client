@@ -4,9 +4,10 @@ import { apiFetch } from "@/lib/api";
 import { Blog } from "@/app/(dashboard)/dashboard/blog/interface/Blog";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { useEffect, useState, use } from "react";
+import { useEffect, useState, use, useCallback } from "react";
 import BlogSkeleton from "@/app/(dashboard)/dashboard/blog/components/BlogSkeleton";
 import MediaPreview from "@/components/common/MediaPreview";
+import { toast } from "sonner";
 
 type Props = {
     params: Promise<{ slug: string }>;
@@ -46,7 +47,7 @@ export default function BlogDetails({ params }: Props) {
     if (!blog) return notFound();
 
     return (
-        <main className="max-w-4xl mx-auto py-20 px-4">
+        <main className="w-full py-8">
             {/* Meta Info */}
             <div className="flex items-center gap-4 mb-4 text-sm text-gray-400 font-medium uppercase tracking-widest">
                 <span className="text-blue-500">Article</span>
@@ -194,6 +195,3 @@ function AdminCommentSection({ blogId }: { blogId: number }) {
         </section>
     );
 }
-
-import { useCallback } from "react";
-import { toast } from "sonner";
