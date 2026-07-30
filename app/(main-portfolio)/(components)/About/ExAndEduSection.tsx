@@ -25,6 +25,14 @@ const yearDiff = (start: string, end?: string) => {
     }
 };
 
+const formatDuration = (duration?: string | null) => {
+    if (!duration) return null;
+    const cleaned = duration.replace(/\s+/g, ' ').trim();
+    return cleaned
+        .replace(/\byears?\b/g, 'yrs')
+        .replace(/\bmonths?\b/g, 'mos');
+};
+
 const TimelineCard = ({
     data,
     icon,
@@ -122,7 +130,7 @@ const TimelineCard = ({
                             </div>
                             <div className="flex items-center gap-1 text-xs font-mono text-zinc-500">
                                 <Clock size={11} />
-                                <span>{yearDiff(data.start_date, data.end_date)} yrs</span>
+                                <span>{formatDuration(data.duration) || `${yearDiff(data.start_date, data.end_date)} yrs`}</span>
                             </div>
                         </div>
 
