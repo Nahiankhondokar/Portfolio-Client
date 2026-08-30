@@ -1,0 +1,200 @@
+import Link from "next/link";
+import { ShieldCheck, Users, CircleCheck, CircleAlert, Wallet } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import type { TeamFinanceResponse } from "@/type/team";
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/";
+
+async function getTeamFinances(): Promise<TeamFinanceResponse | null> {
+    try {
+        const res = await fetch(`${API_BASE}v1/public/team-finances`, {
+            cache: "no-store",
+        });
+        if (!res.ok) return null;
+        return (await res.json()) as TeamFinanceResponse;
+    } catch {
+        return null;
+    }
+}
+
+function formatCurrency(value: number): string {
+    return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+    }).format(value);
+}
+
+export default async function TeamFinancesPage() {
+    const data = await getTeamFinances();
+
+    return (
+        <div className="min-h-screen bg-black text-white font-sans selection:bg-indigo-500 selection:text-white py-12 px-4 sm:px-6 lg:px-20">
+            <div className="max-w-5xl mx-auto">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
+                    <div>
+                        <h1 className="text-4xl lg:text-5xl font-black tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-500 bg-clip-text text-transparent">
+                            Team Finance Summary
+                        </h1>
+                        <p className="text-zinc-500 text-sm mt-2">
+                            Track who has paid and who still owes for the team.
+                        </p>
+                    </div>
+                    <Link
+                        href="/team-finances/login"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-xl text-sm font-semibold text-zinc-300 hover:text-white hover:border-zinc-700 transition-colors"
+                    >
+                        <ShieldCheck size={16} className="text-indigo-400" />
+                        Admin Login
+                    </Link>
+                </div>
+
+                {!data ? (
+                    <Card className="bg-zinc-950/80 border-zinc-900">
+                        <CardContent className="py-16 text-center text-zinc-500">
+                            <Users size={36} className="mx-auto mb-3 opacity-30" />
+                            <p className="text-sm font-semibold">No data available.</p>
+                            <p className="text-xs text-zinc-600 mt-1">
+                                Check back later or contact the team admin.
+                            </p>
+                        </CardContent>
+                    </Card>
+                ) : (
+                    <div className="space-y-8">
+                        {/* Summary cards */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <Card className="bg-zinc-950/80 border-zinc-900">
+                                <CardHeader className="pb-2">
+                                    <CardDescription className="flex items-center gap-1.5 text-zinc-500">
+                                        <Wallet size={14} className="text-indigo-400" />
+                                        Total Collected
+                                    </CardDescription>
+                                    <CardTitle className="text-2xl font-black text-indigo-400">
+                                        {formatCurrency(data.summary.total_collected)}
+                                    </CardTitle>
+                                </CardHeader>
+                            </Card>
+
+                            <Card className="bg-zinc-950/80 border-zinc-900">
+                                <CardHeader className="pb-2">
+                                    <CardDescription className="flex items-center gap-1.5 text-zinc-500">
+                                        <CircleAlert size={14} className="text-rose-400" />
+                                        Total Outstanding
+                                    </CardDescription>
+                                    <CardTitle className="text-2xl font-black text-rose-400">
+                                        {formatCurrency(data.summary.total_outstanding)}
+                                    </CardTitle>
+                                </CardHeader>
+                            </Card>
+
+                            <Card className="bg-zinc-950/80 border-zinc-900">
+                                <CardHeader className="pb-2">
+                                    <CardDescription className="flex items-center gap-1.5 text-zinc-500">
+                                        <CircleCheck size={14} className="text-emerald-400" />
+                                        Paid
+                                    </CardDescription>
+                                    <CardTitle className="text-2xl font-black text-emerald-400">
+                                        {data.summary.paid_count}
+                                    </CardTitle>
+                                </CardHeader>
+                            </Card>
+
+                            <Card className="bg-zinc-950/80 border-zinc-900">
+                                <CardHeader className="pb-2">
+                                    <CardDescription className="flex items-center gap-1.5 text-zinc-500">
+                                        <Users size={14} className="text-zinc-400" />
+                                        Unpaid
+                                    </CardDescription>
+                                    <CardTitle className="text-2xl font-black text-zinc-200">
+                                        {data.summary.unpaid_count}
+                                    </CardTitle>
+                                </CardHeader>
+                            </Card>
+                        </div>
+
+                        {/* Members table */}
+                        <Card className="bg-zinc-950/80 border-zinc-900">
+                            <CardHeader>
+                                <CardTitle>Members</CardTitle>
+                                <CardDescription>
+                                    {data.summary.total_members} total member
+                                    {data.summary.total_members === 1 ? "" : "s"}
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                {data.members.length === 0 ? (
+                                    <p className="py-10 text-center text-zinc-600 text-sm font-semibold">
+                                        No members added yet.
+                                    </p>
+                                ) : (
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow className="border-zinc-900 hover:bg-transparent">
+                                                <TableHead className="text-zinc-500">Name</TableHead>
+                                                <TableHead className="text-zinc-500">Jersey</TableHead>
+                                                <TableHead className="text-zinc-500">Date</TableHead>
+                                                <TableHead className="text-zinc-500">Amount</TableHead>
+                                                <TableHead className="text-zinc-500">Status</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {data.members.map((member) => (
+                                                <TableRow
+                                                    key={member.id}
+                                                    className="border-zinc-900 hover:bg-zinc-900/40"
+                                                >
+                                                    <TableCell className="font-semibold">
+                                                        {member.name}
+                                                        {member.note ? (
+                                                            <span className="block text-xs text-zinc-500 font-normal">
+                                                                {member.note}
+                                                            </span>
+                                                        ) : null}
+                                                    </TableCell>
+                                                    <TableCell className="text-zinc-400">
+                                                        {member.jersey_number ?? "—"}
+                                                    </TableCell>
+                                                    <TableCell className="text-zinc-400">
+                                                        {member.payment_date}
+                                                    </TableCell>
+                                                    <TableCell className="font-semibold tabular-nums">
+                                                        {formatCurrency(member.amount)}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {member.paid ? (
+                                                            <Badge className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30">
+                                                                Paid
+                                                            </Badge>
+                                                        ) : (
+                                                            <Badge className="bg-rose-500/15 text-rose-400 border-rose-500/30">
+                                                                Unpaid
+                                                            </Badge>
+                                                        )}
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}
