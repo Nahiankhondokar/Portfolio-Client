@@ -48,7 +48,7 @@ export default function TeamLoginPage() {
 
     return (
         <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
-            <Card className="w-[380px] bg-zinc-950/80 border-zinc-900">
+            <Card className="w-full max-w-[380px] bg-zinc-950/80 border-zinc-900">
                 <CardHeader className="text-center border-b-2 mb-1 border-zinc-900">
                     <CardTitle>Team Admin Login</CardTitle>
                     <CardDescription>
