@@ -19,7 +19,6 @@ import {
 } from "lucide-react";
 import { teamFetch } from "@/lib/team-api";
 import type {
-    TeamAdminInfo,
     TeamAdminListResponse,
     TeamExpense,
     TeamExpenseListResponse,
@@ -121,7 +120,6 @@ export default function TeamAdminPage() {
     const [expenseForm, setExpenseForm] = useState<ExpenseFormState>(emptyExpense);
     const [savingExpense, setSavingExpense] = useState(false);
     const [expenseBusyId, setExpenseBusyId] = useState<number | null>(null);
-    const [admins, setAdmins] = useState<TeamAdminInfo[]>([]);
 
     const loadData = async () => {
         try {
@@ -142,17 +140,6 @@ export default function TeamAdminPage() {
             setExpenseSummary(res.summary);
         } catch {
             toast.error("Failed to load expenses.");
-        }
-    };
-
-    const loadAdmins = async () => {
-        try {
-            const res = await teamFetch<{ success: boolean; admins: TeamAdminInfo[] }>(
-                "team/admins"
-            );
-            setAdmins(res.admins);
-        } catch {
-            // admins list is optional
         }
     };
 
@@ -183,7 +170,6 @@ export default function TeamAdminPage() {
         loadData();
         loadSettings();
         loadExpenses();
-        loadAdmins();
     }, [router]);
 
     const resetForm = () => {
@@ -467,51 +453,6 @@ export default function TeamAdminPage() {
                                 </Button>
                             </div>
                         </form>
-                    </CardContent>
-                </Card>
-
-                {/* Team admins */}
-                <Card className="bg-zinc-950/80 border-zinc-900">
-                    <CardHeader>
-                        <CardTitle>Team Admins</CardTitle>
-                        <CardDescription>
-                            Who manages the team and their current activity.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        {admins.length === 0 ? (
-                            <p className="py-8 text-center text-zinc-600 text-sm font-semibold">
-                                No admins registered yet.
-                            </p>
-                        ) : (
-                            <div className="space-y-3">
-                                {admins.map((admin) => (
-                                    <div
-                                        key={admin.id}
-                                        className="p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800"
-                                    >
-                                        <div className="flex items-center justify-between gap-2 flex-wrap">
-                                            <span className="font-semibold">{admin.name}</span>
-                                            <span className="text-xs text-zinc-500">
-                                                Joined{" "}
-                                                {new Date(admin.created_at).toLocaleDateString()}
-                                            </span>
-                                        </div>
-                                        <div className="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-zinc-400">
-                                            <span>Members: {admin.stats.total_members}</span>
-                                            <span>Paid: {admin.stats.paid_count}</span>
-                                            <span>Unpaid: {admin.stats.unpaid_count}</span>
-                                            <span>
-                                                Collected:{" "}
-                                                <span className="text-emerald-400 font-semibold tabular-nums">
-                                                    {formatCurrency(admin.stats.collected)}
-                                                </span>
-                                            </span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
                     </CardContent>
                 </Card>
 

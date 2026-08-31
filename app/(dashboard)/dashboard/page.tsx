@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import AppChartArea from '@/components/common/AppChartArea'
 import AppChartBar from '@/components/common/AppChartBar'
 import {
@@ -14,6 +14,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useDashboardStore } from "@/stores/useDashboardStore";
 import { useProfileStore } from "@/stores/useProfileStore";
+import { apiFetch } from "@/lib/api";
+import type { TeamFinanceDashboardResponse } from "@/type/team";
 import { 
     Newspaper, 
     Briefcase, 
@@ -22,17 +24,30 @@ import {
     ArrowUpRight, 
     Calendar,
     LayoutDashboard,
-    Activity
+    Activity,
+    Users,
+    Wallet,
+    Trophy
 } from "lucide-react";
 import { motion } from "framer-motion";
 
 const Dashboard = () => {
     const { overview, fetchOverview } = useDashboardStore();
     const { profile } = useProfileStore();
+    const [teamFinance, setTeamFinance] = useState<TeamFinanceDashboardResponse | null>(null);
 
     useEffect(() => {
         fetchOverview();
     }, [fetchOverview]);
+
+    useEffect(() => {
+        apiFetch<TeamFinanceDashboardResponse>("dashboard/team-finance")
+            .then(setTeamFinance)
+            .catch(() => setTeamFinance(null));
+    }, []);
+
+    const formatCurrency = (value: number) =>
+        new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(value);
 
     const statsConfig = useMemo(() => [
         { 
@@ -182,6 +197,146 @@ const Dashboard = () => {
                     </CardContent>
                 </Card>
             </section>
+
+            {/* ================= Football Team Finance ================= */}
+            {teamFinance && (
+                <section>
+                    <div className="flex items-center gap-2 mb-6">
+                        <Trophy size={18} className="text-yellow-500" />
+                        <h2 className="text-xs font-black text-zinc-500 uppercase tracking-[4px]">
+                            Football Team Finance
+                        </h2>
+                    </div>
+
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                        <Card className="bg-zinc-900/30 border-zinc-800">
+                            <CardContent className="pt-5">
+                                <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">
+                                    Team
+                                </p>
+                                <p className="text-lg font-black text-white truncate mt-1">
+                                    {teamFinance.team?.name ?? "—"}
+                                </p>
+                            </CardContent>
+                        </Card>
+                        <Card className="bg-zinc-900/30 border-zinc-800">
+                            <CardContent className="pt-5">
+                                <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">
+                                    Remaining Fund
+                                </p>
+                                <p className="text-lg font-black text-indigo-400 tabular-nums mt-1">
+                                    {formatCurrency(teamFinance.summary.remaining_fund)}
+                                </p>
+                            </CardContent>
+                        </Card>
+                        <Card className="bg-zinc-900/30 border-zinc-800">
+                            <CardContent className="pt-5">
+                                <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">
+                                    Total Collected
+                                </p>
+                                <p className="text-lg font-black text-emerald-400 tabular-nums mt-1">
+                                    {formatCurrency(teamFinance.summary.total_collected)}
+                                </p>
+                            </CardContent>
+                        </Card>
+                        <Card className="bg-zinc-900/30 border-zinc-800">
+                            <CardContent className="pt-5">
+                                <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">
+                                    Total Expenses
+                                </p>
+                                <p className="text-lg font-black text-rose-400 tabular-nums mt-1">
+                                    {formatCurrency(teamFinance.summary.total_expenses)}
+                                </p>
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                        <Card className="bg-zinc-900/10 border-zinc-800 overflow-hidden">
+                            <CardHeader className="bg-zinc-900/30 border-b border-zinc-800">
+                                <CardTitle className="text-sm font-bold text-zinc-400">
+                                    Team Admins
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="p-4">
+                                {teamFinance.admins.length === 0 ? (
+                                    <p className="py-8 text-center text-zinc-600 italic text-sm">
+                                        No team admins registered yet.
+                                    </p>
+                                ) : (
+                                    <div className="space-y-3">
+                                        {teamFinance.admins.map((admin) => (
+                                            <div
+                                                key={admin.id}
+                                                className="p-4 rounded-xl bg-zinc-900/40 border border-zinc-800"
+                                            >
+                                                <div className="flex items-center justify-between gap-2 flex-wrap">
+                                                    <span className="font-semibold text-white">
+                                                        {admin.name}
+                                                    </span>
+                                                    <span className="text-xs text-zinc-500">
+                                                        Joined{" "}
+                                                        {new Date(admin.created_at).toLocaleDateString()}
+                                                    </span>
+                                                </div>
+                                                <div className="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-zinc-400">
+                                                    <span>Members: {admin.stats.total_members}</span>
+                                                    <span>Paid: {admin.stats.paid_count}</span>
+                                                    <span>Unpaid: {admin.stats.unpaid_count}</span>
+                                                    <span>
+                                                        Collected:{" "}
+                                                        <span className="text-emerald-400 font-semibold tabular-nums">
+                                                            {formatCurrency(admin.stats.collected)}
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </CardContent>
+                        </Card>
+
+                        <Card className="bg-zinc-900/10 border-zinc-800 overflow-hidden">
+                            <CardHeader className="bg-zinc-900/30 border-b border-zinc-800">
+                                <CardTitle className="text-sm font-bold text-zinc-400">
+                                    Next Match
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="p-4">
+                                {!teamFinance.next_match ? (
+                                    <p className="py-8 text-center text-zinc-600 italic text-sm">
+                                        No upcoming match scheduled.
+                                    </p>
+                                ) : (
+                                    <div className="space-y-2">
+                                        <p className="font-semibold text-white">
+                                            {teamFinance.next_match.name}
+                                        </p>
+                                        <p className="text-sm text-zinc-400 flex items-center gap-2">
+                                            <Calendar size={14} className="text-zinc-500" />
+                                            {new Date(
+                                                teamFinance.next_match.match_time
+                                            ).toLocaleString("en-US", {
+                                                weekday: "short",
+                                                month: "short",
+                                                day: "numeric",
+                                                hour: "numeric",
+                                                minute: "2-digit",
+                                            })}
+                                        </p>
+                                        {teamFinance.next_match.location && (
+                                            <p className="text-sm text-zinc-400">
+                                                {teamFinance.next_match.location}
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </div>
+                </section>
+            )}
 
             {/* ================= Recent Activity ================= */}
             <section>

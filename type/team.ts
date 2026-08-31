@@ -112,6 +112,23 @@ export interface TeamAdminsResponse {
     admins: TeamAdminInfo[];
 }
 
+export interface TeamFinanceDashboardResponse {
+    success: boolean;
+    team: TeamInfo | null;
+    next_match: NextMatch | null;
+    admins: TeamAdminInfo[];
+    summary: {
+        total_members: number;
+        paid_count: number;
+        unpaid_count: number;
+        previous_fund: number;
+        total_collected: number;
+        total_outstanding: number;
+        total_expenses: number;
+        remaining_fund: number;
+    };
+}
+
 export interface TeamAuthResponse {
     success: boolean;
     message: string;
