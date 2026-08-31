@@ -22,6 +22,7 @@ export interface TeamExpense {
 export interface TeamInfo {
     id: number;
     name: string;
+    previous_fund: number;
 }
 
 export interface NextMatch {
@@ -43,6 +44,7 @@ export interface TeamFinanceSummary {
     total_members: number;
     paid_count: number;
     unpaid_count: number;
+    previous_fund: number;
     total_collected: number;
     total_outstanding: number;
     total_expenses: number;
@@ -90,6 +92,24 @@ export interface TeamExpenseListResponse {
     success: boolean;
     expenses: TeamExpense[];
     summary: TeamExpenseSummary;
+}
+
+export interface TeamAdminInfo {
+    id: number;
+    name: string;
+    created_at: string;
+    stats: {
+        total_members: number;
+        paid_count: number;
+        unpaid_count: number;
+        collected: number;
+        outstanding: number;
+    };
+}
+
+export interface TeamAdminsResponse {
+    success: boolean;
+    admins: TeamAdminInfo[];
 }
 
 export interface TeamAuthResponse {
