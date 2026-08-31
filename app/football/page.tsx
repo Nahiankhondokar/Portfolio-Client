@@ -1,13 +1,16 @@
 import Link from "next/link";
 import {
-    ShieldCheck,
     Users,
     CircleCheck,
     CircleAlert,
     Wallet,
     MapPin,
     CalendarDays,
+    Receipt,
+    PiggyBank,
+    Home,
 } from "lucide-react";
+import TeamAuthLink from "./team-auth-link";
 import { Badge } from "@/components/ui/badge";
 import {
     Card,
@@ -75,13 +78,16 @@ export default async function TeamFinancesPage() {
                             Track who has paid and who still owes for the team.
                         </p>
                     </div>
-                    <Link
-                        href="/team-finances/login"
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-xl text-sm font-semibold text-zinc-300 hover:text-white hover:border-zinc-700 transition-colors"
-                    >
-                        <ShieldCheck size={16} className="text-indigo-400" />
-                        Admin Login
-                    </Link>
+                    <div className="flex items-center gap-2 flex-wrap">
+                        <Link
+                            href="/"
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-xl text-sm font-semibold text-zinc-300 hover:text-white hover:border-zinc-700 transition-colors"
+                        >
+                            <Home size={16} className="text-indigo-400" />
+                            Go to Portfolio
+                        </Link>
+                        <TeamAuthLink />
+                    </div>
                 </div>
 
                 {!data ? (
@@ -122,6 +128,23 @@ export default async function TeamFinancesPage() {
                                 </CardContent>
                             </Card>
                         )}
+
+                        {/* Remaining fund banner */}
+                        <Card className="bg-indigo-500/10 border-indigo-500/30">
+                            <CardContent className="py-6 flex items-center gap-4">
+                                <div className="p-3 rounded-2xl bg-indigo-500/15 text-indigo-400">
+                                    <PiggyBank size={24} />
+                                </div>
+                                <div>
+                                    <p className="text-sm font-bold uppercase tracking-widest text-zinc-400">
+                                        Remaining Fund
+                                    </p>
+                                    <p className="text-3xl font-black text-indigo-400">
+                                        {formatCurrency(data.summary.remaining_fund)}
+                                    </p>
+                                </div>
+                            </CardContent>
+                        </Card>
 
                         {/* Summary cards */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -241,6 +264,59 @@ export default async function TeamFinancesPage() {
                                                                 Unpaid
                                                             </Badge>
                                                         )}
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                )}
+                            </CardContent>
+                        </Card>
+
+                        {/* Expenses */}
+                        <Card className="bg-zinc-950/80 border-zinc-900">
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2">
+                                    <Receipt size={18} className="text-zinc-500" />
+                                    Expenses
+                                </CardTitle>
+                                <CardDescription>
+                                    Total spent: {formatCurrency(data.summary.total_expenses)}
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                {data.expenses.length === 0 ? (
+                                    <p className="py-8 text-center text-zinc-600 text-sm font-semibold">
+                                        No expenses recorded.
+                                    </p>
+                                ) : (
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow className="border-zinc-900 hover:bg-transparent">
+                                                <TableHead className="text-zinc-500">Title</TableHead>
+                                                <TableHead className="text-zinc-500">Date</TableHead>
+                                                <TableHead className="text-zinc-500">Amount</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {data.expenses.map((expense) => (
+                                                <TableRow
+                                                    key={expense.id}
+                                                    className="border-zinc-900 hover:bg-zinc-900/40"
+                                                >
+                                                    <TableCell className="font-semibold">
+                                                        {expense.title}
+                                                        {expense.note ? (
+                                                            <span className="block text-xs text-zinc-600 font-normal">
+                                                                {expense.note}
+                                                            </span>
+                                                        ) : null}
+                                                    </TableCell>
+                                                    <TableCell className="text-zinc-400">
+                                                        {expense.expense_date}
+                                                    </TableCell>
+                                                    <TableCell className="font-semibold tabular-nums text-rose-400">
+                                                        {formatCurrency(expense.amount)}
                                                     </TableCell>
                                                 </TableRow>
                                             ))}

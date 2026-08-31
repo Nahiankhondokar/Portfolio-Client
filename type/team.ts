@@ -10,6 +10,15 @@ export interface TeamMember {
     added_by: string | null;
 }
 
+export interface TeamExpense {
+    id: number;
+    title: string;
+    amount: number;
+    expense_date: string;
+    note: string | null;
+    added_by: string | null;
+}
+
 export interface TeamInfo {
     id: number;
     name: string;
@@ -36,6 +45,8 @@ export interface TeamFinanceSummary {
     unpaid_count: number;
     total_collected: number;
     total_outstanding: number;
+    total_expenses: number;
+    remaining_fund: number;
     by_segment: SegmentStat[];
 }
 
@@ -44,6 +55,7 @@ export interface TeamFinanceResponse {
     team: TeamInfo | null;
     next_match: NextMatch | null;
     segments: Record<string, string>;
+    expenses: TeamExpense[];
     members: TeamMember[];
     summary: TeamFinanceSummary;
 }
@@ -53,6 +65,31 @@ export interface TeamSettingsResponse {
     team: TeamInfo | null;
     next_match: NextMatch | null;
     segments: Record<string, string>;
+}
+
+export interface TeamAdminSummary {
+    total_members: number;
+    paid_count: number;
+    unpaid_count: number;
+    total_collected: number;
+    total_outstanding: number;
+}
+
+export interface TeamAdminListResponse {
+    success: boolean;
+    members: TeamMember[];
+    summary: TeamAdminSummary;
+}
+
+export interface TeamExpenseSummary {
+    total_expenses: number;
+    remaining_fund: number;
+}
+
+export interface TeamExpenseListResponse {
+    success: boolean;
+    expenses: TeamExpense[];
+    summary: TeamExpenseSummary;
 }
 
 export interface TeamAuthResponse {
