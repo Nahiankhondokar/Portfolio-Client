@@ -6,6 +6,28 @@ export interface TeamMember {
     paid: boolean;
     jersey_number: string | null;
     note: string | null;
+    segment: string;
+    added_by: string | null;
+}
+
+export interface TeamInfo {
+    id: number;
+    name: string;
+}
+
+export interface NextMatch {
+    id: number;
+    name: string;
+    match_time: string;
+    location: string | null;
+}
+
+export interface SegmentStat {
+    segment: string;
+    label: string;
+    count: number;
+    collected: number;
+    outstanding: number;
 }
 
 export interface TeamFinanceSummary {
@@ -14,12 +36,23 @@ export interface TeamFinanceSummary {
     unpaid_count: number;
     total_collected: number;
     total_outstanding: number;
+    by_segment: SegmentStat[];
 }
 
 export interface TeamFinanceResponse {
     success: boolean;
+    team: TeamInfo | null;
+    next_match: NextMatch | null;
+    segments: Record<string, string>;
     members: TeamMember[];
     summary: TeamFinanceSummary;
+}
+
+export interface TeamSettingsResponse {
+    success: boolean;
+    team: TeamInfo | null;
+    next_match: NextMatch | null;
+    segments: Record<string, string>;
 }
 
 export interface TeamAuthResponse {

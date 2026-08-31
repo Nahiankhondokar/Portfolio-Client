@@ -14,11 +14,13 @@ import {
     Circle,
     Eye,
     Users,
+    Save,
 } from "lucide-react";
 import { teamFetch } from "@/lib/team-api";
 import type {
     TeamFinanceResponse,
     TeamMember,
+    TeamSettingsResponse,
 } from "@/type/team";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -48,6 +50,7 @@ interface MemberFormState {
     paid: boolean;
     jersey_number: string;
     note: string;
+    segment: string;
 }
 
 const emptyForm: MemberFormState = {
@@ -57,6 +60,21 @@ const emptyForm: MemberFormState = {
     paid: false,
     jersey_number: "",
     note: "",
+    segment: "current_match",
+};
+
+interface SettingsFormState {
+    team_name: string;
+    match_name: string;
+    match_time: string;
+    location: string;
+}
+
+const emptySettings: SettingsFormState = {
+    team_name: "",
+    match_name: "",
+    match_time: "",
+    location: "",
 };
 
 function formatCurrency(value: number): string {
@@ -70,10 +88,13 @@ export default function TeamAdminPage() {
     const router = useRouter();
     const [members, setMembers] = useState<TeamMember[]>([]);
     const [summary, setSummary] = useState<TeamFinanceResponse["summary"] | null>(null);
+    const [segments, setSegments] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
+    const [savingSettings, setSavingSettings] = useState(false);
     const [editingId, setEditingId] = useState<number | null>(null);
     const [form, setForm] = useState<MemberFormState>(emptyForm);
+    const [settings, setSettings] = useState<SettingsFormState>(emptySettings);
     const [busyId, setBusyId] = useState<number | null>(null);
 
     const loadData = async () => {
@@ -84,10 +105,28 @@ export default function TeamAdminPage() {
             );
             setMembers(res.members);
             setSummary(res.summary);
+            setSegments(res.segments);
         } catch {
             toast.error("Failed to load members.");
         } finally {
             setLoading(false);
+        }
+    };
+
+    const loadSettings = async () => {
+        try {
+            const res = await teamFetch<TeamSettingsResponse>("team/settings");
+            setSegments(res.segments);
+            setSettings({
+                team_name: res.team?.name ?? "",
+                match_name: res.next_match?.name ?? "",
+                match_time: res.next_match
+                    ? new Date(res.next_match.match_time).toISOString().slice(0, 16)
+                    : "",
+                location: res.next_match?.location ?? "",
+            });
+        } catch {
+            // settings are optional; ignore load failure
         }
     };
 
@@ -98,6 +137,7 @@ export default function TeamAdminPage() {
             return;
         }
         loadData();
+        loadSettings();
     }, [router]);
 
     const resetForm = () => {
@@ -118,6 +158,7 @@ export default function TeamAdminPage() {
                 paid: form.paid,
                 jersey_number: form.jersey_number.trim() || null,
                 note: form.note.trim() || null,
+                segment: form.segment,
             };
 
             if (editingId) {
@@ -145,6 +186,37 @@ export default function TeamAdminPage() {
         }
     };
 
+    const onSaveSettings = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!settings.team_name.trim() || !settings.match_name.trim()) {
+            toast.error("Team name and match name are required.");
+            return;
+        }
+
+        setSavingSettings(true);
+        try {
+            await teamFetch("team/settings", {
+                method: "PUT",
+                body: JSON.stringify({
+                    team_name: settings.team_name.trim(),
+                    match_name: settings.match_name.trim(),
+                    match_time: settings.match_time
+                        ? new Date(settings.match_time).toISOString()
+                        : null,
+                    location: settings.location.trim() || null,
+                }),
+            });
+            toast.success("Settings saved.");
+            await loadSettings();
+        } catch (error: unknown) {
+            toast.error(
+                error instanceof Error ? error.message : "Failed to save settings."
+            );
+        } finally {
+            setSavingSettings(false);
+        }
+    };
+
     const startEdit = (member: TeamMember) => {
         setEditingId(member.id);
         setForm({
@@ -154,6 +226,7 @@ export default function TeamAdminPage() {
             paid: member.paid,
             jersey_number: member.jersey_number ?? "",
             note: member.note ?? "",
+            segment: member.segment,
         });
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
@@ -211,7 +284,7 @@ export default function TeamAdminPage() {
                             Team Finance Admin
                         </h1>
                         <p className="text-zinc-500 text-sm mt-2">
-                            Add, edit, and manage member payments.
+                            Manage team details, next match, and member payments.
                         </p>
                     </div>
                     <div className="flex items-center gap-2">
@@ -227,6 +300,70 @@ export default function TeamAdminPage() {
                         </Button>
                     </div>
                 </div>
+
+                {/* Team & next match settings */}
+                <Card className="bg-zinc-950/80 border-zinc-900">
+                    <CardHeader>
+                        <CardTitle>Team & Next Match</CardTitle>
+                        <CardDescription>
+                            Set the team name and the next match details shown on the public page.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <form onSubmit={onSaveSettings} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                                <Label>Team Name</Label>
+                                <Input
+                                    value={settings.team_name}
+                                    onChange={(e) =>
+                                        setSettings((s) => ({ ...s, team_name: e.target.value }))
+                                    }
+                                    placeholder="e.g. Green Warriors FC"
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <Label>Match Name</Label>
+                                <Input
+                                    value={settings.match_name}
+                                    onChange={(e) =>
+                                        setSettings((s) => ({ ...s, match_name: e.target.value }))
+                                    }
+                                    placeholder="e.g. vs Blue Lions"
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <Label>Match Time</Label>
+                                <Input
+                                    type="datetime-local"
+                                    value={settings.match_time}
+                                    onChange={(e) =>
+                                        setSettings((s) => ({ ...s, match_time: e.target.value }))
+                                    }
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <Label>Location</Label>
+                                <Input
+                                    value={settings.location}
+                                    onChange={(e) =>
+                                        setSettings((s) => ({ ...s, location: e.target.value }))
+                                    }
+                                    placeholder="e.g. City Stadium"
+                                />
+                            </div>
+                            <div className="sm:col-span-2">
+                                <Button type="submit" disabled={savingSettings}>
+                                    {savingSettings ? (
+                                        <Loader2 size="16" className="animate-spin" />
+                                    ) : (
+                                        <Save size="16" />
+                                    )}
+                                    {savingSettings ? "Saving..." : "Save Settings"}
+                                </Button>
+                            </div>
+                        </form>
+                    </CardContent>
+                </Card>
 
                 {/* Summary cards */}
                 {summary && (
@@ -326,6 +463,22 @@ export default function TeamAdminPage() {
                                 />
                             </div>
                             <div className="space-y-1 sm:col-span-2">
+                                <Label>Segment</Label>
+                                <select
+                                    value={form.segment}
+                                    onChange={(e) =>
+                                        setForm((f) => ({ ...f, segment: e.target.value }))
+                                    }
+                                    className="flex h-9 w-full rounded-md border border-input bg-zinc-950 px-3 py-1 text-sm text-white shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                >
+                                    {Object.entries(segments).map(([key, label]) => (
+                                        <option key={key} value={key} className="bg-zinc-950">
+                                            {label}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="space-y-1 sm:col-span-2">
                                 <Label>Note</Label>
                                 <Input
                                     value={form.note}
@@ -401,6 +554,7 @@ export default function TeamAdminPage() {
                                 <TableHeader>
                                     <TableRow className="border-zinc-900 hover:bg-transparent">
                                         <TableHead className="text-zinc-500">Name</TableHead>
+                                        <TableHead className="text-zinc-500">Segment</TableHead>
                                         <TableHead className="text-zinc-500">Jersey</TableHead>
                                         <TableHead className="text-zinc-500">Date</TableHead>
                                         <TableHead className="text-zinc-500">Amount</TableHead>
@@ -420,11 +574,19 @@ export default function TeamAdminPage() {
                                             >
                                                 <TableCell className="font-semibold">
                                                     {member.name}
-                                                    {member.note ? (
+                                                    {member.added_by ? (
                                                         <span className="block text-xs text-zinc-500 font-normal">
+                                                            by {member.added_by}
+                                                        </span>
+                                                    ) : null}
+                                                    {member.note ? (
+                                                        <span className="block text-xs text-zinc-600 font-normal">
                                                             {member.note}
                                                         </span>
                                                     ) : null}
+                                                </TableCell>
+                                                <TableCell className="text-zinc-400">
+                                                    {segments[member.segment] ?? member.segment}
                                                 </TableCell>
                                                 <TableCell className="text-zinc-400">
                                                     {member.jersey_number ?? "—"}
