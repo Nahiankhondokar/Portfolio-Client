@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
     Users,
     CircleCheck,
@@ -7,6 +8,7 @@ import {
     CalendarDays,
     Receipt,
     PiggyBank,
+    Home,
 } from "lucide-react";
 import TeamAuthLink from "./team-auth-link";
 import { Badge } from "@/components/ui/badge";
@@ -76,7 +78,16 @@ export default async function TeamFinancesPage() {
                             Track who has paid and who still owes for the team.
                         </p>
                     </div>
-                    <TeamAuthLink />
+                    <div className="flex items-center gap-2 flex-wrap">
+                        <Link
+                            href="/"
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-xl text-sm font-semibold text-zinc-300 hover:text-white hover:border-zinc-700 transition-colors"
+                        >
+                            <Home size={16} className="text-indigo-400" />
+                            Go to Portfolio
+                        </Link>
+                        <TeamAuthLink />
+                    </div>
                 </div>
 
                 {!data ? (

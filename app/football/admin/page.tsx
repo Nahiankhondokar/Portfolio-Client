@@ -161,7 +161,7 @@ export default function TeamAdminPage() {
     useEffect(() => {
         if (typeof window === "undefined") return;
         if (!localStorage.getItem("team_auth_token")) {
-            router.replace("/team-finances/login");
+            router.replace("/football/login");
             return;
         }
         loadData();
@@ -346,7 +346,7 @@ export default function TeamAdminPage() {
             // ignore logout network errors; clear locally anyway
         }
         localStorage.removeItem("team_auth_token");
-        router.replace("/team-finances/login");
+        router.replace("/football/login");
     };
 
     return (
@@ -362,7 +362,7 @@ export default function TeamAdminPage() {
                         </p>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Link href="/team-finances">
+                        <Link href="/football">
                             <Button variant="outline" size="sm">
                                 <Eye size="16" />
                                 Public View

@@ -5,11 +5,9 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
-import { UserPlusIcon, StepBackIcon } from "lucide-react";
-import { teamRegisterSchema, TeamRegisterInput } from "@/schemas/team.schema";
+import { LogInIcon, StepBackIcon } from "lucide-react";
+import { teamLoginSchema, TeamLoginInput } from "@/schemas/team.schema";
 import { teamFetch } from "@/lib/team-api";
-import { ApiError } from "@/type/api-error";
 import errorMessage from "@/lib/errorMessage";
 import type { TeamAuthResponse } from "@/type/team";
 import { Button } from "@/components/ui/button";
@@ -23,31 +21,26 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export default function TeamRegisterPage() {
+export default function TeamLoginPage() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
 
-    const form = useForm<TeamRegisterInput>({
-        resolver: zodResolver(teamRegisterSchema),
+    const form = useForm<TeamLoginInput>({
+        resolver: zodResolver(teamLoginSchema),
     });
 
-    const onSubmit = async (data: TeamRegisterInput) => {
+    const onSubmit = async (data: TeamLoginInput) => {
         try {
             setLoading(true);
-            const res = await teamFetch<TeamAuthResponse>("team/register", {
+            const res = await teamFetch<TeamAuthResponse>("team/login", {
                 method: "POST",
                 body: JSON.stringify(data),
             });
 
-            toast.success("Account registered successfully.");
             localStorage.setItem("team_auth_token", res.token);
-            router.push("/team-finances/admin");
+            router.push("/football/admin");
         } catch (error: unknown) {
-            if (error instanceof ApiError && error.status === 403) {
-                toast.error("Registration is closed — maximum 2 accounts allowed.");
-            } else {
-                toast.error(errorMessage(error));
-            }
+            form.setError("root", { message: errorMessage(error) });
         } finally {
             setLoading(false);
         }
@@ -57,9 +50,9 @@ export default function TeamRegisterPage() {
         <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
             <Card className="w-[380px] bg-zinc-950/80 border-zinc-900">
                 <CardHeader className="text-center border-b-2 mb-1 border-zinc-900">
-                    <CardTitle>Team Admin Register</CardTitle>
+                    <CardTitle>Team Admin Login</CardTitle>
                     <CardDescription>
-                        Create an account to manage team finances
+                        Sign in to manage team finances
                     </CardDescription>
                 </CardHeader>
 
@@ -80,7 +73,7 @@ export default function TeamRegisterPage() {
                             <Input
                                 type="password"
                                 {...form.register("password")}
-                                placeholder="At least 6 characters"
+                                placeholder="Your password"
                             />
                             {form.formState.errors.password && (
                                 <p className="text-sm text-red-500">
@@ -89,20 +82,26 @@ export default function TeamRegisterPage() {
                             )}
                         </div>
 
+                        {form.formState.errors.root && (
+                            <p className="text-sm text-red-500">
+                                {form.formState.errors.root.message}
+                            </p>
+                        )}
+
                         <Button className="w-full" type="submit" disabled={loading}>
-                            <UserPlusIcon size="16" />
-                            {loading ? "Registering..." : "Register"}
+                            <LogInIcon size="16" />
+                            {loading ? "Logging in..." : "Login"}
                         </Button>
 
                         <div className="flex flex-col items-center gap-2 text-sm">
                             <Link
-                                href="/team-finances/login"
+                                href="/football/register"
                                 className="text-indigo-400 hover:text-indigo-300 transition-colors"
                             >
-                                Already have an account? Login
+                                Need an account? Register
                             </Link>
                             <Link
-                                href="/team-finances"
+                                href="/football"
                                 className="flex items-center gap-1.5 text-zinc-500 hover:text-zinc-300 transition-colors"
                             >
                                 <StepBackIcon size="14" />

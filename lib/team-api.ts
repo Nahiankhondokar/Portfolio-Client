@@ -26,7 +26,7 @@ export async function teamFetch<T>(
     if (res.status === 401) {
         if (typeof window !== "undefined") {
             localStorage.removeItem("team_auth_token");
-            window.location.href = "/team-finances/login";
+            window.location.href = "/football/login";
         }
         throw new ApiError(res.status, "Unauthorized");
     }
