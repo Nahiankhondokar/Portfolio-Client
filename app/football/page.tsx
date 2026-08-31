@@ -212,49 +212,16 @@ export default async function TeamFinancesPage() {
                                         No members added yet.
                                     </p>
                                 ) : (
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow className="border-zinc-900 hover:bg-transparent">
-                                                <TableHead className="text-zinc-500">Name</TableHead>
-                                                <TableHead className="text-zinc-500">Segment</TableHead>
-                                                <TableHead className="text-zinc-500">Jersey</TableHead>
-                                                <TableHead className="text-zinc-500">Date</TableHead>
-                                                <TableHead className="text-zinc-500">Amount</TableHead>
-                                                <TableHead className="text-zinc-500">Status</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
+                                    <>
+                                        {/* Mobile cards */}
+                                        <div className="sm:hidden space-y-3">
                                             {data.members.map((member) => (
-                                                <TableRow
+                                                <div
                                                     key={member.id}
-                                                    className="border-zinc-900 hover:bg-zinc-900/40"
+                                                    className="p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800"
                                                 >
-                                                    <TableCell className="font-semibold">
-                                                        {member.name}
-                                                        {member.added_by ? (
-                                                            <span className="block text-xs text-zinc-500 font-normal">
-                                                                added by {member.added_by}
-                                                            </span>
-                                                        ) : null}
-                                                        {member.note ? (
-                                                            <span className="block text-xs text-zinc-600 font-normal">
-                                                                {member.note}
-                                                            </span>
-                                                        ) : null}
-                                                    </TableCell>
-                                                    <TableCell className="text-zinc-400">
-                                                        {data.segments[member.segment] ?? member.segment}
-                                                    </TableCell>
-                                                    <TableCell className="text-zinc-400">
-                                                        {member.jersey_number ?? "—"}
-                                                    </TableCell>
-                                                    <TableCell className="text-zinc-400">
-                                                        {member.payment_date}
-                                                    </TableCell>
-                                                    <TableCell className="font-semibold tabular-nums">
-                                                        {formatCurrency(member.amount)}
-                                                    </TableCell>
-                                                    <TableCell>
+                                                    <div className="flex items-center justify-between gap-2">
+                                                        <span className="font-semibold">{member.name}</span>
                                                         {member.paid ? (
                                                             <Badge className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30">
                                                                 Paid
@@ -264,11 +231,85 @@ export default async function TeamFinancesPage() {
                                                                 Unpaid
                                                             </Badge>
                                                         )}
-                                                    </TableCell>
-                                                </TableRow>
+                                                    </div>
+                                                    <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-zinc-400">
+                                                        <span>Segment: {data.segments[member.segment] ?? member.segment}</span>
+                                                        <span>Jersey: {member.jersey_number ?? "—"}</span>
+                                                        <span>Date: {member.payment_date}</span>
+                                                        <span className="font-semibold text-white tabular-nums">
+                                                            {formatCurrency(member.amount)}
+                                                        </span>
+                                                    </div>
+                                                    {member.added_by ? (
+                                                        <p className="mt-2 text-xs text-zinc-500">
+                                                            added by {member.added_by}
+                                                        </p>
+                                                    ) : null}
+                                                </div>
                                             ))}
-                                        </TableBody>
-                                    </Table>
+                                        </div>
+
+                                        {/* Desktop table */}
+                                        <div className="hidden sm:block">
+                                            <Table>
+                                                <TableHeader>
+                                                    <TableRow className="border-zinc-900 hover:bg-transparent">
+                                                        <TableHead className="text-zinc-500">Name</TableHead>
+                                                        <TableHead className="text-zinc-500">Segment</TableHead>
+                                                        <TableHead className="text-zinc-500">Jersey</TableHead>
+                                                        <TableHead className="text-zinc-500">Date</TableHead>
+                                                        <TableHead className="text-zinc-500">Amount</TableHead>
+                                                        <TableHead className="text-zinc-500">Status</TableHead>
+                                                    </TableRow>
+                                                </TableHeader>
+                                                <TableBody>
+                                                    {data.members.map((member) => (
+                                                        <TableRow
+                                                            key={member.id}
+                                                            className="border-zinc-900 hover:bg-zinc-900/40"
+                                                        >
+                                                            <TableCell className="font-semibold">
+                                                                {member.name}
+                                                                {member.added_by ? (
+                                                                    <span className="block text-xs text-zinc-500 font-normal">
+                                                                        added by {member.added_by}
+                                                                    </span>
+                                                                ) : null}
+                                                                {member.note ? (
+                                                                    <span className="block text-xs text-zinc-600 font-normal">
+                                                                        {member.note}
+                                                                    </span>
+                                                                ) : null}
+                                                            </TableCell>
+                                                            <TableCell className="text-zinc-400">
+                                                                {data.segments[member.segment] ?? member.segment}
+                                                            </TableCell>
+                                                            <TableCell className="text-zinc-400">
+                                                                {member.jersey_number ?? "—"}
+                                                            </TableCell>
+                                                            <TableCell className="text-zinc-400">
+                                                                {member.payment_date}
+                                                            </TableCell>
+                                                            <TableCell className="font-semibold tabular-nums">
+                                                                {formatCurrency(member.amount)}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {member.paid ? (
+                                                                    <Badge className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30">
+                                                                        Paid
+                                                                    </Badge>
+                                                                ) : (
+                                                                    <Badge className="bg-rose-500/15 text-rose-400 border-rose-500/30">
+                                                                        Unpaid
+                                                                    </Badge>
+                                                                )}
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </div>
+                                    </>
                                 )}
                             </CardContent>
                         </Card>
@@ -290,38 +331,61 @@ export default async function TeamFinancesPage() {
                                         No expenses recorded.
                                     </p>
                                 ) : (
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow className="border-zinc-900 hover:bg-transparent">
-                                                <TableHead className="text-zinc-500">Title</TableHead>
-                                                <TableHead className="text-zinc-500">Date</TableHead>
-                                                <TableHead className="text-zinc-500">Amount</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
+                                    <>
+                                        {/* Mobile cards */}
+                                        <div className="sm:hidden space-y-3">
                                             {data.expenses.map((expense) => (
-                                                <TableRow
+                                                <div
                                                     key={expense.id}
-                                                    className="border-zinc-900 hover:bg-zinc-900/40"
+                                                    className="p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800 flex items-center justify-between gap-2"
                                                 >
-                                                    <TableCell className="font-semibold">
-                                                        {expense.title}
-                                                        {expense.note ? (
-                                                            <span className="block text-xs text-zinc-600 font-normal">
-                                                                {expense.note}
-                                                            </span>
-                                                        ) : null}
-                                                    </TableCell>
-                                                    <TableCell className="text-zinc-400">
-                                                        {expense.expense_date}
-                                                    </TableCell>
-                                                    <TableCell className="font-semibold tabular-nums text-rose-400">
+                                                    <div className="min-w-0">
+                                                        <p className="font-semibold truncate">{expense.title}</p>
+                                                        <p className="text-xs text-zinc-500">{expense.expense_date}</p>
+                                                    </div>
+                                                    <span className="font-semibold tabular-nums text-rose-400 shrink-0">
                                                         {formatCurrency(expense.amount)}
-                                                    </TableCell>
-                                                </TableRow>
+                                                    </span>
+                                                </div>
                                             ))}
-                                        </TableBody>
-                                    </Table>
+                                        </div>
+
+                                        {/* Desktop table */}
+                                        <div className="hidden sm:block">
+                                            <Table>
+                                                <TableHeader>
+                                                    <TableRow className="border-zinc-900 hover:bg-transparent">
+                                                        <TableHead className="text-zinc-500">Title</TableHead>
+                                                        <TableHead className="text-zinc-500">Date</TableHead>
+                                                        <TableHead className="text-zinc-500">Amount</TableHead>
+                                                    </TableRow>
+                                                </TableHeader>
+                                                <TableBody>
+                                                    {data.expenses.map((expense) => (
+                                                        <TableRow
+                                                            key={expense.id}
+                                                            className="border-zinc-900 hover:bg-zinc-900/40"
+                                                        >
+                                                            <TableCell className="font-semibold">
+                                                                {expense.title}
+                                                                {expense.note ? (
+                                                                    <span className="block text-xs text-zinc-600 font-normal">
+                                                                        {expense.note}
+                                                                    </span>
+                                                                ) : null}
+                                                            </TableCell>
+                                                            <TableCell className="text-zinc-400">
+                                                                {expense.expense_date}
+                                                            </TableCell>
+                                                            <TableCell className="font-semibold tabular-nums text-rose-400">
+                                                                {formatCurrency(expense.amount)}
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </div>
+                                    </>
                                 )}
                             </CardContent>
                         </Card>

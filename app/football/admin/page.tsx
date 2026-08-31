@@ -396,13 +396,13 @@ export default function TeamAdminPage() {
                                 />
                             </div>
                             <div className="space-y-1">
-                                <Label>Match Name</Label>
+                                <Label>Venue Name</Label>
                                 <Input
                                     value={settings.match_name}
                                     onChange={(e) =>
                                         setSettings((s) => ({ ...s, match_name: e.target.value }))
                                     }
-                                    placeholder="e.g. vs Blue Lions"
+                                    placeholder="e.g. City Stadium"
                                 />
                             </div>
                             <div className="space-y-1">
@@ -648,54 +648,18 @@ export default function TeamAdminPage() {
                                 </p>
                             </div>
                         ) : (
-                            <Table>
-                                <TableHeader>
-                                    <TableRow className="border-zinc-900 hover:bg-transparent">
-                                        <TableHead className="text-zinc-500">Name</TableHead>
-                                        <TableHead className="text-zinc-500">Segment</TableHead>
-                                        <TableHead className="text-zinc-500">Jersey</TableHead>
-                                        <TableHead className="text-zinc-500">Date</TableHead>
-                                        <TableHead className="text-zinc-500">Amount</TableHead>
-                                        <TableHead className="text-zinc-500">Status</TableHead>
-                                        <TableHead className="text-zinc-500 text-right">
-                                            Actions
-                                        </TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
+                            <>
+                                {/* Mobile cards */}
+                                <div className="sm:hidden space-y-3">
                                     {members.map((member) => {
                                         const busy = busyId === member.id;
                                         return (
-                                            <TableRow
+                                            <div
                                                 key={member.id}
-                                                className="border-zinc-900 hover:bg-zinc-900/40"
+                                                className="p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800"
                                             >
-                                                <TableCell className="font-semibold">
-                                                    {member.name}
-                                                    {member.added_by ? (
-                                                        <span className="block text-xs text-zinc-500 font-normal">
-                                                            by {member.added_by}
-                                                        </span>
-                                                    ) : null}
-                                                    {member.note ? (
-                                                        <span className="block text-xs text-zinc-600 font-normal">
-                                                            {member.note}
-                                                        </span>
-                                                    ) : null}
-                                                </TableCell>
-                                                <TableCell className="text-zinc-400">
-                                                    {segments[member.segment] ?? member.segment}
-                                                </TableCell>
-                                                <TableCell className="text-zinc-400">
-                                                    {member.jersey_number ?? "—"}
-                                                </TableCell>
-                                                <TableCell className="text-zinc-400">
-                                                    {member.payment_date}
-                                                </TableCell>
-                                                <TableCell className="font-semibold tabular-nums">
-                                                    {formatCurrency(member.amount)}
-                                                </TableCell>
-                                                <TableCell>
+                                                <div className="flex items-center justify-between gap-2">
+                                                    <span className="font-semibold">{member.name}</span>
                                                     {member.paid ? (
                                                         <Badge className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30">
                                                             Paid
@@ -705,43 +669,142 @@ export default function TeamAdminPage() {
                                                             Unpaid
                                                         </Badge>
                                                     )}
-                                                </TableCell>
-                                                <TableCell className="text-right">
-                                                    <div className="flex items-center justify-end gap-1.5">
-                                                        <button
-                                                            onClick={() => togglePaid(member)}
-                                                            disabled={busy}
-                                                            className="p-2 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-400 hover:text-white transition-colors disabled:opacity-40"
-                                                            title={member.paid ? "Mark unpaid" : "Mark paid"}
-                                                        >
-                                                            {member.paid ? (
-                                                                <CheckCircle2 size={15} className="text-emerald-400" />
-                                                            ) : (
-                                                                <Circle size={15} />
-                                                            )}
-                                                        </button>
-                                                        <button
-                                                            onClick={() => startEdit(member)}
-                                                            className="p-2 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-400 hover:text-white transition-colors"
-                                                            title="Edit"
-                                                        >
-                                                            <Pencil size={15} />
-                                                        </button>
-                                                        <button
-                                                            onClick={() => removeMember(member)}
-                                                            disabled={busy}
-                                                            className="p-2 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-rose-500/30 text-zinc-400 hover:text-rose-400 transition-colors disabled:opacity-40"
-                                                            title="Delete"
-                                                        >
-                                                            <Trash2 size={15} />
-                                                        </button>
-                                                    </div>
-                                                </TableCell>
-                                            </TableRow>
+                                                </div>
+                                                <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-zinc-400">
+                                                    <span>Segment: {segments[member.segment] ?? member.segment}</span>
+                                                    <span>Jersey: {member.jersey_number ?? "—"}</span>
+                                                    <span>Date: {member.payment_date}</span>
+                                                    <span className="font-semibold text-white tabular-nums">
+                                                        {formatCurrency(member.amount)}
+                                                    </span>
+                                                </div>
+                                                <div className="mt-3 flex items-center gap-2">
+                                                    <button
+                                                        onClick={() => togglePaid(member)}
+                                                        disabled={busy}
+                                                        className="flex-1 p-2 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white transition-colors disabled:opacity-40"
+                                                    >
+                                                        {member.paid ? "Unpaid" : "Paid"}
+                                                    </button>
+                                                    <button
+                                                        onClick={() => startEdit(member)}
+                                                        className="p-2 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white transition-colors"
+                                                        title="Edit"
+                                                    >
+                                                        <Pencil size={15} />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => removeMember(member)}
+                                                        disabled={busy}
+                                                        className="p-2 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-rose-400 transition-colors disabled:opacity-40"
+                                                        title="Delete"
+                                                    >
+                                                        <Trash2 size={15} />
+                                                    </button>
+                                                </div>
+                                            </div>
                                         );
                                     })}
-                                </TableBody>
-                            </Table>
+                                </div>
+
+                                {/* Desktop table */}
+                                <div className="hidden sm:block">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow className="border-zinc-900 hover:bg-transparent">
+                                                <TableHead className="text-zinc-500">Name</TableHead>
+                                                <TableHead className="text-zinc-500">Segment</TableHead>
+                                                <TableHead className="text-zinc-500">Jersey</TableHead>
+                                                <TableHead className="text-zinc-500">Date</TableHead>
+                                                <TableHead className="text-zinc-500">Amount</TableHead>
+                                                <TableHead className="text-zinc-500">Status</TableHead>
+                                                <TableHead className="text-zinc-500 text-right">
+                                                    Actions
+                                                </TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {members.map((member) => {
+                                                const busy = busyId === member.id;
+                                                return (
+                                                    <TableRow
+                                                        key={member.id}
+                                                        className="border-zinc-900 hover:bg-zinc-900/40"
+                                                    >
+                                                        <TableCell className="font-semibold">
+                                                            {member.name}
+                                                            {member.added_by ? (
+                                                                <span className="block text-xs text-zinc-500 font-normal">
+                                                                    by {member.added_by}
+                                                                </span>
+                                                            ) : null}
+                                                            {member.note ? (
+                                                                <span className="block text-xs text-zinc-600 font-normal">
+                                                                    {member.note}
+                                                                </span>
+                                                            ) : null}
+                                                        </TableCell>
+                                                        <TableCell className="text-zinc-400">
+                                                            {segments[member.segment] ?? member.segment}
+                                                        </TableCell>
+                                                        <TableCell className="text-zinc-400">
+                                                            {member.jersey_number ?? "—"}
+                                                        </TableCell>
+                                                        <TableCell className="text-zinc-400">
+                                                            {member.payment_date}
+                                                        </TableCell>
+                                                        <TableCell className="font-semibold tabular-nums">
+                                                            {formatCurrency(member.amount)}
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            {member.paid ? (
+                                                                <Badge className="bg-emerald-500/15 text-emerald-400 border-emerald-500/30">
+                                                                    Paid
+                                                                </Badge>
+                                                            ) : (
+                                                                <Badge className="bg-rose-500/15 text-rose-400 border-rose-500/30">
+                                                                    Unpaid
+                                                                </Badge>
+                                                            )}
+                                                        </TableCell>
+                                                        <TableCell className="text-right">
+                                                            <div className="flex items-center justify-end gap-1.5">
+                                                                <button
+                                                                    onClick={() => togglePaid(member)}
+                                                                    disabled={busy}
+                                                                    className="p-2 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-400 hover:text-white transition-colors disabled:opacity-40"
+                                                                    title={member.paid ? "Mark unpaid" : "Mark paid"}
+                                                                >
+                                                                    {member.paid ? (
+                                                                        <CheckCircle2 size={15} className="text-emerald-400" />
+                                                                    ) : (
+                                                                        <Circle size={15} />
+                                                                    )}
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => startEdit(member)}
+                                                                    className="p-2 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-400 hover:text-white transition-colors"
+                                                                    title="Edit"
+                                                                >
+                                                                    <Pencil size={15} />
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => removeMember(member)}
+                                                                    disabled={busy}
+                                                                    className="p-2 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-rose-500/30 text-zinc-400 hover:text-rose-400 transition-colors disabled:opacity-40"
+                                                                    title="Delete"
+                                                                >
+                                                                    <Trash2 size={15} />
+                                                                </button>
+                                                            </div>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                );
+                                            })}
+                                        </TableBody>
+                                    </Table>
+                                </div>
+                            </>
                         )}
                     </CardContent>
                 </Card>
@@ -819,56 +882,94 @@ export default function TeamAdminPage() {
                                 No expenses recorded.
                             </p>
                         ) : (
-                            <Table>
-                                <TableHeader>
-                                    <TableRow className="border-zinc-900 hover:bg-transparent">
-                                        <TableHead className="text-zinc-500">Title</TableHead>
-                                        <TableHead className="text-zinc-500">Date</TableHead>
-                                        <TableHead className="text-zinc-500">Amount</TableHead>
-                                        <TableHead className="text-zinc-500 text-right">
-                                            Actions
-                                        </TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
+                            <>
+                                {/* Mobile cards */}
+                                <div className="sm:hidden space-y-3">
                                     {expenses.map((expense) => (
-                                        <TableRow
+                                        <div
                                             key={expense.id}
-                                            className="border-zinc-900 hover:bg-zinc-900/40"
+                                            className="p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800"
                                         >
-                                            <TableCell className="font-semibold">
-                                                {expense.title}
-                                                {expense.added_by ? (
-                                                    <span className="block text-xs text-zinc-500 font-normal">
-                                                        by {expense.added_by}
-                                                    </span>
-                                                ) : null}
-                                                {expense.note ? (
-                                                    <span className="block text-xs text-zinc-600 font-normal">
-                                                        {expense.note}
-                                                    </span>
-                                                ) : null}
-                                            </TableCell>
-                                            <TableCell className="text-zinc-400">
-                                                {expense.expense_date}
-                                            </TableCell>
-                                            <TableCell className="font-semibold tabular-nums text-rose-400">
-                                                {formatCurrency(expense.amount)}
-                                            </TableCell>
-                                            <TableCell className="text-right">
+                                            <div className="flex items-center justify-between gap-2">
+                                                <div className="min-w-0">
+                                                    <p className="font-semibold truncate">{expense.title}</p>
+                                                    <p className="text-xs text-zinc-500">
+                                                        {expense.expense_date}
+                                                        {expense.added_by ? ` · by ${expense.added_by}` : ""}
+                                                    </p>
+                                                </div>
+                                                <span className="font-semibold tabular-nums text-rose-400 shrink-0">
+                                                    {formatCurrency(expense.amount)}
+                                                </span>
+                                            </div>
+                                            <div className="mt-2 flex justify-end">
                                                 <button
                                                     onClick={() => removeExpense(expense)}
                                                     disabled={expenseBusyId === expense.id}
-                                                    className="p-2 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-rose-500/30 text-zinc-400 hover:text-rose-400 transition-colors disabled:opacity-40"
+                                                    className="p-2 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-rose-400 transition-colors disabled:opacity-40"
                                                     title="Delete"
                                                 >
                                                     <Trash2 size={15} />
                                                 </button>
-                                            </TableCell>
-                                        </TableRow>
+                                            </div>
+                                        </div>
                                     ))}
-                                </TableBody>
-                            </Table>
+                                </div>
+
+                                {/* Desktop table */}
+                                <div className="hidden sm:block">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow className="border-zinc-900 hover:bg-transparent">
+                                                <TableHead className="text-zinc-500">Title</TableHead>
+                                                <TableHead className="text-zinc-500">Date</TableHead>
+                                                <TableHead className="text-zinc-500">Amount</TableHead>
+                                                <TableHead className="text-zinc-500 text-right">
+                                                    Actions
+                                                </TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {expenses.map((expense) => (
+                                                <TableRow
+                                                    key={expense.id}
+                                                    className="border-zinc-900 hover:bg-zinc-900/40"
+                                                >
+                                                    <TableCell className="font-semibold">
+                                                        {expense.title}
+                                                        {expense.added_by ? (
+                                                            <span className="block text-xs text-zinc-500 font-normal">
+                                                                by {expense.added_by}
+                                                            </span>
+                                                        ) : null}
+                                                        {expense.note ? (
+                                                            <span className="block text-xs text-zinc-600 font-normal">
+                                                                {expense.note}
+                                                            </span>
+                                                        ) : null}
+                                                    </TableCell>
+                                                    <TableCell className="text-zinc-400">
+                                                        {expense.expense_date}
+                                                    </TableCell>
+                                                    <TableCell className="font-semibold tabular-nums text-rose-400">
+                                                        {formatCurrency(expense.amount)}
+                                                    </TableCell>
+                                                    <TableCell className="text-right">
+                                                        <button
+                                                            onClick={() => removeExpense(expense)}
+                                                            disabled={expenseBusyId === expense.id}
+                                                            className="p-2 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-rose-500/30 text-zinc-400 hover:text-rose-400 transition-colors disabled:opacity-40"
+                                                            title="Delete"
+                                                        >
+                                                            <Trash2 size={15} />
+                                                        </button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </div>
+                            </>
                         )}
                     </CardContent>
                 </Card>
