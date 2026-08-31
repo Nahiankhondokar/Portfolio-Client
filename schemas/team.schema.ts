@@ -1,5 +1,13 @@
 import { z } from "zod";
 
+export const SEGMENT_KEYS = [
+    "current_match",
+    "next_match",
+    "slot_booking",
+    "monthly_fee",
+    "other",
+] as const;
+
 export const teamLoginSchema = z.object({
     name: z.string().min(1, "Name is required"),
     password: z.string().min(1, "Password is required"),
@@ -17,6 +25,7 @@ export const teamMemberSchema = z.object({
     paid: z.boolean().optional(),
     jersey_number: z.string().optional(),
     note: z.string().optional(),
+    segment: z.enum(SEGMENT_KEYS).optional(),
 });
 
 export type TeamLoginInput = z.infer<typeof teamLoginSchema>;

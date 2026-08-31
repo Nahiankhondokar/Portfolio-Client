@@ -1,5 +1,13 @@
 import Link from "next/link";
-import { ShieldCheck, Users, CircleCheck, CircleAlert, Wallet } from "lucide-react";
+import {
+    ShieldCheck,
+    Users,
+    CircleCheck,
+    CircleAlert,
+    Wallet,
+    MapPin,
+    CalendarDays,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
     Card,
@@ -39,6 +47,19 @@ function formatCurrency(value: number): string {
     }).format(value);
 }
 
+function formatMatchTime(iso: string): string {
+    const date = new Date(iso);
+    if (Number.isNaN(date.getTime())) return iso;
+    return date.toLocaleString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+    });
+}
+
 export default async function TeamFinancesPage() {
     const data = await getTeamFinances();
 
@@ -48,7 +69,7 @@ export default async function TeamFinancesPage() {
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
                     <div>
                         <h1 className="text-4xl lg:text-5xl font-black tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-500 bg-clip-text text-transparent">
-                            Team Finance Summary
+                            {data?.team?.name ?? "Team Finance Summary"}
                         </h1>
                         <p className="text-zinc-500 text-sm mt-2">
                             Track who has paid and who still owes for the team.
@@ -75,6 +96,33 @@ export default async function TeamFinancesPage() {
                     </Card>
                 ) : (
                     <div className="space-y-8">
+                        {/* Next match */}
+                        {data.next_match && (
+                            <Card className="bg-zinc-950/80 border-zinc-900">
+                                <CardHeader className="pb-3">
+                                    <CardDescription className="flex items-center gap-1.5 text-zinc-500 uppercase tracking-widest text-xs">
+                                        <CalendarDays size={14} className="text-indigo-400" />
+                                        Next Match
+                                    </CardDescription>
+                                    <CardTitle className="text-2xl font-black">
+                                        {data.next_match.name}
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="flex flex-col sm:flex-row gap-4 text-sm text-zinc-400">
+                                    <span className="flex items-center gap-2">
+                                        <CalendarDays size={15} className="text-zinc-500" />
+                                        {formatMatchTime(data.next_match.match_time)}
+                                    </span>
+                                    {data.next_match.location && (
+                                        <span className="flex items-center gap-2">
+                                            <MapPin size={15} className="text-zinc-500" />
+                                            {data.next_match.location}
+                                        </span>
+                                    )}
+                                </CardContent>
+                            </Card>
+                        )}
+
                         {/* Summary cards */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             <Card className="bg-zinc-950/80 border-zinc-900">
@@ -145,6 +193,7 @@ export default async function TeamFinancesPage() {
                                         <TableHeader>
                                             <TableRow className="border-zinc-900 hover:bg-transparent">
                                                 <TableHead className="text-zinc-500">Name</TableHead>
+                                                <TableHead className="text-zinc-500">Segment</TableHead>
                                                 <TableHead className="text-zinc-500">Jersey</TableHead>
                                                 <TableHead className="text-zinc-500">Date</TableHead>
                                                 <TableHead className="text-zinc-500">Amount</TableHead>
@@ -159,11 +208,19 @@ export default async function TeamFinancesPage() {
                                                 >
                                                     <TableCell className="font-semibold">
                                                         {member.name}
-                                                        {member.note ? (
+                                                        {member.added_by ? (
                                                             <span className="block text-xs text-zinc-500 font-normal">
+                                                                added by {member.added_by}
+                                                            </span>
+                                                        ) : null}
+                                                        {member.note ? (
+                                                            <span className="block text-xs text-zinc-600 font-normal">
                                                                 {member.note}
                                                             </span>
                                                         ) : null}
+                                                    </TableCell>
+                                                    <TableCell className="text-zinc-400">
+                                                        {data.segments[member.segment] ?? member.segment}
                                                     </TableCell>
                                                     <TableCell className="text-zinc-400">
                                                         {member.jersey_number ?? "—"}
