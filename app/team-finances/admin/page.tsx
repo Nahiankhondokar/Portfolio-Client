@@ -15,10 +15,13 @@ import {
     Eye,
     Users,
     Save,
+    Receipt,
 } from "lucide-react";
 import { teamFetch } from "@/lib/team-api";
 import type {
-    TeamFinanceResponse,
+    TeamAdminListResponse,
+    TeamExpense,
+    TeamExpenseListResponse,
     TeamMember,
     TeamSettingsResponse,
 } from "@/type/team";
@@ -77,6 +80,20 @@ const emptySettings: SettingsFormState = {
     location: "",
 };
 
+interface ExpenseFormState {
+    title: string;
+    amount: string;
+    expense_date: string;
+    note: string;
+}
+
+const emptyExpense: ExpenseFormState = {
+    title: "",
+    amount: "",
+    expense_date: new Date().toISOString().slice(0, 10),
+    note: "",
+};
+
 function formatCurrency(value: number): string {
     return new Intl.NumberFormat("en-US", {
         style: "currency",
@@ -87,7 +104,7 @@ function formatCurrency(value: number): string {
 export default function TeamAdminPage() {
     const router = useRouter();
     const [members, setMembers] = useState<TeamMember[]>([]);
-    const [summary, setSummary] = useState<TeamFinanceResponse["summary"] | null>(null);
+    const [summary, setSummary] = useState<TeamAdminListResponse["summary"] | null>(null);
     const [segments, setSegments] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
@@ -96,20 +113,31 @@ export default function TeamAdminPage() {
     const [form, setForm] = useState<MemberFormState>(emptyForm);
     const [settings, setSettings] = useState<SettingsFormState>(emptySettings);
     const [busyId, setBusyId] = useState<number | null>(null);
+    const [expenses, setExpenses] = useState<TeamExpense[]>([]);
+    const [expenseSummary, setExpenseSummary] = useState<TeamExpenseListResponse["summary"] | null>(null);
+    const [expenseForm, setExpenseForm] = useState<ExpenseFormState>(emptyExpense);
+    const [savingExpense, setSavingExpense] = useState(false);
+    const [expenseBusyId, setExpenseBusyId] = useState<number | null>(null);
 
     const loadData = async () => {
         try {
-            const res = await teamFetch<TeamFinanceResponse>(
-                "v1/public/team-finances",
-                { cache: "no-store" }
-            );
+            const res = await teamFetch<TeamAdminListResponse>("team/members");
             setMembers(res.members);
             setSummary(res.summary);
-            setSegments(res.segments);
         } catch {
             toast.error("Failed to load members.");
         } finally {
             setLoading(false);
+        }
+    };
+
+    const loadExpenses = async () => {
+        try {
+            const res = await teamFetch<TeamExpenseListResponse>("team/expenses");
+            setExpenses(res.expenses);
+            setExpenseSummary(res.summary);
+        } catch {
+            toast.error("Failed to load expenses.");
         }
     };
 
@@ -138,11 +166,57 @@ export default function TeamAdminPage() {
         }
         loadData();
         loadSettings();
+        loadExpenses();
     }, [router]);
 
     const resetForm = () => {
         setForm(emptyForm);
         setEditingId(null);
+    };
+
+    const onSubmitExpense = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!expenseForm.title.trim() || !expenseForm.amount) return;
+
+        setSavingExpense(true);
+        try {
+            await teamFetch("team/expenses", {
+                method: "POST",
+                body: JSON.stringify({
+                    title: expenseForm.title.trim(),
+                    amount: Number(expenseForm.amount),
+                    expense_date: expenseForm.expense_date,
+                    note: expenseForm.note.trim() || null,
+                }),
+            });
+            toast.success("Expense added.");
+            setExpenseForm(emptyExpense);
+            await loadExpenses();
+            await loadData();
+        } catch (error: unknown) {
+            toast.error(
+                error instanceof Error ? error.message : "Failed to add expense."
+            );
+        } finally {
+            setSavingExpense(false);
+        }
+    };
+
+    const removeExpense = async (expense: TeamExpense) => {
+        if (!window.confirm(`Delete expense "${expense.title}"?`)) return;
+        setExpenseBusyId(expense.id);
+        try {
+            await teamFetch(`team/expenses/${expense.id}`, { method: "DELETE" });
+            toast.success("Expense deleted.");
+            await loadExpenses();
+            await loadData();
+        } catch (error: unknown) {
+            toast.error(
+                error instanceof Error ? error.message : "Failed to delete expense."
+            );
+        } finally {
+            setExpenseBusyId(null);
+        }
     };
 
     const onSubmit = async (e: React.FormEvent) => {
@@ -407,6 +481,30 @@ export default function TeamAdminPage() {
                     </div>
                 )}
 
+                {/* Remaining fund */}
+                {expenseSummary && (
+                    <Card className="bg-indigo-500/10 border-indigo-500/30">
+                        <CardContent className="py-5 flex items-center justify-between gap-4 flex-wrap">
+                            <div>
+                                <p className="text-sm font-bold uppercase tracking-widest text-zinc-400">
+                                    Remaining Fund
+                                </p>
+                                <p className="text-2xl font-black text-indigo-400">
+                                    {formatCurrency(expenseSummary.remaining_fund)}
+                                </p>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-xs font-bold uppercase tracking-widest text-zinc-500">
+                                    Total Expenses
+                                </p>
+                                <p className="text-lg font-black text-rose-400">
+                                    {formatCurrency(expenseSummary.total_expenses)}
+                                </p>
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
+
                 {/* Add / edit form */}
                 <Card className="bg-zinc-950/80 border-zinc-900">
                     <CardHeader>
@@ -642,6 +740,133 @@ export default function TeamAdminPage() {
                                             </TableRow>
                                         );
                                     })}
+                                </TableBody>
+                            </Table>
+                        )}
+                    </CardContent>
+                </Card>
+
+                {/* Expenses */}
+                <Card className="bg-zinc-950/80 border-zinc-900">
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <Receipt size={18} className="text-zinc-500" />
+                            Expenses
+                        </CardTitle>
+                        <CardDescription>
+                            Record and manage team expenses.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <form onSubmit={onSubmitExpense} className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                            <div className="space-y-1">
+                                <Label>Title</Label>
+                                <Input
+                                    value={expenseForm.title}
+                                    onChange={(e) =>
+                                        setExpenseForm((f) => ({ ...f, title: e.target.value }))
+                                    }
+                                    placeholder="e.g. Ball purchase"
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <Label>Amount</Label>
+                                <Input
+                                    type="number"
+                                    step="0.01"
+                                    min="0"
+                                    value={expenseForm.amount}
+                                    onChange={(e) =>
+                                        setExpenseForm((f) => ({ ...f, amount: e.target.value }))
+                                    }
+                                    placeholder="0.00"
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <Label>Date</Label>
+                                <Input
+                                    type="date"
+                                    value={expenseForm.expense_date}
+                                    onChange={(e) =>
+                                        setExpenseForm((f) => ({ ...f, expense_date: e.target.value }))
+                                    }
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <Label>Note</Label>
+                                <Input
+                                    value={expenseForm.note}
+                                    onChange={(e) =>
+                                        setExpenseForm((f) => ({ ...f, note: e.target.value }))
+                                    }
+                                    placeholder="Optional"
+                                />
+                            </div>
+                            <div className="sm:col-span-2">
+                                <Button type="submit" disabled={savingExpense}>
+                                    {savingExpense ? (
+                                        <Loader2 size="16" className="animate-spin" />
+                                    ) : (
+                                        <Plus size="16" />
+                                    )}
+                                    {savingExpense ? "Saving..." : "Add Expense"}
+                                </Button>
+                            </div>
+                        </form>
+
+                        {expenses.length === 0 ? (
+                            <p className="py-8 text-center text-zinc-600 text-sm font-semibold">
+                                No expenses recorded.
+                            </p>
+                        ) : (
+                            <Table>
+                                <TableHeader>
+                                    <TableRow className="border-zinc-900 hover:bg-transparent">
+                                        <TableHead className="text-zinc-500">Title</TableHead>
+                                        <TableHead className="text-zinc-500">Date</TableHead>
+                                        <TableHead className="text-zinc-500">Amount</TableHead>
+                                        <TableHead className="text-zinc-500 text-right">
+                                            Actions
+                                        </TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {expenses.map((expense) => (
+                                        <TableRow
+                                            key={expense.id}
+                                            className="border-zinc-900 hover:bg-zinc-900/40"
+                                        >
+                                            <TableCell className="font-semibold">
+                                                {expense.title}
+                                                {expense.added_by ? (
+                                                    <span className="block text-xs text-zinc-500 font-normal">
+                                                        by {expense.added_by}
+                                                    </span>
+                                                ) : null}
+                                                {expense.note ? (
+                                                    <span className="block text-xs text-zinc-600 font-normal">
+                                                        {expense.note}
+                                                    </span>
+                                                ) : null}
+                                            </TableCell>
+                                            <TableCell className="text-zinc-400">
+                                                {expense.expense_date}
+                                            </TableCell>
+                                            <TableCell className="font-semibold tabular-nums text-rose-400">
+                                                {formatCurrency(expense.amount)}
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <button
+                                                    onClick={() => removeExpense(expense)}
+                                                    disabled={expenseBusyId === expense.id}
+                                                    className="p-2 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-rose-500/30 text-zinc-400 hover:text-rose-400 transition-colors disabled:opacity-40"
+                                                    title="Delete"
+                                                >
+                                                    <Trash2 size={15} />
+                                                </button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
                                 </TableBody>
                             </Table>
                         )}
