@@ -11,6 +11,7 @@ import {
     Home,
 } from "lucide-react";
 import TeamAuthLink from "./team-auth-link";
+import ScreenshotButton from "./screenshot-button";
 import { Badge } from "@/components/ui/badge";
 import {
     Card,
@@ -86,6 +87,7 @@ export default async function TeamFinancesPage() {
                             <Home size={16} className="text-indigo-400" />
                             Go to Portfolio
                         </Link>
+                        <ScreenshotButton />
                         <TeamAuthLink />
                     </div>
                 </div>
