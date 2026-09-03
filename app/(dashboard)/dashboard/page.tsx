@@ -16,6 +16,7 @@ import { useDashboardStore } from "@/stores/useDashboardStore";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { apiFetch } from "@/lib/api";
 import type { TeamFinanceDashboardResponse } from "@/type/team";
+import TeamAdminsCard from "./team-admins-card";
 import { 
     Newspaper, 
     Briefcase, 
@@ -40,10 +41,14 @@ const Dashboard = () => {
         fetchOverview();
     }, [fetchOverview]);
 
-    useEffect(() => {
+    const loadTeamFinance = () => {
         apiFetch<TeamFinanceDashboardResponse>("dashboard/team-finance")
             .then(setTeamFinance)
             .catch(() => setTeamFinance(null));
+    };
+
+    useEffect(() => {
+        loadTeamFinance();
     }, []);
 
     const formatCurrency = (value: number) =>
@@ -259,41 +264,10 @@ const Dashboard = () => {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="p-4">
-                                {teamFinance.admins.length === 0 ? (
-                                    <p className="py-8 text-center text-zinc-600 italic text-sm">
-                                        No team admins registered yet.
-                                    </p>
-                                ) : (
-                                    <div className="space-y-3">
-                                        {teamFinance.admins.map((admin) => (
-                                            <div
-                                                key={admin.id}
-                                                className="p-4 rounded-xl bg-zinc-900/40 border border-zinc-800"
-                                            >
-                                                <div className="flex items-center justify-between gap-2 flex-wrap">
-                                                    <span className="font-semibold text-white">
-                                                        {admin.name}
-                                                    </span>
-                                                    <span className="text-xs text-zinc-500">
-                                                        Joined{" "}
-                                                        {new Date(admin.created_at).toLocaleDateString()}
-                                                    </span>
-                                                </div>
-                                                <div className="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-zinc-400">
-                                                    <span>Members: {admin.stats.total_members}</span>
-                                                    <span>Paid: {admin.stats.paid_count}</span>
-                                                    <span>Unpaid: {admin.stats.unpaid_count}</span>
-                                                    <span>
-                                                        Collected:{" "}
-                                                        <span className="text-emerald-400 font-semibold tabular-nums">
-                                                            {formatCurrency(admin.stats.collected)}
-                                                        </span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
+                                <TeamAdminsCard
+                                    admins={teamFinance.admins}
+                                    onUpdated={loadTeamFinance}
+                                />
                             </CardContent>
                         </Card>
 
